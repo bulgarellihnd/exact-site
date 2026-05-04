@@ -14,10 +14,6 @@
     }
   ],
   "rewrites": [
-    { "source": "/vendas", "destination": "/" },
-    { "source": "/aluguel", "destination": "/" },
-    { "source": "/lancamentos", "destination": "/" },
-    { "source": "/contato", "destination": "/" },
     { "source": "/(.*)", "destination": "/index.html" }
   ]
 }
