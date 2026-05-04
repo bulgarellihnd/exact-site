@@ -1,5 +1,26 @@
 {
-  "rewrites": [
-    { "source": "/(.*)", "destination": "/index.html" }
+  "redirects": [
+    {
+      "source": "/(.*)",
+      "has": [
+        {
+          "type": "host",
+          "value": "exactimoveis.com.br"
+        }
+      ],
+      "destination": "https://exactbr.com/$1",
+      "permanent": true
+    },
+    {
+      "source": "/(.*)",
+      "has": [
+        {
+          "type": "host",
+          "value": "www.exactimoveis.com.br"
+        }
+      ],
+      "destination": "https://exactbr.com/$1",
+      "permanent": true
+    }
   ]
 }
