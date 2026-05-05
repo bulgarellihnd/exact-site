@@ -2,12 +2,6 @@ import { motion } from "framer-motion";
 import { useState } from "react";
 import { ChevronRight } from "lucide-react";
 
-/**
- * EXACT - Página Imóveis
- * Design Philosophy: QUIET LUXURY
- * Portfólio exclusivo com filtros embutidos em uma única linha
- */
-
 const propertyTypes = [
   "TODOS",
   "CASA",
@@ -46,7 +40,8 @@ const properties = [
     area: 450,
     status: "EXCLUSIVO",
     publishedDate: new Date(2026, 3, 1),
-    image: "https://d2xsxph8kpxj0f.cloudfront.net/310519663481007953/48chfHstyxneY6QiBvkAHj/luxury-house-1-mopBBySW8y75dRzLpigHy9.webp",
+    image:
+      "https://d2xsxph8kpxj0f.cloudfront.net/310519663481007953/48chfHstyxneY6QiBvkAHj/luxury-house-1-mopBBySW8y75dRzLpigHy9.webp",
   },
   {
     id: 2,
@@ -60,7 +55,8 @@ const properties = [
     area: 320,
     status: "À VENDA",
     publishedDate: new Date(2026, 2, 15),
-    image: "https://d2xsxph8kpxj0f.cloudfront.net/310519663481007953/48chfHstyxneY6QiBvkAHj/luxury-apartment-1-bzVZhh6D7gyxAkVbYqMeTH.webp",
+    image:
+      "https://d2xsxph8kpxj0f.cloudfront.net/310519663481007953/48chfHstyxneY6QiBvkAHj/luxury-apartment-1-bzVZhh6D7gyxAkVbYqMeTH.webp",
   },
   {
     id: 3,
@@ -74,7 +70,8 @@ const properties = [
     area: 280,
     status: "À VENDA",
     publishedDate: new Date(2026, 2, 20),
-    image: "https://d2xsxph8kpxj0f.cloudfront.net/310519663481007953/48chfHstyxneY6QiBvkAHj/luxury-apartment-2-dfi8bomayub4DHDCgMTZ53.webp",
+    image:
+      "https://d2xsxph8kpxj0f.cloudfront.net/310519663481007953/48chfHstyxneY6QiBvkAHj/luxury-apartment-2-dfi8bomayub4DHDCgMTZ53.webp",
   },
   {
     id: 4,
@@ -88,7 +85,8 @@ const properties = [
     area: 520,
     status: "NOVO",
     publishedDate: new Date(2026, 3, 5),
-    image: "https://d2xsxph8kpxj0f.cloudfront.net/310519663481007953/48chfHstyxneY6QiBvkAHj/luxury-apartment-1-bzVZhh6D7gyxAkVbYqMeTH.webp",
+    image:
+      "https://d2xsxph8kpxj0f.cloudfront.net/310519663481007953/48chfHstyxneY6QiBvkAHj/luxury-apartment-1-bzVZhh6D7gyxAkVbYqMeTH.webp",
   },
   {
     id: 5,
@@ -102,7 +100,8 @@ const properties = [
     area: 180,
     status: "À VENDA",
     publishedDate: new Date(2026, 1, 28),
-    image: "https://d2xsxph8kpxj0f.cloudfront.net/310519663481007953/48chfHstyxneY6QiBvkAHj/luxury-apartment-2-dfi8bomayub4DHDCgMTZ53.webp",
+    image:
+      "https://d2xsxph8kpxj0f.cloudfront.net/310519663481007953/48chfHstyxneY6QiBvkAHj/luxury-apartment-2-dfi8bomayub4DHDCgMTZ53.webp",
   },
   {
     id: 6,
@@ -116,7 +115,8 @@ const properties = [
     area: 65,
     status: "À VENDA",
     publishedDate: new Date(2026, 0, 10),
-    image: "https://d2xsxph8kpxj0f.cloudfront.net/310519663481007953/48chfHstyxneY6QiBvkAHj/luxury-apartment-1-bzVZhh6D7gyxAkVbYqMeTH.webp",
+    image:
+      "https://d2xsxph8kpxj0f.cloudfront.net/310519663481007953/48chfHstyxneY6QiBvkAHj/luxury-apartment-1-bzVZhh6D7gyxAkVbYqMeTH.webp",
   },
 ];
 
@@ -139,7 +139,9 @@ export default function Imoveis() {
       const typeMatch = selectedType === "TODOS" || p.type === selectedType;
       const locationMatch =
         selectedLocation === "TODOS" || p.location.includes(selectedLocation);
-      const statusMatch = selectedStatus === "TODOS" || p.status === selectedStatus;
+      const statusMatch =
+        selectedStatus === "TODOS" || p.status === selectedStatus;
+
       return typeMatch && locationMatch && statusMatch;
     })
     .sort((a, b) => {
@@ -165,7 +167,6 @@ export default function Imoveis() {
 
   return (
     <div className="min-h-screen bg-background text-foreground">
-      {/* Navigation */}
       <nav className="fixed top-0 w-full bg-background/95 backdrop-blur-sm z-50 border-b border-border/20">
         <div className="container mx-auto px-6 py-4 flex justify-between items-center">
           <motion.a
@@ -175,13 +176,15 @@ export default function Imoveis() {
             transition={{ duration: 0.6 }}
             className="text-sm font-extralight tracking-normal cursor-pointer"
             style={{
-              fontFamily: "'SF Pro Rounded', -apple-system, BlinkMacSystemFont, sans-serif",
+              fontFamily:
+                "'SF Pro Rounded', -apple-system, BlinkMacSystemFont, sans-serif",
               letterSpacing: "0.15em",
               fontWeight: 300,
             }}
           >
             EXACT
           </motion.a>
+
           <div className="flex gap-10 items-center">
             <a
               href="/imoveis"
@@ -213,7 +216,6 @@ export default function Imoveis() {
         </div>
       </nav>
 
-      {/* Hero Section with Background */}
       <section
         className="relative min-h-[60vh] flex items-center justify-start pt-20 overflow-hidden"
         style={{
@@ -240,17 +242,16 @@ export default function Imoveis() {
               Nossos Imóveis
             </h1>
             <p className="text-sm md:text-base text-muted-foreground font-light tracking-wide max-w-2xl">
-              Uma seleção rigorosa dos melhores imóveis de alto padrão em Curitiba.
+              Uma seleção rigorosa dos melhores imóveis de alto padrão em
+              Curitiba.
             </p>
           </motion.div>
         </div>
       </section>
 
-      {/* Filters Section - Single Row */}
       <section className="py-6 bg-background border-t border-border/20">
         <div className="container mx-auto px-6">
           <div className="flex items-center justify-between gap-6 flex-wrap">
-            {/* Left Side: Type Filters */}
             <motion.div
               className="flex gap-0.5 items-center"
               initial="hidden"
@@ -258,13 +259,13 @@ export default function Imoveis() {
               viewport={{ once: true }}
               variants={{ visible: { transition: { staggerChildren: 0.03 } } }}
             >
-              {propertyTypes.map((type, index) => (
+              {propertyTypes.map((type) => (
                 <motion.button
                   key={type}
                   variants={itemVariants}
                   onClick={() => setSelectedType(type)}
                   className={`px-2.5 py-1 text-xs font-light rounded-sm transition-all duration-300 tracking-wide border whitespace-nowrap ${
-                    index === 0 && selectedType === type
+                    selectedType === type
                       ? "bg-amber-600/40 text-amber-600 border-amber-600/60"
                       : "border-border/40 text-foreground hover:border-border/60"
                   }`}
@@ -274,7 +275,6 @@ export default function Imoveis() {
               ))}
             </motion.div>
 
-            {/* Right Side: Status, Location, Sort */}
             <motion.div
               className="flex gap-0.5 items-center ml-auto"
               initial="hidden"
@@ -282,19 +282,21 @@ export default function Imoveis() {
               viewport={{ once: true }}
               variants={{ visible: { transition: { staggerChildren: 0.03 } } }}
             >
-              {/* Status Filters */}
               {statusOptions.map((option) => (
                 <motion.button
                   key={option.value}
                   variants={itemVariants}
                   onClick={() => setSelectedStatus(option.value)}
-                  className="px-2.5 py-1 text-xs font-light rounded-sm transition-all duration-300 tracking-wide border border-border/40 text-foreground hover:border-border/60 whitespace-nowrap"
+                  className={`px-2.5 py-1 text-xs font-light rounded-sm transition-all duration-300 tracking-wide border whitespace-nowrap ${
+                    selectedStatus === option.value
+                      ? "bg-amber-600/40 text-amber-600 border-amber-600/60"
+                      : "border-border/40 text-foreground hover:border-border/60"
+                  }`}
                 >
                   {option.label}
                 </motion.button>
               ))}
 
-              {/* Location Dropdown */}
               <select
                 value={selectedLocation}
                 onChange={(e) => setSelectedLocation(e.target.value)}
@@ -307,7 +309,6 @@ export default function Imoveis() {
                 ))}
               </select>
 
-              {/* Sort Dropdown */}
               <div className="relative">
                 <select
                   value={sortBy}
@@ -320,6 +321,7 @@ export default function Imoveis() {
                     </option>
                   ))}
                 </select>
+
                 <div className="absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none text-muted-foreground">
                   <svg
                     width="12"
@@ -341,14 +343,12 @@ export default function Imoveis() {
             </motion.div>
           </div>
 
-          {/* Results Count */}
           <p className="text-xs text-muted-foreground font-light mt-4">
             {filteredProperties.length} IMÓVEIS ENCONTRADOS
           </p>
         </div>
       </section>
 
-      {/* Properties Grid */}
       <section className="py-20 bg-background">
         <div className="container mx-auto px-6">
           <motion.div
@@ -366,34 +366,35 @@ export default function Imoveis() {
                   className="group cursor-pointer"
                   whileHover={{ y: -4 }}
                 >
-                  {/* Card Container with Glow Effect */}
                   <div className="relative">
-                    {/* Subtle Glow Background */}
-                    <div className="absolute inset-0 bg-gradient-to-br from-amber-500/0 via-transparent to-amber-500/0 group-hover:from-amber-500/5 group-hover:to-amber-500/5 rounded-sm transition-all duration-500 pointer-events-none"></div>
-                    
-                    {/* Image */}
-                    <div className="relative overflow-hidden mb-6 h-80 rounded-sm bg-muted/30 border border-border/20 group-hover:border-amber-500/30 transition-all duration-500 flex items-center justify-center shadow-lg group-hover:shadow-amber-500/10">
-                    <img
-                      src={property.image}
-                      alt={property.title}
-                      className="w-full h-full object-cover"
-                    />
-                    <div className="absolute top-4 right-4 bg-background/80 backdrop-blur-sm px-3 py-1 rounded-sm">
-                      <p className="text-xs font-light tracking-wide text-foreground">
-                        {property.status}
-                      </p>
-                    </div>
-                    </div>
+                    <div className="absolute inset-0 bg-gradient-to-br from-amber-500/0 via-transparent to-amber-500/0 group-hover:from-amber-500/5 group-hover:to-amber-500/5 rounded-sm transition-all duration-500 pointer-events-none" />
+
+                    <a
+                      href={`/imoveis/${property.id}`}
+                      className="relative overflow-hidden mb-6 h-80 rounded-sm bg-muted/30 border border-border/20 group-hover:border-amber-500/30 transition-all duration-500 flex items-center justify-center shadow-lg group-hover:shadow-amber-500/10 block"
+                    >
+                      <img
+                        src={property.image}
+                        alt={property.title}
+                        className="w-full h-full object-cover"
+                      />
+                      <div className="absolute top-4 right-4 bg-background/80 backdrop-blur-sm px-3 py-1 rounded-sm">
+                        <p className="text-xs font-light tracking-wide text-foreground">
+                          {property.status}
+                        </p>
+                      </div>
+                    </a>
                   </div>
 
-                  {/* Content */}
                   <div className="space-y-3 relative z-10">
-                    <h3
-                      className="text-lg font-light leading-tight tracking-tight"
-                      style={{ fontFamily: "'Lato', sans-serif" }}
-                    >
-                      {property.title}
-                    </h3>
+                    <a href={`/imoveis/${property.id}`}>
+                      <h3
+                        className="text-lg font-light leading-tight tracking-tight hover:text-amber-600 transition-colors duration-300"
+                        style={{ fontFamily: "'Lato', sans-serif" }}
+                      >
+                        {property.title}
+                      </h3>
+                    </a>
 
                     <p className="text-sm text-muted-foreground font-light">
                       {property.location}
@@ -403,7 +404,6 @@ export default function Imoveis() {
                       {property.priceFormatted}
                     </p>
 
-                    {/* Details */}
                     <div className="flex gap-6 pt-4 border-t border-border/20">
                       <div>
                         <p className="text-xs text-muted-foreground font-light mb-1">
@@ -415,7 +415,9 @@ export default function Imoveis() {
                         <p className="text-xs text-muted-foreground font-light mb-1">
                           Banheiros
                         </p>
-                        <p className="text-sm font-light">{property.bathrooms}</p>
+                        <p className="text-sm font-light">
+                          {property.bathrooms}
+                        </p>
                       </div>
                       <div>
                         <p className="text-xs text-muted-foreground font-light mb-1">
@@ -425,7 +427,6 @@ export default function Imoveis() {
                       </div>
                     </div>
 
-                    {/* CTA */}
                     <a href={`/imoveis/${property.id}`}>
                       <motion.div
                         whileHover={{ x: 4 }}
@@ -449,7 +450,6 @@ export default function Imoveis() {
         </div>
       </section>
 
-      {/* Footer */}
       <footer className="bg-background border-t border-border/20 py-12">
         <div className="container mx-auto px-6">
           <div className="grid md:grid-cols-4 gap-12 mb-12">
@@ -468,8 +468,11 @@ export default function Imoveis() {
                 Curadoria imobiliária com análise precisa.
               </p>
             </div>
+
             <div>
-              <p className="text-xs font-light tracking-widest mb-4">Navegação</p>
+              <p className="text-xs font-light tracking-widest mb-4">
+                Navegação
+              </p>
               <div className="space-y-2">
                 <a
                   href="/imoveis"
@@ -491,6 +494,7 @@ export default function Imoveis() {
                 </a>
               </div>
             </div>
+
             <div>
               <p className="text-xs font-light tracking-widest mb-4">Contato</p>
               <div className="space-y-2">
@@ -509,6 +513,7 @@ export default function Imoveis() {
               </div>
             </div>
           </div>
+
           <div className="border-t border-border/20 pt-8">
             <p className="text-xs text-muted-foreground font-light text-center">
               © 2026 EXACT. Todos os direitos reservados.
