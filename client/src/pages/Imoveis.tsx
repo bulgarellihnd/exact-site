@@ -117,7 +117,20 @@ const properties = [
     publishedDate: new Date(2026, 0, 10),
     image:
       "https://d2xsxph8kpxj0f.cloudfront.net/310519663481007953/48chfHstyxneY6QiBvkAHj/luxury-apartment-1-bzVZhh6D7gyxAkVbYqMeTH.webp",
-  },
+  },{
+  id: 7,
+  type: "APARTAMENTO",
+  title: "Apartamento Alto Padrão — Batel",
+  price: 1850000,
+  priceFormatted: "R$ 1.85M",
+  location: "Batel, Curitiba",
+  bedrooms: 3,
+  bathrooms: 2,
+  area: 210,
+  status: "À VENDA",
+  publishedDate: new Date(2026, 4, 1),
+  image: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c"
+}
 ];
 
 const sortOptions = [
