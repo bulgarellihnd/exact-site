@@ -147,7 +147,9 @@ export default function Home() {
             </motion.a>
 
             <motion.a
-              href="/contato"
+              href="https://wa.me/5541999723780?text=Olá,%20gostaria%20de%20falar%20com%20a%20EXACT."
+              target="_blank"
+rel="noopener noreferrer"
               whileHover={{ scale: 1.01 }}
               whileTap={{ scale: 0.99 }}
               className="inline-block text-foreground text-[11px] md:text-xs font-light rounded-sm transition-all duration-300 tracking-[0.22em] uppercase hover:text-muted-foreground"
