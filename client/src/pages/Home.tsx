@@ -82,7 +82,7 @@ export default function Home() {
               Contato
             </a>
             <motion.a
-              href="https://wa.me/554199768371"
+              href="https://wa.me/5541999723780?text=Olá,%20gostaria%20de%20falar%20com%20a%20EXACT."
               target="_blank"
               rel="noopener noreferrer"
               className="text-xs font-light text-muted-foreground hover:text-foreground transition-colors duration-300 tracking-wide border border-border/40 hover:border-border/60 px-4 py-2 rounded-sm"
