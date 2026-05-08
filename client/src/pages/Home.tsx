@@ -335,10 +335,10 @@ rel="noopener noreferrer"
                 <li className="flex items-center gap-2">
                   <Mail size={12} className="text-muted-foreground" />
                   <a
-                    href="mailto:contato@exact.com.br"
+                    href="mailto:contato@exactbr.com"
                     className="hover:text-foreground transition-colors duration-300 font-light"
                   >
-                    contato@exact.com.br
+                    contato@exactbr.com
                   </a>
                 </li>
               </ul>
