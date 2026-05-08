@@ -324,7 +324,9 @@ rel="noopener noreferrer"
                 <li className="flex items-center gap-2">
                   <Phone size={12} className="text-muted-foreground" />
                   <a
-                    href="tel:+554199768371"
+                    href="https://wa.me/5541999723780?text=Olá,%20gostaria%20de%20falar%20com%20a%20EXACT."
+                    target="_blank"
+rel="noopener noreferrer"
                     className="hover:text-foreground transition-colors duration-300 font-light"
                   >
                     (41) 99768-3715
