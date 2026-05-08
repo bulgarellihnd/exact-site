@@ -329,7 +329,7 @@ rel="noopener noreferrer"
 rel="noopener noreferrer"
                     className="hover:text-foreground transition-colors duration-300 font-light"
                   >
-                    (41) 99768-3715
+                    (41) 99972-3780
                   </a>
                 </li>
                 <li className="flex items-center gap-2">
