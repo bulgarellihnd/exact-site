@@ -5,6 +5,9 @@ import { useLocation } from "wouter";
 import { properties } from "@/lib/properties";
 import { toast } from "sonner";
 
+const whatsappLink =
+  "https://wa.me/5541999723780?text=Ol%C3%A1.%20Tenho%20interesse%20em%20um%20im%C3%B3vel%20da%20EXACT%20e%20gostaria%20de%20mais%20informa%C3%A7%C3%B5es.";
+
 export default function Home() {
   const [searchCode, setSearchCode] = useState("");
   const [, setLocation] = useLocation();
@@ -82,7 +85,7 @@ export default function Home() {
               Contato
             </a>
             <motion.a
-              href="https://wa.me/5541999723780?text=Olá,%20gostaria%20de%20falar%20com%20a%20EXACT."
+              href={whatsappLink}
               target="_blank"
               rel="noopener noreferrer"
               className="text-xs font-light text-muted-foreground hover:text-foreground transition-colors duration-300 tracking-wide border border-border/40 hover:border-border/60 px-4 py-2 rounded-sm"
@@ -97,13 +100,13 @@ export default function Home() {
 
       <section className="relative min-h-screen flex items-center justify-center pt-20 overflow-hidden bg-background">
         <motion.div
-          className="text-center max-w-3xl mx-auto px-6 flex flex-col items-center"
+          className="text-center max-w-3xl mx-auto px-6 flex flex-col items-center -translate-y-6 md:-translate-y-10"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.9 }}
         >
           <motion.p
-            className="text-[10px] md:text-[11px] font-light tracking-[0.28em] text-muted-foreground/60 mb-9 uppercase"
+            className="text-[10px] md:text-[11px] font-light tracking-[0.32em] text-muted-foreground/55 uppercase mb-16 md:mb-20"
             initial={{ opacity: 0, y: 6 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.15, duration: 0.7 }}
@@ -111,20 +114,17 @@ export default function Home() {
             SELEÇÃO IMOBILIÁRIA · CURITIBA
           </motion.p>
 
-         
-
           <motion.p
-            className="text-[14px] md:text-[16px] text-muted-foreground/80 font-light tracking-wide leading-relaxed"
-            style={{ marginBottom: "3.25rem" }}
+            className="text-[15px] md:text-[17px] text-muted-foreground/75 font-light tracking-wide leading-relaxed mb-20 md:mb-24"
             initial={{ opacity: 0, y: 6 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.35, duration: 0.7 }}
+            transition={{ delay: 0.3, duration: 0.7 }}
           >
             Só o que importa.
           </motion.p>
 
           <motion.div
-            className="flex gap-10 md:gap-14 justify-center flex-wrap"
+            className="flex gap-10 md:gap-16 justify-center flex-wrap"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.45, duration: 0.7 }}
@@ -133,18 +133,18 @@ export default function Home() {
               href="/imoveis"
               whileHover={{ scale: 1.01 }}
               whileTap={{ scale: 0.99 }}
-              className="inline-block text-foreground text-[11px] md:text-xs font-light rounded-sm transition-all duration-300 tracking-[0.22em] uppercase hover:text-muted-foreground"
+              className="inline-block text-foreground text-[11px] md:text-xs font-light rounded-sm transition-all duration-300 tracking-[0.24em] uppercase hover:text-muted-foreground"
             >
               VER IMÓVEIS
             </motion.a>
 
             <motion.a
-              href="https://wa.me/5541999723780?text=Olá,%20gostaria%20de%20falar%20com%20a%20EXACT."
+              href={whatsappLink}
               target="_blank"
-rel="noopener noreferrer"
+              rel="noopener noreferrer"
               whileHover={{ scale: 1.01 }}
               whileTap={{ scale: 0.99 }}
-              className="inline-block text-foreground text-[11px] md:text-xs font-light rounded-sm transition-all duration-300 tracking-[0.22em] uppercase hover:text-muted-foreground"
+              className="inline-block text-foreground text-[11px] md:text-xs font-light rounded-sm transition-all duration-300 tracking-[0.24em] uppercase hover:text-muted-foreground"
             >
               FALAR COM A EXACT
             </motion.a>
@@ -316,9 +316,9 @@ rel="noopener noreferrer"
                 <li className="flex items-center gap-2">
                   <Phone size={12} className="text-muted-foreground" />
                   <a
-                    href="https://wa.me/5541999723780?text=Olá,%20gostaria%20de%20falar%20com%20a%20EXACT."
+                    href={whatsappLink}
                     target="_blank"
-rel="noopener noreferrer"
+                    rel="noopener noreferrer"
                     className="hover:text-foreground transition-colors duration-300 font-light"
                   >
                     (41) 99972-3780
