@@ -103,13 +103,13 @@ export default function Home() {
 
       <section className="relative min-h-screen flex items-center justify-center pt-20 overflow-hidden bg-background">
         <motion.div
-          className="text-center max-w-3xl mx-auto px-6 flex flex-col items-center translate-y-20 md:translate-y-24"
+          className="text-center max-w-3xl mx-auto px-6 flex flex-col items-center"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.9 }}
         >
           <motion.p
-            className="text-[10px] md:text-[11px] font-light tracking-[0.32em] text-muted-foreground/55 uppercase mb-20 md:mb-24"
+            className="absolute top-36 md:top-40 text-[10px] md:text-[11px] font-light tracking-[0.32em] text-muted-foreground/55 uppercase"
             initial={{ opacity: 0, y: 6 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.15, duration: 0.7 }}
