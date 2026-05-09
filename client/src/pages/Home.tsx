@@ -111,15 +111,7 @@ export default function Home() {
             SELEÇÃO IMOBILIÁRIA · CURITIBA
           </motion.p>
 
-          <motion.h1
-            className="text-[40px] md:text-[52px] lg:text-[58px] font-light mb-7 leading-[1.12] tracking-[-0.035em]"
-            style={{ fontFamily: "'Lato', sans-serif" }}
-            initial={{ opacity: 0, y: 8 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.25, duration: 0.75 }}
-          >
-            Sem excesso.
-          </motion.h1>
+         
 
           <motion.p
             className="text-[14px] md:text-[16px] text-muted-foreground/80 font-light tracking-wide leading-relaxed"
