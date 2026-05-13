@@ -168,7 +168,7 @@ export default function Home() {
             variants={{ visible: { transition: { staggerChildren: 0.1 } } }}
           >
             <motion.a
-              href="/imoveis"
+              href="/imoveis?tipo=locacao"
               variants={itemVariants}
               className="group cursor-pointer block"
               whileHover={{ y: -2 }}
@@ -193,7 +193,7 @@ export default function Home() {
             </motion.a>
 
             <motion.a
-              href="/imoveis"
+              href="/imoveis?tipo=aquisicao"
               variants={itemVariants}
               className="group cursor-pointer block"
               whileHover={{ y: -2 }}
