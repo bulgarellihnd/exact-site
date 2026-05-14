@@ -24,8 +24,9 @@ export default function Contato() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // Simulate form submission
+
     setSubmitted(true);
+
     setTimeout(() => {
       setFormData({ name: "", phone: "" });
       setSubmitted(false);
@@ -34,7 +35,6 @@ export default function Contato() {
 
   return (
     <div className="min-h-screen bg-background text-foreground">
-      {/* Navigation */}
       <nav className="fixed top-0 w-full bg-background/95 backdrop-blur-sm z-50 border-b border-border/20">
         <div className="container mx-auto px-6 py-4 flex justify-between items-center">
           <motion.a
@@ -44,13 +44,15 @@ export default function Contato() {
             transition={{ duration: 0.6 }}
             className="text-sm font-extralight tracking-normal cursor-pointer"
             style={{
-              fontFamily: "'SF Pro Rounded', -apple-system, BlinkMacSystemFont, sans-serif",
+              fontFamily:
+                "'SF Pro Rounded', -apple-system, BlinkMacSystemFont, sans-serif",
               letterSpacing: "0.15em",
               fontWeight: 300,
             }}
           >
             EXACT
           </motion.a>
+
           <div className="flex gap-10 items-center">
             <a
               href="/imoveis"
@@ -58,20 +60,25 @@ export default function Contato() {
             >
               Imóveis
             </a>
+
             <a
               href="/sobre"
               className="text-xs font-light text-muted-foreground hover:text-foreground transition-colors duration-300 tracking-wide"
             >
               Sobre
             </a>
+
             <a
               href="/contato"
               className="text-xs font-light text-foreground transition-colors duration-300 tracking-wide"
             >
               Contato
             </a>
+
             <motion.a
-              href="/contato"
+              href="https://wa.me/5541999723780?text=Ol%C3%A1.%20Tenho%20interesse%20em%20um%20im%C3%B3vel%20da%20EXACT%20e%20gostaria%20de%20mais%20informa%C3%A7%C3%B5es."
+              target="_blank"
+              rel="noopener noreferrer"
               className="text-xs font-light text-muted-foreground hover:text-foreground transition-colors duration-300 tracking-wide border border-border/40 hover:border-border/60 px-4 py-2 rounded-sm"
               whileHover={{ scale: 1.01 }}
               whileTap={{ scale: 0.99 }}
@@ -82,7 +89,6 @@ export default function Contato() {
         </div>
       </nav>
 
-      {/* Content Section */}
       <section className="relative min-h-screen flex items-center justify-center pt-20 pb-20">
         <motion.div
           className="container mx-auto px-6 max-w-2xl"
@@ -102,10 +108,10 @@ export default function Contato() {
           </h1>
 
           <p className="text-base text-muted-foreground font-light leading-relaxed tracking-wide mb-12">
-            Deixe seus dados para que possamos entrar em contato com você. Responderemos em breve.
+            Deixe seus dados para que possamos entrar em contato com você.
+            Responderemos em breve.
           </p>
 
-          {/* Form */}
           <motion.form
             onSubmit={handleSubmit}
             className="space-y-8"
@@ -113,11 +119,11 @@ export default function Contato() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2, duration: 0.6 }}
           >
-            {/* Name Input */}
             <div>
               <label className="text-xs font-light tracking-widest text-muted-foreground block mb-3">
                 NOME
               </label>
+
               <input
                 type="text"
                 name="name"
@@ -129,11 +135,11 @@ export default function Contato() {
               />
             </div>
 
-            {/* Phone Input */}
             <div>
               <label className="text-xs font-light tracking-widest text-muted-foreground block mb-3">
                 TELEFONE
               </label>
+
               <input
                 type="tel"
                 name="phone"
@@ -145,7 +151,6 @@ export default function Contato() {
               />
             </div>
 
-            {/* Submit Button */}
             <motion.button
               type="submit"
               whileHover={{ scale: 1.01 }}
@@ -155,7 +160,6 @@ export default function Contato() {
               {submitted ? "Mensagem Enviada" : "Enviar"}
             </motion.button>
 
-            {/* Success Message */}
             {submitted && (
               <motion.div
                 initial={{ opacity: 0 }}
@@ -169,30 +173,30 @@ export default function Contato() {
             )}
           </motion.form>
 
-          {/* Contact Info */}
           <div className="mt-16 pt-12 border-t border-border/20">
             <p className="text-xs font-light tracking-widest text-muted-foreground mb-6">
               OU ENTRE EM CONTATO DIRETO
             </p>
+
             <div className="space-y-3">
               <a
-                href="tel:+5541997683715"
+                href="tel:+5541999723780"
                 className="text-base font-light text-foreground hover:text-muted-foreground transition-colors block"
               >
-                (41) 99768-3715
+                (41) 99972-3780
               </a>
+
               <a
-                href="mailto:contato@exact.com.br"
+                href="mailto:contato@exactbr.com"
                 className="text-base font-light text-foreground hover:text-muted-foreground transition-colors block"
               >
-                contato@exact.com.br
+                contato@exactbr.com
               </a>
             </div>
           </div>
         </motion.div>
       </section>
 
-      {/* Footer */}
       <footer className="bg-background border-t border-border/20 py-12">
         <div className="container mx-auto px-6">
           <div className="grid md:grid-cols-4 gap-12 mb-12">
@@ -200,18 +204,24 @@ export default function Contato() {
               <h4
                 className="text-xs font-light tracking-widest mb-6"
                 style={{
-                  fontFamily: "'SF Pro Rounded', -apple-system, BlinkMacSystemFont, sans-serif",
+                  fontFamily:
+                    "'SF Pro Rounded', -apple-system, BlinkMacSystemFont, sans-serif",
                   letterSpacing: "0.15em",
                 }}
               >
                 EXACT
               </h4>
+
               <p className="text-xs text-muted-foreground font-light leading-relaxed">
                 Curadoria imobiliária com análise precisa.
               </p>
             </div>
+
             <div>
-              <p className="text-xs font-light tracking-widest mb-4">Navegação</p>
+              <p className="text-xs font-light tracking-widest mb-4">
+                Navegação
+              </p>
+
               <div className="space-y-2">
                 <a
                   href="/imoveis"
@@ -219,12 +229,14 @@ export default function Contato() {
                 >
                   Imóveis
                 </a>
+
                 <a
                   href="/sobre"
                   className="text-xs text-muted-foreground hover:text-foreground transition-colors font-light block"
                 >
                   Sobre
                 </a>
+
                 <a
                   href="/contato"
                   className="text-xs text-muted-foreground hover:text-foreground transition-colors font-light block"
@@ -233,24 +245,30 @@ export default function Contato() {
                 </a>
               </div>
             </div>
+
             <div>
-              <p className="text-xs font-light tracking-widest mb-4">Contato</p>
+              <p className="text-xs font-light tracking-widest mb-4">
+                Contato
+              </p>
+
               <div className="space-y-2">
                 <a
-                  href="tel:+5541997683715"
+                  href="tel:+5541999723780"
                   className="text-xs text-muted-foreground hover:text-foreground transition-colors font-light block"
                 >
-                  (41) 99768-3715
+                  (41) 99972-3780
                 </a>
+
                 <a
-                  href="mailto:contato@exact.com.br"
+                  href="mailto:contato@exactbr.com"
                   className="text-xs text-muted-foreground hover:text-foreground transition-colors font-light block"
                 >
-                  contato@exact.com.br
+                  contato@exactbr.com
                 </a>
               </div>
             </div>
           </div>
+
           <div className="border-t border-border/20 pt-8">
             <p className="text-xs text-muted-foreground font-light text-center">
               © 2026 EXACT. Todos os direitos reservados.
