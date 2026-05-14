@@ -1,6 +1,12 @@
 import { motion } from "framer-motion";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ChevronRight } from "lucide-react";
+
+const operationOptions = [
+  { label: "TODOS", value: "TODOS" },
+  { label: "LOCAÇÃO", value: "locacao" },
+  { label: "AQUISIÇÃO", value: "aquisicao" },
+];
 
 const propertyTypes = [
   "TODOS",
@@ -30,6 +36,7 @@ const locations = [
 const properties = [
   {
     id: 1,
+    operation: "aquisicao",
     type: "CASA",
     title: "Casa Moderna - Batel",
     price: 2500000,
@@ -45,6 +52,7 @@ const properties = [
   },
   {
     id: 2,
+    operation: "aquisicao",
     type: "CONDOMÍNIO",
     title: "Apartamento Premium - Champagnat",
     price: 1800000,
@@ -60,6 +68,7 @@ const properties = [
   },
   {
     id: 3,
+    operation: "aquisicao",
     type: "APARTAMENTO",
     title: "Apartamento Luxo - Água Verde",
     price: 1200000,
@@ -75,6 +84,7 @@ const properties = [
   },
   {
     id: 4,
+    operation: "aquisicao",
     type: "COBERTURA",
     title: "Cobertura Duplex - Alto da XV",
     price: 3200000,
@@ -90,6 +100,7 @@ const properties = [
   },
   {
     id: 5,
+    operation: "aquisicao",
     type: "LOFT",
     title: "Loft Industrial - Centro",
     price: 950000,
@@ -105,6 +116,7 @@ const properties = [
   },
   {
     id: 6,
+    operation: "aquisicao",
     type: "STUDIO",
     title: "Studio Compacto - Batel",
     price: 450000,
@@ -117,20 +129,22 @@ const properties = [
     publishedDate: new Date(2026, 0, 10),
     image:
       "https://d2xsxph8kpxj0f.cloudfront.net/310519663481007953/48chfHstyxneY6QiBvkAHj/luxury-apartment-1-bzVZhh6D7gyxAkVbYqMeTH.webp",
-  },{
-  id: 7,
-  type: "APARTAMENTO",
-  title: "Apartamento Alto Padrão — Batel",
-  price: 1850000,
-  priceFormatted: "R$ 1.85M",
-  location: "Batel, Curitiba",
-  bedrooms: 3,
-  bathrooms: 2,
-  area: 210,
-  status: "À VENDA",
-  publishedDate: new Date(2026, 4, 1),
-  image: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c"
-}
+  },
+  {
+    id: 7,
+    operation: "aquisicao",
+    type: "APARTAMENTO",
+    title: "Apartamento Alto Padrão — Batel",
+    price: 1850000,
+    priceFormatted: "R$ 1.85M",
+    location: "Batel, Curitiba",
+    bedrooms: 3,
+    bathrooms: 2,
+    area: 210,
+    status: "À VENDA",
+    publishedDate: new Date(2026, 4, 1),
+    image: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c",
+  },
 ];
 
 const sortOptions = [
@@ -142,20 +156,35 @@ const sortOptions = [
 ];
 
 export default function Imoveis() {
+  const [selectedOperation, setSelectedOperation] = useState("TODOS");
   const [selectedType, setSelectedType] = useState("TODOS");
   const [selectedLocation, setSelectedLocation] = useState("TODOS");
   const [selectedStatus, setSelectedStatus] = useState("TODOS");
   const [sortBy, setSortBy] = useState("recent");
 
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const tipo = params.get("tipo");
+
+    if (tipo === "locacao" || tipo === "aquisicao") {
+      setSelectedOperation(tipo);
+    }
+  }, []);
+
   const filteredProperties = properties
     .filter((p) => {
+      const operationMatch =
+        selectedOperation === "TODOS" || p.operation === selectedOperation;
+
       const typeMatch = selectedType === "TODOS" || p.type === selectedType;
+
       const locationMatch =
         selectedLocation === "TODOS" || p.location.includes(selectedLocation);
+
       const statusMatch =
         selectedStatus === "TODOS" || p.status === selectedStatus;
 
-      return typeMatch && locationMatch && statusMatch;
+      return operationMatch && typeMatch && locationMatch && statusMatch;
     })
     .sort((a, b) => {
       switch (sortBy) {
@@ -266,12 +295,27 @@ export default function Imoveis() {
         <div className="container mx-auto px-6">
           <div className="flex items-center justify-between gap-6 flex-wrap">
             <motion.div
-              className="flex gap-0.5 items-center"
+              className="flex gap-0.5 items-center flex-wrap"
               initial="hidden"
               whileInView="visible"
               viewport={{ once: true }}
               variants={{ visible: { transition: { staggerChildren: 0.03 } } }}
             >
+              {operationOptions.map((option) => (
+                <motion.button
+                  key={option.value}
+                  variants={itemVariants}
+                  onClick={() => setSelectedOperation(option.value)}
+                  className={`px-2.5 py-1 text-xs font-light rounded-sm transition-all duration-300 tracking-wide border whitespace-nowrap ${
+                    selectedOperation === option.value
+                      ? "bg-amber-600/40 text-amber-600 border-amber-600/60"
+                      : "border-border/40 text-foreground hover:border-border/60"
+                  }`}
+                >
+                  {option.label}
+                </motion.button>
+              ))}
+
               {propertyTypes.map((type) => (
                 <motion.button
                   key={type}
