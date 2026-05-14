@@ -136,7 +136,7 @@ export default function Home() {
               href="/imoveis"
               whileHover={{ scale: 1.01 }}
               whileTap={{ scale: 0.99 }}
-              className="inline-block border border-transparent hover:border-border/60 px-4 py-2 text-foreground text-[11px] md:text-xs font-light rounded-sm transition-all duration-300 tracking-[0.24em] uppercase hover:text-muted-foreground"
+              className="inline-flex items-center justify-center min-w-[190px] border border-transparent hover:border-white/20 px-4 py-3 text-foreground text-[11px] md:text-xs font-light rounded-sm transition-all duration-300 tracking-[0.24em] uppercase hover:text-muted-foreground"
             >
               VER IMÓVEIS
             </motion.a>
@@ -147,7 +147,7 @@ export default function Home() {
               rel="noopener noreferrer"
               whileHover={{ scale: 1.01 }}
               whileTap={{ scale: 0.99 }}
-              className="inline-block border border-transparent hover:border-border/60 px-4 py-2 text-foreground text-[11px] md:text-xs font-light rounded-sm transition-all duration-300 tracking-[0.24em] uppercase hover:text-muted-foreground"
+              className="inline-flex items-center justify-center min-w-[190px] border border-transparent hover:border-white/20 px-4 py-3 text-foreground text-[11px] md:text-xs font-light rounded-sm transition-all duration-300 tracking-[0.24em] uppercase hover:text-muted-foreground"
             >
               FALAR COM A EXACT
             </motion.a>
