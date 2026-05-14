@@ -118,7 +118,7 @@ export default function Home() {
           </motion.p>
 
           <motion.p
-            className="text-[15px] md:text-[17px] text-muted-foreground/75 font-light tracking-wide leading-relaxed mt-32 md:mt-40 mb-24 md:mb-28"
+            className="text-[15px] md:text-[17px] text-muted-foreground/75 font-light tracking-wide leading-relaxed mt-40 md:mt-48 mb-28 md:mb-32"
             initial={{ opacity: 0, y: 6 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.3, duration: 0.7 }}
