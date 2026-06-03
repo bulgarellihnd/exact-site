@@ -1,52 +1,37 @@
 import { motion } from "framer-motion";
 
-/**
- * EXACT - Página Sobre
- * Design Philosophy: QUIET LUXURY - MINIMAL
- * Layout simples e editorial com tipografia refinada
- */
-
 export default function Sobre() {
+  const whatsappLink =
+    "https://wa.me/5541999723780?text=Ol%C3%A1.%20Tenho%20interesse%20em%20um%20im%C3%B3vel%20da%20EXACT%20e%20gostaria%20de%20mais%20informa%C3%A7%C3%B5es.";
+
   return (
     <div className="min-h-screen bg-background text-foreground">
-      {/* Navigation */}
-      <nav className="fixed top-0 w-full bg-background/95 backdrop-blur-sm z-50 border-b border-border/20">
+
+      {/* NAV */}
+      <nav className="fixed top-0 w-full bg-background/90 backdrop-blur-md z-50 border-b border-border/15">
         <div className="container mx-auto px-6 py-4 flex justify-between items-center">
           <motion.a
             href="/"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.6 }}
-            className="text-sm font-extralight tracking-normal cursor-pointer"
-            style={{
-              fontFamily: "'SF Pro Rounded', -apple-system, BlinkMacSystemFont, sans-serif",
-              letterSpacing: "0.15em",
-              fontWeight: 300,
-            }}
+            className="text-xs tracking-[0.18em] font-light cursor-pointer"
+            style={{ fontFamily: "'Inter', sans-serif", fontWeight: 300 }}
           >
             EXACT
           </motion.a>
           <div className="flex gap-10 items-center">
-            <a
-              href="/imoveis"
-              className="text-xs font-light text-muted-foreground hover:text-foreground transition-colors duration-300 tracking-wide"
-            >
+            <a href="/imoveis" className="text-xs font-light text-muted-foreground hover:text-foreground transition-colors duration-300 tracking-wide">
               Imóveis
             </a>
-            <a
-              href="/sobre"
-              className="text-xs font-light text-foreground transition-colors duration-300 tracking-wide border-b border-foreground"
-            >
+            <a href="/sobre" className="text-xs font-light text-foreground tracking-wide border-b border-foreground/40 pb-px">
               Sobre
             </a>
-            <a
-              href="/contato"
-              className="text-xs font-light text-muted-foreground hover:text-foreground transition-colors duration-300 tracking-wide"
-            >
+            <a href="/contato" className="text-xs font-light text-muted-foreground hover:text-foreground transition-colors duration-300 tracking-wide">
               Contato
             </a>
             <motion.a
-              href="https://wa.me/554199768371"
+              href={whatsappLink}
               target="_blank"
               rel="noopener noreferrer"
               className="text-xs font-light text-muted-foreground hover:text-foreground transition-colors duration-300 tracking-wide border border-border/40 hover:border-border/60 px-4 py-2 rounded-sm"
@@ -59,17 +44,12 @@ export default function Sobre() {
         </div>
       </nav>
 
-      {/* Content Section */}
-      <section className="relative h-screen flex items-center justify-start pt-20 pb-20 overflow-hidden">
-        <motion.div
-          className="container mx-auto px-6 max-w-2xl"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.8 }}
-        >
-          {/* Micro-title */}
+      {/* CONTEÚDO */}
+      <section className="min-h-screen flex items-center pt-20 pb-32">
+        <div className="container mx-auto px-6 max-w-xl">
+
           <motion.p
-            className="text-xs font-light tracking-[0.2em] text-muted-foreground mb-8 uppercase"
+            className="text-[10px] font-light tracking-[0.28em] text-muted-foreground/60 uppercase mb-12"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.6, delay: 0.1 }}
@@ -77,127 +57,92 @@ export default function Sobre() {
             Sobre
           </motion.p>
 
-          {/* Main Title */}
           <motion.h1
-            className="text-6xl md:text-7xl font-light mb-8 leading-tight tracking-tight"
-            style={{ fontFamily: "'Lato', sans-serif" }}
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
+            className="text-[64px] md:text-[80px] font-extralight mb-16 leading-none tracking-tight text-foreground/90"
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.2 }}
           >
             EXACT
           </motion.h1>
 
-          {/* Description */}
           <motion.div
-            className="space-y-6"
+            className="space-y-0"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            transition={{ duration: 0.8, delay: 0.3 }}
+            transition={{ duration: 0.8, delay: 0.35 }}
           >
-            <p className="text-base text-muted-foreground font-light leading-relaxed tracking-wide max-w-lg">
+            <p className="text-sm text-muted-foreground font-light leading-relaxed tracking-wide mb-12">
               Consultoria imobiliária especializada em gestão patrimonial em Curitiba.
             </p>
 
-            {/* Separator */}
-            <div className="w-12 h-px bg-border/20"></div>
-
-            {/* Pillar 1 */}
-            <p className="text-base font-light leading-relaxed tracking-wide max-w-lg">
-              Portfólio selecionado com exatidão.
-            </p>
-
-            {/* Separator */}
-            <div className="w-12 h-px bg-border/20"></div>
-
-            {/* Pillar 2 */}
-            <p className="text-base font-light leading-relaxed tracking-wide max-w-lg">
-              Execução precisa.
-            </p>
-
-            {/* Separator */}
-            <div className="w-12 h-px bg-border/20"></div>
-
-            {/* Pillar 3 */}
-            <p className="text-base font-light leading-relaxed tracking-wide max-w-lg">
-              Atendimento direto.
-            </p>
+            <div className="space-y-0 border-t border-border/20">
+              {[
+                "Portfólio selecionado com exatidão.",
+                "Execução precisa.",
+                "Atendimento direto.",
+              ].map((text, i) => (
+                <motion.div
+                  key={i}
+                  className="flex items-center py-6 border-b border-border/20"
+                  initial={{ opacity: 0, x: -8 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ duration: 0.5, delay: 0.45 + i * 0.1 }}
+                >
+                  <span className="text-[10px] text-muted-foreground/40 font-light tracking-widest mr-8 w-4 shrink-0">
+                    {String(i + 1).padStart(2, "0")}
+                  </span>
+                  <p className="text-sm font-light tracking-wide text-foreground/85">
+                    {text}
+                  </p>
+                </motion.div>
+              ))}
+            </div>
           </motion.div>
-        </motion.div>
+        </div>
       </section>
 
-      {/* Footer */}
-      <motion.footer 
-        className="bg-background border-t border-border/20 py-12"
-        initial={{ opacity: 0, y: 40 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.8, ease: "easeOut" }}
-        viewport={{ once: false, amount: 0.2 }}
-      >
+      {/* FOOTER */}
+      <footer className="bg-background border-t border-border/15 py-20">
         <div className="container mx-auto px-6">
-          <div className="grid md:grid-cols-4 gap-12 mb-12">
+          <div className="grid md:grid-cols-4 gap-16 mb-16">
             <div>
-              <h4
-                className="text-xs font-light tracking-widest mb-6"
-                style={{
-                  fontFamily: "'SF Pro Rounded', -apple-system, BlinkMacSystemFont, sans-serif",
-                  letterSpacing: "0.15em",
-                }}
-              >
-                EXACT
-              </h4>
+              <h4 className="text-xs font-light tracking-[0.18em] mb-6">EXACT</h4>
               <p className="text-xs text-muted-foreground font-light leading-relaxed">
                 Curadoria imobiliária com análise precisa.
               </p>
             </div>
             <div>
-              <p className="text-xs font-light tracking-widest mb-4">Navegação</p>
-              <div className="space-y-2">
-                <a
-                  href="/imoveis"
-                  className="text-xs text-muted-foreground hover:text-foreground transition-colors font-light block"
-                >
-                  Imóveis
+              <p className="text-xs font-light tracking-wide text-muted-foreground mb-5">Navegação</p>
+              <div className="space-y-3">
+                <a href="/imoveis" className="text-xs text-muted-foreground hover:text-foreground transition-colors font-light block">Imóveis</a>
+                <a href="/sobre" className="text-xs text-muted-foreground hover:text-foreground transition-colors font-light block">Sobre</a>
+                <a href="/contato" className="text-xs text-muted-foreground hover:text-foreground transition-colors font-light block">Contato</a>
+              </div>
+            </div>
+            <div>
+              <p className="text-xs font-light tracking-wide text-muted-foreground mb-5">Contato</p>
+              <div className="space-y-3">
+                <a href={whatsappLink} target="_blank" rel="noopener noreferrer" className="text-xs text-muted-foreground hover:text-foreground transition-colors font-light block">
+                  (41) 99972-3780
                 </a>
-                <a
-                  href="/sobre"
-                  className="text-xs text-muted-foreground hover:text-foreground transition-colors font-light block"
-                >
-                  Sobre
-                </a>
-                <a
-                  href="/contato"
-                  className="text-xs text-muted-foreground hover:text-foreground transition-colors font-light block"
-                >
-                  Contato
+                <a href="mailto:contato@exactbr.com" className="text-xs text-muted-foreground hover:text-foreground transition-colors font-light block">
+                  contato@exactbr.com
                 </a>
               </div>
             </div>
             <div>
-              <p className="text-xs font-light tracking-widest mb-4">Contato</p>
-              <div className="space-y-2">
-                <a
-                  href="tel:+5541997683715"
-                  className="text-xs text-muted-foreground hover:text-foreground transition-colors font-light block"
-                >
-                  (41) 99768-3715
-                </a>
-                <a
-                  href="mailto:contato@exact.com.br"
-                  className="text-xs text-muted-foreground hover:text-foreground transition-colors font-light block"
-                >
-                  contato@exact.com.br
-                </a>
-              </div>
+              <p className="text-xs font-light tracking-wide text-muted-foreground mb-5">Localização</p>
+              <p className="text-xs text-muted-foreground font-light">Curitiba, PR</p>
             </div>
           </div>
-          <div className="border-t border-border/20 pt-8">
+          <div className="border-t border-border/15 pt-8">
             <p className="text-xs text-muted-foreground font-light text-center">
               © 2026 EXACT. Todos os direitos reservados.
             </p>
           </div>
         </div>
-      </motion.footer>
+      </footer>
     </div>
   );
 }
