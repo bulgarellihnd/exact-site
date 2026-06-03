@@ -17,11 +17,7 @@ export default function Home() {
 
   const itemVariants = {
     hidden: { opacity: 0, y: 8 },
-    visible: {
-      opacity: 1,
-      y: 0,
-      transition: { duration: 0.5 },
-    },
+    visible: { opacity: 1, y: 0, transition: { duration: 0.5 } },
   };
 
   const handleSearch = () => {
@@ -46,7 +42,6 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-background text-foreground">
 
-      {/* NAV */}
       <nav className="fixed top-0 w-full bg-background/90 backdrop-blur-md z-50 border-b border-border/15">
         <div className="container mx-auto px-6 py-4 flex justify-between items-center">
           <motion.div
@@ -59,7 +54,6 @@ export default function Home() {
           >
             EXACT
           </motion.div>
-
           <div className="flex gap-10 items-center">
             <a href="/imoveis" className="text-xs font-light text-muted-foreground hover:text-foreground transition-colors duration-300 tracking-wide">
               Imóveis
@@ -84,19 +78,12 @@ export default function Home() {
         </div>
       </nav>
 
-      {/* HERO */}
       <section className="relative min-h-screen flex items-end justify-start overflow-hidden">
-
-        {/* Imagem de fundo */}
         <div
           className="absolute inset-0 bg-cover bg-center"
           style={{ backgroundImage: `url(${HERO_IMAGE})` }}
         />
-
-        {/* Overlay gradiente — escurece mais embaixo onde fica o texto */}
         <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/40 to-black/20" />
-
-        {/* Conteúdo ancorado no rodapé da hero */}
         <motion.div
           className="relative z-10 container mx-auto px-6 pb-20 w-full"
           initial={{ opacity: 0, y: 16 }}
@@ -111,7 +98,6 @@ export default function Home() {
           >
             SELEÇÃO IMOBILIÁRIA · CURITIBA
           </motion.p>
-
           <motion.p
             className="text-[22px] md:text-[28px] font-light tracking-wide text-white/90 mb-10 leading-snug"
             initial={{ opacity: 0 }}
@@ -120,7 +106,6 @@ export default function Home() {
           >
             Só o que importa.
           </motion.p>
-
           <motion.div
             className="flex gap-6 flex-wrap"
             initial={{ opacity: 0 }}
@@ -145,8 +130,7 @@ export default function Home() {
         </motion.div>
       </section>
 
-      {/* LOCAÇÃO / AQUISIÇÃO */}
-      <section id="search" className="py-24 bg-background border-t border-border/15">
+      <section className="py-24 bg-background border-t border-border/15">
         <div className="container mx-auto px-6">
           <motion.div
             className="grid md:grid-cols-2 gap-12"
@@ -200,7 +184,6 @@ export default function Home() {
         </div>
       </section>
 
-      {/* BUSCA POR CÓDIGO */}
       <section className="py-16 bg-background border-t border-border/15">
         <div className="container mx-auto px-6">
           <motion.div
@@ -211,11 +194,8 @@ export default function Home() {
             variants={{ visible: { transition: { staggerChildren: 0.1 } } }}
           >
             <motion.div variants={itemVariants} className="mb-7">
-              <h2 className="text-base font-light tracking-tight">
-                Buscar por Código
-              </h2>
+              <h2 className="text-base font-light tracking-tight">Buscar por Código</h2>
             </motion.div>
-
             <motion.div variants={itemVariants} className="flex gap-3">
               <div className="flex-1 relative">
                 <input
@@ -241,8 +221,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* FOOTER */}
-      <footer id="contact" className="bg-background border-t border-border/15 py-24">
+      <footer className="bg-background border-t border-border/15 py-24">
         <div className="container mx-auto px-6">
           <div className="grid md:grid-cols-4 gap-20 mb-20">
             <motion.div
@@ -256,7 +235,6 @@ export default function Home() {
                 Curadoria imobiliária com análise precisa.
               </p>
             </motion.div>
-
             <motion.div
               initial={{ opacity: 0 }}
               whileInView={{ opacity: 1 }}
@@ -270,7 +248,6 @@ export default function Home() {
                 <li><a href="/contato" className="hover:text-foreground transition-colors duration-300 font-light">Contato</a></li>
               </ul>
             </motion.div>
-
             <motion.div
               initial={{ opacity: 0 }}
               whileInView={{ opacity: 1 }}
@@ -293,7 +270,6 @@ export default function Home() {
                 </li>
               </ul>
             </motion.div>
-
             <motion.div
               initial={{ opacity: 0 }}
               whileInView={{ opacity: 1 }}
@@ -309,12 +285,12 @@ export default function Home() {
               </ul>
             </motion.div>
           </div>
-
           <div className="border-t border-border/15 pt-12 text-center text-xs text-muted-foreground font-light">
             <p>&copy; 2026 EXACT. Todos os direitos reservados.</p>
           </div>
         </div>
       </footer>
+
     </div>
   );
 }
