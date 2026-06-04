@@ -8,16 +8,17 @@ import { toast } from "sonner";
 const whatsappLink =
   "https://wa.me/5541999723780?text=Ol%C3%A1.%20Tenho%20interesse%20em%20um%20im%C3%B3vel%20da%20EXACT%20e%20gostaria%20de%20mais%20informa%C3%A7%C3%B5es.";
 
-const HERO_IMAGE =
-  "https://d2xsxph8kpxj0f.cloudfront.net/310519663481007953/48chfHstyxneY6QiBvkAHj/cityscape-background-MLhhLWwxT5jepc8AoTEKAL.webp";
-
 export default function Home() {
   const [searchCode, setSearchCode] = useState("");
   const [, setLocation] = useLocation();
 
   const itemVariants = {
     hidden: { opacity: 0, y: 8 },
-    visible: { opacity: 1, y: 0, transition: { duration: 0.5 } },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: { duration: 0.5 },
+    },
   };
 
   const handleSearch = () => {
@@ -36,24 +37,30 @@ export default function Home() {
   };
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
-    if (e.key === "Enter") handleSearch();
+    if (e.key === "Enter") {
+      handleSearch();
+    }
   };
 
   return (
     <div className="min-h-screen bg-background text-foreground">
-
-      <nav className="fixed top-0 w-full bg-background/90 backdrop-blur-md z-50 border-b border-border/15">
+      <nav className="fixed top-0 w-full bg-background/95 backdrop-blur-sm z-50 border-b border-border/20">
         <div className="container mx-auto px-6 py-4 flex justify-between items-center">
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.6 }}
-            className="text-xs tracking-[0.18em] font-light cursor-pointer"
-            style={{ fontFamily: "'Inter', sans-serif", fontWeight: 300 }}
+            className="text-sm font-extralight tracking-normal cursor-pointer"
+            style={{
+              fontFamily: "'SF Pro Rounded', -apple-system, BlinkMacSystemFont, sans-serif",
+              letterSpacing: "0.15em",
+              fontWeight: 300,
+            }}
             onClick={() => setLocation("/")}
           >
             EXACT
           </motion.div>
+
           <div className="flex gap-10 items-center">
             <a href="/imoveis" className="text-xs font-light text-muted-foreground hover:text-foreground transition-colors duration-300 tracking-wide">
               Imóveis
@@ -81,7 +88,7 @@ export default function Home() {
       <section className="relative min-h-screen flex items-end justify-start overflow-hidden">
         <div
           className="absolute inset-0 bg-cover bg-center"
-          style={{ backgroundImage: `url(${HERO_IMAGE})` }}
+          style={{ backgroundImage: "url(https://d2xsxph8kpxj0f.cloudfront.net/310519663481007953/48chfHstyxneY6QiBvkAHj/cityscape-background-MLhhLWwxT5jepc8AoTEKAL.webp)" }}
         />
         <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/40 to-black/20" />
         <motion.div
@@ -130,7 +137,7 @@ export default function Home() {
         </motion.div>
       </section>
 
-      <section className="py-24 bg-background border-t border-border/15">
+      <section id="search" className="py-20 bg-background border-t border-border/20">
         <div className="container mx-auto px-6">
           <motion.div
             className="grid md:grid-cols-2 gap-12"
@@ -152,8 +159,8 @@ export default function Home() {
                   className="w-full h-full object-cover group-hover:opacity-90 transition-opacity duration-500"
                 />
               </div>
-              <div className="space-y-2">
-                <h3 className="text-base font-light tracking-tight">Locação</h3>
+              <div className="space-y-3">
+                <h3 className="text-lg font-light tracking-tight">Locação</h3>
                 <p className="text-xs text-muted-foreground font-light leading-relaxed">
                   Imóveis selecionados para locação direta.
                 </p>
@@ -173,8 +180,8 @@ export default function Home() {
                   className="w-full h-full object-cover group-hover:opacity-90 transition-opacity duration-500"
                 />
               </div>
-              <div className="space-y-2">
-                <h3 className="text-base font-light tracking-tight">Aquisição</h3>
+              <div className="space-y-3">
+                <h3 className="text-lg font-light tracking-tight">Aquisição</h3>
                 <p className="text-xs text-muted-foreground font-light leading-relaxed">
                   Aquisição de imóveis com análise e curadoria.
                 </p>
@@ -184,7 +191,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="py-16 bg-background border-t border-border/15">
+      <section className="py-0 bg-background border-t-0">
         <div className="container mx-auto px-6">
           <motion.div
             className="max-w-2xl mx-auto"
@@ -193,9 +200,12 @@ export default function Home() {
             viewport={{ once: true, margin: "-100px" }}
             variants={{ visible: { transition: { staggerChildren: 0.1 } } }}
           >
-            <motion.div variants={itemVariants} className="mb-7">
-              <h2 className="text-base font-light tracking-tight">Buscar por Código</h2>
+            <motion.div variants={itemVariants} className="mb-8">
+              <h2 className="text-lg font-light tracking-tight mb-6">
+                Buscar por Código
+              </h2>
             </motion.div>
+
             <motion.div variants={itemVariants} className="flex gap-3">
               <div className="flex-1 relative">
                 <input
@@ -206,7 +216,10 @@ export default function Home() {
                   onKeyPress={handleKeyPress}
                   className="w-full px-4 py-3 bg-muted/20 border border-border/40 hover:border-border/60 focus:border-border/80 rounded-sm text-foreground placeholder-muted-foreground focus:outline-none transition-all duration-300 text-xs font-light"
                 />
-                <Search size={14} className="absolute right-4 top-1/2 -translate-y-1/2 text-muted-foreground pointer-events-none" />
+                <Search
+                  size={16}
+                  className="absolute right-4 top-1/2 -translate-y-1/2 text-muted-foreground pointer-events-none"
+                />
               </div>
               <motion.button
                 whileHover={{ scale: 1.01 }}
@@ -221,7 +234,7 @@ export default function Home() {
         </div>
       </section>
 
-      <footer className="bg-background border-t border-border/15 py-24">
+      <footer id="contact" className="bg-background border-t border-border/20 py-24">
         <div className="container mx-auto px-6">
           <div className="grid md:grid-cols-4 gap-20 mb-20">
             <motion.div
@@ -230,67 +243,85 @@ export default function Home() {
               transition={{ duration: 0.6 }}
               viewport={{ once: true }}
             >
-              <h3 className="text-xs font-light mb-6 tracking-[0.18em]">EXACT</h3>
+              <h3
+                className="text-sm font-extralight mb-6 tracking-normal"
+                style={{
+                  fontFamily: "'SF Pro Rounded', -apple-system, BlinkMacSystemFont, sans-serif",
+                  letterSpacing: "0.15em",
+                  fontWeight: 300,
+                }}
+              >
+                EXACT
+              </h3>
               <p className="text-xs text-muted-foreground font-light leading-relaxed">
                 Curadoria imobiliária com análise precisa.
               </p>
             </motion.div>
+
             <motion.div
               initial={{ opacity: 0 }}
               whileInView={{ opacity: 1 }}
               transition={{ duration: 0.6, delay: 0.05 }}
               viewport={{ once: true }}
             >
-              <h4 className="font-light text-xs mb-6 tracking-wide text-muted-foreground">Navegação</h4>
+              <h4 className="font-light text-xs mb-6 tracking-wide text-muted-foreground">
+                Navegação
+              </h4>
               <ul className="space-y-3 text-xs text-muted-foreground">
                 <li><a href="/imoveis" className="hover:text-foreground transition-colors duration-300 font-light">Imóveis</a></li>
                 <li><a href="/sobre" className="hover:text-foreground transition-colors duration-300 font-light">Sobre</a></li>
                 <li><a href="/contato" className="hover:text-foreground transition-colors duration-300 font-light">Contato</a></li>
               </ul>
             </motion.div>
+
             <motion.div
               initial={{ opacity: 0 }}
               whileInView={{ opacity: 1 }}
               transition={{ duration: 0.6, delay: 0.1 }}
               viewport={{ once: true }}
             >
-              <h4 className="font-light text-xs mb-6 tracking-wide text-muted-foreground">Contato</h4>
+              <h4 className="font-light text-xs mb-6 tracking-wide text-muted-foreground">
+                Contato
+              </h4>
               <ul className="space-y-3 text-xs text-muted-foreground">
                 <li className="flex items-center gap-2">
-                  <Phone size={12} />
+                  <Phone size={12} className="text-muted-foreground" />
                   <a href={whatsappLink} target="_blank" rel="noopener noreferrer" className="hover:text-foreground transition-colors duration-300 font-light">
                     (41) 99972-3780
                   </a>
                 </li>
                 <li className="flex items-center gap-2">
-                  <Mail size={12} />
+                  <Mail size={12} className="text-muted-foreground" />
                   <a href="mailto:contato@exactbr.com" className="hover:text-foreground transition-colors duration-300 font-light">
                     contato@exactbr.com
                   </a>
                 </li>
               </ul>
             </motion.div>
+
             <motion.div
               initial={{ opacity: 0 }}
               whileInView={{ opacity: 1 }}
               transition={{ duration: 0.6, delay: 0.15 }}
               viewport={{ once: true }}
             >
-              <h4 className="font-light text-xs mb-6 tracking-wide text-muted-foreground">Localização</h4>
+              <h4 className="font-light text-xs mb-6 tracking-wide text-muted-foreground">
+                Localização
+              </h4>
               <ul className="space-y-3 text-xs text-muted-foreground">
                 <li className="flex items-center gap-2">
-                  <MapPinIcon size={12} />
+                  <MapPinIcon size={12} className="text-muted-foreground" />
                   <span className="font-light">Curitiba, PR</span>
                 </li>
               </ul>
             </motion.div>
           </div>
-          <div className="border-t border-border/15 pt-12 text-center text-xs text-muted-foreground font-light">
+
+          <div className="border-t border-border/20 pt-12 text-center text-xs text-muted-foreground font-light">
             <p>&copy; 2026 EXACT. Todos os direitos reservados.</p>
           </div>
         </div>
       </footer>
-
     </div>
   );
 }
