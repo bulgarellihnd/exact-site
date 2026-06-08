@@ -8,6 +8,14 @@ import { toast } from "sonner";
 const whatsappLink =
   "https://wa.me/5541999723780?text=Ol%C3%A1.%20Tenho%20interesse%20em%20um%20im%C3%B3vel%20da%20EXACT%20e%20gostaria%20de%20mais%20informa%C3%A7%C3%B5es.";
 
+const exactLogoStyle = {
+  fontFamily: "'Raleway', sans-serif",
+  fontSize: "1.55rem",
+  fontWeight: 300,
+  letterSpacing: "0.035em",
+  lineHeight: 1,
+};
+
 export default function Home() {
   const [searchCode, setSearchCode] = useState("");
   const [, setLocation] = useLocation();
@@ -39,7 +47,7 @@ export default function Home() {
     }
   };
 
-  const handleKeyPress = (e: React.KeyboardEvent) => {
+  const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
       handleSearch();
     }
@@ -53,13 +61,8 @@ export default function Home() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.6 }}
-            className="text-sm font-extralight tracking-normal cursor-pointer"
-            style={{
-              fontFamily:
-                "'SF Pro Rounded', -apple-system, BlinkMacSystemFont, sans-serif",
-              letterSpacing: "0.15em",
-              fontWeight: 300,
-            }}
+            className="cursor-pointer text-foreground"
+            style={exactLogoStyle}
             onClick={() => setLocation("/")}
           >
             EXACT
@@ -98,7 +101,7 @@ export default function Home() {
         </div>
       </nav>
 
-      <section className="relative min-h-screen flex items-start justify-center overflow-hidden bg-[#080b10]">
+      <section className="relative min-h-screen flex items-start justify-center overflow-hidden bg-background">
         <motion.div
           className="relative z-10 container mx-auto px-6 w-full text-center pt-[118px] md:pt-[132px]"
           initial={{ opacity: 0, y: 16 }}
@@ -226,7 +229,7 @@ export default function Home() {
                   placeholder="Digite o código do imóvel"
                   value={searchCode}
                   onChange={(e) => setSearchCode(e.target.value)}
-                  onKeyPress={handleKeyPress}
+                  onKeyDown={handleKeyPress}
                   className="w-full px-4 py-3 bg-muted/20 border border-border/40 hover:border-border/60 focus:border-border/80 rounded-sm text-foreground placeholder-muted-foreground focus:outline-none transition-all duration-300 text-xs font-light"
                 />
                 <Search
@@ -257,17 +260,10 @@ export default function Home() {
               transition={{ duration: 0.6 }}
               viewport={{ once: true }}
             >
-              <h3
-                className="text-sm font-extralight mb-6 tracking-normal"
-                style={{
-                  fontFamily:
-                    "'SF Pro Rounded', -apple-system, BlinkMacSystemFont, sans-serif",
-                  letterSpacing: "0.15em",
-                  fontWeight: 300,
-                }}
-              >
+              <h3 className="mb-6 text-foreground" style={exactLogoStyle}>
                 EXACT
               </h3>
+
               <p className="text-xs text-muted-foreground font-light leading-relaxed">
                 Curadoria imobiliária com análise precisa.
               </p>
