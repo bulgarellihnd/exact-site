@@ -12,7 +12,7 @@ const exactLogoStyle = {
   fontFamily: "'Raleway', sans-serif",
   fontSize: "1.28rem",
   fontWeight: 300,
-  letterSpacing: "0.09em",
+  letterSpacing: "0.098em",
   lineHeight: 1,
 };
 
