@@ -1,7 +1,4 @@
-// Home.tsx
-// Substitua o arquivo inteiro por este código.
-
-import { Search, Phone, Mail, MapPinIcon, Menu, X } from "lucide-react";
+import { Search, Phone, Mail, MapPinIcon } from "lucide-react";
 import { motion } from "framer-motion";
 import { useState } from "react";
 import { useLocation } from "wouter";
@@ -13,7 +10,6 @@ const whatsappLink =
 
 export default function Home() {
   const [searchCode, setSearchCode] = useState("");
-  const [menuOpen, setMenuOpen] = useState(false);
   const [, setLocation] = useLocation();
 
   const itemVariants = {
@@ -43,13 +39,10 @@ export default function Home() {
     }
   };
 
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "Enter") handleSearch();
-  };
-
-  const goTo = (path: string) => {
-    setMenuOpen(false);
-    setLocation(path);
+  const handleKeyPress = (e: React.KeyboardEvent) => {
+    if (e.key === "Enter") {
+      handleSearch();
+    }
   };
 
   return (
@@ -67,33 +60,30 @@ export default function Home() {
               letterSpacing: "0.15em",
               fontWeight: 300,
             }}
-            onClick={() => goTo("/")}
+            onClick={() => setLocation("/")}
           >
             EXACT
           </motion.div>
 
-          <div className="hidden md:flex gap-10 items-center">
-            <button
-              onClick={() => goTo("/imoveis")}
+          <div className="flex gap-10 items-center">
+            <a
+              href="/imoveis"
               className="text-xs font-light text-muted-foreground hover:text-foreground transition-colors duration-300 tracking-wide"
             >
               Imóveis
-            </button>
-
-            <button
-              onClick={() => goTo("/sobre")}
+            </a>
+            <a
+              href="/sobre"
               className="text-xs font-light text-muted-foreground hover:text-foreground transition-colors duration-300 tracking-wide"
             >
               Sobre
-            </button>
-
-            <button
-              onClick={() => goTo("/contato")}
+            </a>
+            <a
+              href="/contato"
               className="text-xs font-light text-muted-foreground hover:text-foreground transition-colors duration-300 tracking-wide"
             >
               Contato
-            </button>
-
+            </a>
             <motion.a
               href={whatsappLink}
               target="_blank"
@@ -105,62 +95,18 @@ export default function Home() {
               Atendimento Direto
             </motion.a>
           </div>
-
-          <button
-            className="md:hidden text-muted-foreground"
-            onClick={() => setMenuOpen((value) => !value)}
-            aria-label="Abrir menu"
-          >
-            {menuOpen ? <X size={20} /> : <Menu size={20} />}
-          </button>
         </div>
-
-        {menuOpen && (
-          <div className="md:hidden border-t border-border/20 bg-background">
-            <div className="container mx-auto px-6 py-5 flex flex-col gap-5">
-              <button
-                onClick={() => goTo("/imoveis")}
-                className="text-left text-xs font-light text-muted-foreground tracking-wide"
-              >
-                Imóveis
-              </button>
-
-              <button
-                onClick={() => goTo("/sobre")}
-                className="text-left text-xs font-light text-muted-foreground tracking-wide"
-              >
-                Sobre
-              </button>
-
-              <button
-                onClick={() => goTo("/contato")}
-                className="text-left text-xs font-light text-muted-foreground tracking-wide"
-              >
-                Contato
-              </button>
-
-              <a
-                href={whatsappLink}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-xs font-light text-muted-foreground tracking-wide border border-border/40 px-4 py-3 rounded-sm w-fit"
-              >
-                Atendimento Direto
-              </a>
-            </div>
-          </div>
-        )}
       </nav>
 
-      <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-[#141414]">
+      <section className="relative min-h-screen flex items-start justify-center overflow-hidden bg-[#080b10]">
         <motion.div
-          className="relative z-10 container mx-auto px-6 w-full text-center"
+          className="relative z-10 container mx-auto px-6 w-full text-center pt-[118px] md:pt-[132px]"
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 1, delay: 0.2 }}
         >
           <motion.p
-            className="text-[10px] font-light tracking-[0.32em] text-white/45 uppercase mb-5"
+            className="text-[10px] font-light tracking-[0.32em] text-white/45 uppercase mb-[265px] md:mb-[285px]"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.4, duration: 0.8 }}
@@ -169,7 +115,7 @@ export default function Home() {
           </motion.p>
 
           <motion.p
-            className="text-[22px] md:text-[28px] font-light tracking-wide text-white/90 mb-10 leading-snug"
+            className="text-[22px] md:text-[28px] font-light tracking-wide text-white/90 mb-12 leading-snug"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.55, duration: 0.8 }}
@@ -178,17 +124,17 @@ export default function Home() {
           </motion.p>
 
           <motion.div
-            className="flex gap-4 md:gap-6 flex-wrap justify-center"
+            className="flex gap-6 flex-wrap justify-center"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.7, duration: 0.8 }}
           >
-            <button
-              onClick={() => goTo("/imoveis")}
+            <a
+              href="/imoveis"
               className="inline-flex items-center justify-center border border-white/25 hover:border-white/50 px-6 py-3 text-white/80 hover:text-white text-[11px] font-light rounded-sm transition-all duration-300 tracking-[0.2em] uppercase"
             >
-              Ver imóveis
-            </button>
+              VER IMÓVEIS
+            </a>
 
             <a
               href={whatsappLink}
@@ -196,7 +142,7 @@ export default function Home() {
               rel="noopener noreferrer"
               className="inline-flex items-center justify-center border border-white/25 hover:border-white/50 px-6 py-3 text-white/80 hover:text-white text-[11px] font-light rounded-sm transition-all duration-300 tracking-[0.2em] uppercase"
             >
-              Falar com a EXACT
+              FALAR COM A EXACT
             </a>
           </motion.div>
         </motion.div>
@@ -211,16 +157,16 @@ export default function Home() {
             viewport={{ once: true, margin: "-100px" }}
             variants={{ visible: { transition: { staggerChildren: 0.1 } } }}
           >
-            <motion.button
-              onClick={() => goTo("/imoveis?tipo=locacao")}
+            <motion.a
+              href="/imoveis?tipo=locacao"
               variants={itemVariants}
-              className="group cursor-pointer block text-left"
+              className="group cursor-pointer block"
               whileHover={{ y: -2 }}
             >
               <div className="relative overflow-hidden mb-6 h-72 rounded-sm bg-muted/30 border border-border/20 hover:border-border/40 transition-all duration-500">
                 <img
                   src="https://d2xsxph8kpxj0f.cloudfront.net/310519663481007953/48chfHstyxneY6QiBvkAHj/locacao-premium-SB8T9CyMbLswg9r3drbTXh.webp"
-                  alt="Locação"
+                  alt="Locação Premium"
                   className="w-full h-full object-cover group-hover:opacity-90 transition-opacity duration-500"
                 />
               </div>
@@ -231,18 +177,18 @@ export default function Home() {
                   Imóveis selecionados para locação direta.
                 </p>
               </div>
-            </motion.button>
+            </motion.a>
 
-            <motion.button
-              onClick={() => goTo("/imoveis?tipo=aquisicao")}
+            <motion.a
+              href="/imoveis?tipo=aquisicao"
               variants={itemVariants}
-              className="group cursor-pointer block text-left"
+              className="group cursor-pointer block"
               whileHover={{ y: -2 }}
             >
               <div className="relative overflow-hidden mb-6 h-72 rounded-sm bg-muted/30 border border-border/20 hover:border-border/40 transition-all duration-500">
                 <img
                   src="https://d2xsxph8kpxj0f.cloudfront.net/310519663481007953/48chfHstyxneY6QiBvkAHj/aquisicao-premium-jDyVv7f4YExbawLTYJ3kud.webp"
-                  alt="Aquisição"
+                  alt="Aquisição Premium"
                   className="w-full h-full object-cover group-hover:opacity-90 transition-opacity duration-500"
                 />
               </div>
@@ -253,12 +199,12 @@ export default function Home() {
                   Aquisição de imóveis com análise e curadoria.
                 </p>
               </div>
-            </motion.button>
+            </motion.a>
           </motion.div>
         </div>
       </section>
 
-      <section className="pb-20 bg-background">
+      <section className="py-0 bg-background border-t-0">
         <div className="container mx-auto px-6">
           <motion.div
             className="max-w-2xl mx-auto"
@@ -273,20 +219,16 @@ export default function Home() {
               </h2>
             </motion.div>
 
-            <motion.div
-              variants={itemVariants}
-              className="flex flex-col sm:flex-row gap-3"
-            >
+            <motion.div variants={itemVariants} className="flex gap-3">
               <div className="flex-1 relative">
                 <input
                   type="text"
                   placeholder="Digite o código do imóvel"
                   value={searchCode}
                   onChange={(e) => setSearchCode(e.target.value)}
-                  onKeyDown={handleKeyDown}
+                  onKeyPress={handleKeyPress}
                   className="w-full px-4 py-3 bg-muted/20 border border-border/40 hover:border-border/60 focus:border-border/80 rounded-sm text-foreground placeholder-muted-foreground focus:outline-none transition-all duration-300 text-xs font-light"
                 />
-
                 <Search
                   size={16}
                   className="absolute right-4 top-1/2 -translate-y-1/2 text-muted-foreground pointer-events-none"
@@ -308,7 +250,7 @@ export default function Home() {
 
       <footer id="contact" className="bg-background border-t border-border/20 py-24">
         <div className="container mx-auto px-6">
-          <div className="grid md:grid-cols-4 gap-12 md:gap-20 mb-20">
+          <div className="grid md:grid-cols-4 gap-20 mb-20">
             <motion.div
               initial={{ opacity: 0 }}
               whileInView={{ opacity: 1 }}
@@ -326,7 +268,6 @@ export default function Home() {
               >
                 EXACT
               </h3>
-
               <p className="text-xs text-muted-foreground font-light leading-relaxed">
                 Curadoria imobiliária com análise precisa.
               </p>
@@ -341,33 +282,30 @@ export default function Home() {
               <h4 className="font-light text-xs mb-6 tracking-wide text-muted-foreground">
                 Navegação
               </h4>
-
               <ul className="space-y-3 text-xs text-muted-foreground">
                 <li>
-                  <button
-                    onClick={() => goTo("/imoveis")}
+                  <a
+                    href="/imoveis"
                     className="hover:text-foreground transition-colors duration-300 font-light"
                   >
                     Imóveis
-                  </button>
+                  </a>
                 </li>
-
                 <li>
-                  <button
-                    onClick={() => goTo("/sobre")}
+                  <a
+                    href="/sobre"
                     className="hover:text-foreground transition-colors duration-300 font-light"
                   >
                     Sobre
-                  </button>
+                  </a>
                 </li>
-
                 <li>
-                  <button
-                    onClick={() => goTo("/contato")}
+                  <a
+                    href="/contato"
                     className="hover:text-foreground transition-colors duration-300 font-light"
                   >
                     Contato
-                  </button>
+                  </a>
                 </li>
               </ul>
             </motion.div>
@@ -381,7 +319,6 @@ export default function Home() {
               <h4 className="font-light text-xs mb-6 tracking-wide text-muted-foreground">
                 Contato
               </h4>
-
               <ul className="space-y-3 text-xs text-muted-foreground">
                 <li className="flex items-center gap-2">
                   <Phone size={12} className="text-muted-foreground" />
@@ -394,7 +331,6 @@ export default function Home() {
                     (41) 99972-3780
                   </a>
                 </li>
-
                 <li className="flex items-center gap-2">
                   <Mail size={12} className="text-muted-foreground" />
                   <a
@@ -416,7 +352,6 @@ export default function Home() {
               <h4 className="font-light text-xs mb-6 tracking-wide text-muted-foreground">
                 Localização
               </h4>
-
               <ul className="space-y-3 text-xs text-muted-foreground">
                 <li className="flex items-center gap-2">
                   <MapPinIcon size={12} className="text-muted-foreground" />
