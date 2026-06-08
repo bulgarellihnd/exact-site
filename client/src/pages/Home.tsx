@@ -136,7 +136,6 @@ export default function Home() {
   </a>
 </motion.div>
           </motion.div>
-        </motion.div>
       </section>
 
       <section id="search" className="py-20 bg-background border-t border-border/20">
