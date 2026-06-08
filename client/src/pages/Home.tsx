@@ -114,25 +114,27 @@ export default function Home() {
             Só o que importa.
           </motion.p>
           <motion.div
-            className="flex gap-6 flex-wrap"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.7, duration: 0.8 }}
-          >
-            
-              href="/imoveis"
-              className="inline-flex items-center justify-center border border-white/25 hover:border-white/50 px-6 py-3 text-white/80 hover:text-white text-[11px] font-light rounded-sm transition-all duration-300 tracking-[0.2em] uppercase"
-            >
-              VER IMÓVEIS
-            </a>
-            
-              href={whatsappLink}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center justify-center border border-white/25 hover:border-white/50 px-6 py-3 text-white/80 hover:text-white text-[11px] font-light rounded-sm transition-all duration-300 tracking-[0.2em] uppercase"
-            >
-              FALAR COM A EXACT
-            </a>
+  className="flex gap-6 flex-wrap"
+  initial={{ opacity: 0 }}
+  animate={{ opacity: 1 }}
+  transition={{ delay: 0.7, duration: 0.8 }}
+>
+  <a
+    href="/imoveis"
+    className="inline-flex items-center justify-center border border-white/25 hover:border-white/50 px-6 py-3 text-white/80 hover:text-white text-[11px] font-light rounded-sm transition-all duration-300 tracking-[0.2em] uppercase"
+  >
+    VER IMÓVEIS
+  </a>
+
+  <a
+    href={whatsappLink}
+    target="_blank"
+    rel="noopener noreferrer"
+    className="inline-flex items-center justify-center border border-white/25 hover:border-white/50 px-6 py-3 text-white/80 hover:text-white text-[11px] font-light rounded-sm transition-all duration-300 tracking-[0.2em] uppercase"
+  >
+    FALAR COM A EXACT
+  </a>
+</motion.div>
           </motion.div>
         </motion.div>
       </section>
