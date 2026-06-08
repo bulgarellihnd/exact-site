@@ -10,9 +10,9 @@ const whatsappLink =
 
 const exactLogoStyle = {
   fontFamily: "'Raleway', sans-serif",
-  fontSize: "1.55rem",
+  fontSize: "1.28rem",
   fontWeight: 300,
-  letterSpacing: "0.035em",
+  letterSpacing: "0.01em",
   lineHeight: 1,
 };
 
