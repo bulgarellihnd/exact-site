@@ -23,11 +23,14 @@ export default function Home() {
 
   const handleSearch = () => {
     const trimmedCode = searchCode.trim().toUpperCase();
+
     if (!trimmedCode) {
       toast.error("Digite um código para buscar");
       return;
     }
+
     const property = properties.find((p) => p.code === trimmedCode);
+
     if (property) {
       setSearchCode("");
       setLocation(`/imoveis/${property.id}`);
@@ -52,7 +55,8 @@ export default function Home() {
             transition={{ duration: 0.6 }}
             className="text-sm font-extralight tracking-normal cursor-pointer"
             style={{
-              fontFamily: "'SF Pro Rounded', -apple-system, BlinkMacSystemFont, sans-serif",
+              fontFamily:
+                "'SF Pro Rounded', -apple-system, BlinkMacSystemFont, sans-serif",
               letterSpacing: "0.15em",
               fontWeight: 300,
             }}
@@ -62,13 +66,22 @@ export default function Home() {
           </motion.div>
 
           <div className="flex gap-10 items-center">
-            <a href="/imoveis" className="text-xs font-light text-muted-foreground hover:text-foreground transition-colors duration-300 tracking-wide">
+            <a
+              href="/imoveis"
+              className="text-xs font-light text-muted-foreground hover:text-foreground transition-colors duration-300 tracking-wide"
+            >
               Imóveis
             </a>
-            <a href="/sobre" className="text-xs font-light text-muted-foreground hover:text-foreground transition-colors duration-300 tracking-wide">
+            <a
+              href="/sobre"
+              className="text-xs font-light text-muted-foreground hover:text-foreground transition-colors duration-300 tracking-wide"
+            >
               Sobre
             </a>
-            <a href="/contato" className="text-xs font-light text-muted-foreground hover:text-foreground transition-colors duration-300 tracking-wide">
+            <a
+              href="/contato"
+              className="text-xs font-light text-muted-foreground hover:text-foreground transition-colors duration-300 tracking-wide"
+            >
               Contato
             </a>
             <motion.a
@@ -85,14 +98,9 @@ export default function Home() {
         </div>
       </nav>
 
-      <section className="relative min-h-screen flex items-end justify-start overflow-hidden">
-        <div
-          className="absolute inset-0 bg-cover bg-center"
-          style={{ backgroundImage: "url(https://d2xsxph8kpxj0f.cloudfront.net/310519663481007953/48chfHstyxneY6QiBvkAHj/cityscape-background-MLhhLWwxT5jepc8AoTEKAL.webp)" }}
-        />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/40 to-black/20" />
+      <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-[#141414]">
         <motion.div
-          className="relative z-10 container mx-auto px-6 pb-20 w-full"
+          className="relative z-10 container mx-auto px-6 w-full text-center"
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 1, delay: 0.2 }}
@@ -105,6 +113,7 @@ export default function Home() {
           >
             SELEÇÃO IMOBILIÁRIA · CURITIBA
           </motion.p>
+
           <motion.p
             className="text-[22px] md:text-[28px] font-light tracking-wide text-white/90 mb-10 leading-snug"
             initial={{ opacity: 0 }}
@@ -113,29 +122,30 @@ export default function Home() {
           >
             Só o que importa.
           </motion.p>
-          <motion.div
-  className="flex gap-6 flex-wrap"
-  initial={{ opacity: 0 }}
-  animate={{ opacity: 1 }}
-  transition={{ delay: 0.7, duration: 0.8 }}
->
-  <a
-    href="/imoveis"
-    className="inline-flex items-center justify-center border border-white/25 hover:border-white/50 px-6 py-3 text-white/80 hover:text-white text-[11px] font-light rounded-sm transition-all duration-300 tracking-[0.2em] uppercase"
-  >
-    VER IMÓVEIS
-  </a>
 
-  <a
-    href={whatsappLink}
-    target="_blank"
-    rel="noopener noreferrer"
-    className="inline-flex items-center justify-center border border-white/25 hover:border-white/50 px-6 py-3 text-white/80 hover:text-white text-[11px] font-light rounded-sm transition-all duration-300 tracking-[0.2em] uppercase"
-  >
-    FALAR COM A EXACT
-  </a>
-</motion.div>
+          <motion.div
+            className="flex gap-6 flex-wrap justify-center"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.7, duration: 0.8 }}
+          >
+            <a
+              href="/imoveis"
+              className="inline-flex items-center justify-center border border-white/25 hover:border-white/50 px-6 py-3 text-white/80 hover:text-white text-[11px] font-light rounded-sm transition-all duration-300 tracking-[0.2em] uppercase"
+            >
+              VER IMÓVEIS
+            </a>
+
+            <a
+              href={whatsappLink}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center justify-center border border-white/25 hover:border-white/50 px-6 py-3 text-white/80 hover:text-white text-[11px] font-light rounded-sm transition-all duration-300 tracking-[0.2em] uppercase"
+            >
+              FALAR COM A EXACT
+            </a>
           </motion.div>
+        </motion.div>
       </section>
 
       <section id="search" className="py-20 bg-background border-t border-border/20">
@@ -160,6 +170,7 @@ export default function Home() {
                   className="w-full h-full object-cover group-hover:opacity-90 transition-opacity duration-500"
                 />
               </div>
+
               <div className="space-y-3">
                 <h3 className="text-lg font-light tracking-tight">Locação</h3>
                 <p className="text-xs text-muted-foreground font-light leading-relaxed">
@@ -181,6 +192,7 @@ export default function Home() {
                   className="w-full h-full object-cover group-hover:opacity-90 transition-opacity duration-500"
                 />
               </div>
+
               <div className="space-y-3">
                 <h3 className="text-lg font-light tracking-tight">Aquisição</h3>
                 <p className="text-xs text-muted-foreground font-light leading-relaxed">
@@ -222,6 +234,7 @@ export default function Home() {
                   className="absolute right-4 top-1/2 -translate-y-1/2 text-muted-foreground pointer-events-none"
                 />
               </div>
+
               <motion.button
                 whileHover={{ scale: 1.01 }}
                 whileTap={{ scale: 0.99 }}
@@ -247,7 +260,8 @@ export default function Home() {
               <h3
                 className="text-sm font-extralight mb-6 tracking-normal"
                 style={{
-                  fontFamily: "'SF Pro Rounded', -apple-system, BlinkMacSystemFont, sans-serif",
+                  fontFamily:
+                    "'SF Pro Rounded', -apple-system, BlinkMacSystemFont, sans-serif",
                   letterSpacing: "0.15em",
                   fontWeight: 300,
                 }}
@@ -269,9 +283,30 @@ export default function Home() {
                 Navegação
               </h4>
               <ul className="space-y-3 text-xs text-muted-foreground">
-                <li><a href="/imoveis" className="hover:text-foreground transition-colors duration-300 font-light">Imóveis</a></li>
-                <li><a href="/sobre" className="hover:text-foreground transition-colors duration-300 font-light">Sobre</a></li>
-                <li><a href="/contato" className="hover:text-foreground transition-colors duration-300 font-light">Contato</a></li>
+                <li>
+                  <a
+                    href="/imoveis"
+                    className="hover:text-foreground transition-colors duration-300 font-light"
+                  >
+                    Imóveis
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href="/sobre"
+                    className="hover:text-foreground transition-colors duration-300 font-light"
+                  >
+                    Sobre
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href="/contato"
+                    className="hover:text-foreground transition-colors duration-300 font-light"
+                  >
+                    Contato
+                  </a>
+                </li>
               </ul>
             </motion.div>
 
@@ -287,13 +322,21 @@ export default function Home() {
               <ul className="space-y-3 text-xs text-muted-foreground">
                 <li className="flex items-center gap-2">
                   <Phone size={12} className="text-muted-foreground" />
-                  <a href={whatsappLink} target="_blank" rel="noopener noreferrer" className="hover:text-foreground transition-colors duration-300 font-light">
+                  <a
+                    href={whatsappLink}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="hover:text-foreground transition-colors duration-300 font-light"
+                  >
                     (41) 99972-3780
                   </a>
                 </li>
                 <li className="flex items-center gap-2">
                   <Mail size={12} className="text-muted-foreground" />
-                  <a href="mailto:contato@exactbr.com" className="hover:text-foreground transition-colors duration-300 font-light">
+                  <a
+                    href="mailto:contato@exactbr.com"
+                    className="hover:text-foreground transition-colors duration-300 font-light"
+                  >
                     contato@exactbr.com
                   </a>
                 </li>
