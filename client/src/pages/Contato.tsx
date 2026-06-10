@@ -1,11 +1,6 @@
 import { motion } from "framer-motion";
 import { useState } from "react";
-
-/**
- * EXACT - Página Contato
- * Design Philosophy: QUIET LUXURY
- * Formulário elegante com Nome + Telefone
- */
+import Header from "@/components/Header";
 
 export default function Contato() {
   const [formData, setFormData] = useState({
@@ -35,59 +30,7 @@ export default function Contato() {
 
   return (
     <div className="min-h-screen bg-background text-foreground">
-      <nav className="fixed top-0 w-full bg-background/95 backdrop-blur-sm z-50 border-b border-border/20">
-        <div className="container mx-auto px-6 py-4 flex justify-between items-center">
-          <motion.a
-            href="/"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.6 }}
-            className="text-sm font-extralight tracking-normal cursor-pointer"
-            style={{
-              fontFamily:
-                "'SF Pro Rounded', -apple-system, BlinkMacSystemFont, sans-serif",
-              letterSpacing: "0.15em",
-              fontWeight: 300,
-            }}
-          >
-            EXACT
-          </motion.a>
-
-          <div className="flex gap-10 items-center">
-            <a
-              href="/imoveis"
-              className="text-xs font-light text-muted-foreground hover:text-foreground transition-colors duration-300 tracking-wide"
-            >
-              Imóveis
-            </a>
-
-            <a
-              href="/sobre"
-              className="text-xs font-light text-muted-foreground hover:text-foreground transition-colors duration-300 tracking-wide"
-            >
-              Sobre
-            </a>
-
-            <a
-              href="/contato"
-              className="text-xs font-light text-foreground transition-colors duration-300 tracking-wide"
-            >
-              Contato
-            </a>
-
-            <motion.a
-              href="https://wa.me/5541999723780?text=Ol%C3%A1.%20Tenho%20interesse%20em%20um%20im%C3%B3vel%20da%20EXACT%20e%20gostaria%20de%20mais%20informa%C3%A7%C3%B5es."
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-xs font-light text-muted-foreground hover:text-foreground transition-colors duration-300 tracking-wide border border-border/40 hover:border-border/60 px-4 py-2 rounded-sm"
-              whileHover={{ scale: 1.01 }}
-              whileTap={{ scale: 0.99 }}
-            >
-              Atendimento Direto
-            </motion.a>
-          </div>
-        </div>
-      </nav>
+      <Header activePage="contato" />
 
       <section className="relative min-h-screen flex items-center justify-center pt-20 pb-20">
         <motion.div
@@ -201,14 +144,7 @@ export default function Contato() {
         <div className="container mx-auto px-6">
           <div className="grid md:grid-cols-4 gap-12 mb-12">
             <div>
-              <h4
-                className="text-xs font-light tracking-widest mb-6"
-                style={{
-                  fontFamily:
-                    "'SF Pro Rounded', -apple-system, BlinkMacSystemFont, sans-serif",
-                  letterSpacing: "0.15em",
-                }}
-              >
+              <h4 className="text-xs font-light tracking-widest mb-6">
                 EXACT
               </h4>
 
