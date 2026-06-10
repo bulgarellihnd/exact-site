@@ -2,15 +2,25 @@ import { motion } from "framer-motion";
 import { useState } from "react";
 import Header from "@/components/Header";
 
+const exactPageTitleStyle = {
+  fontFamily: "'Raleway', sans-serif",
+  fontSize: "5rem",
+  fontWeight: 300,
+  letterSpacing: "0.08em",
+  lineHeight: 1,
+};
+
 export default function Contato() {
   const [formData, setFormData] = useState({
     name: "",
     phone: "",
   });
+
   const [submitted, setSubmitted] = useState(false);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
+
     setFormData((prev) => ({
       ...prev,
       [name]: value,
@@ -39,18 +49,21 @@ export default function Contato() {
           animate={{ opacity: 1 }}
           transition={{ duration: 0.8 }}
         >
-          <p className="text-xs font-light tracking-widest text-muted-foreground mb-8">
-            ENTRE EM CONTATO
+          <p className="text-[10px] font-light tracking-[0.28em] text-muted-foreground/60 uppercase mb-12">
+            Entre em contato
           </p>
 
-          <h1
-            className="text-4xl md:text-5xl font-light mb-6 leading-tight tracking-tight"
-            style={{ fontFamily: "'Lato', sans-serif" }}
+          <motion.h1
+            className="mb-12 text-foreground/90"
+            style={exactPageTitleStyle}
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.1 }}
           >
-            Fale com a EXACT
-          </h1>
+            EXACT
+          </motion.h1>
 
-          <p className="text-base text-muted-foreground font-light leading-relaxed tracking-wide mb-12">
+          <p className="text-sm text-muted-foreground font-light leading-relaxed tracking-wide mb-12">
             Deixe seus dados para que possamos entrar em contato com você.
             Responderemos em breve.
           </p>
@@ -58,9 +71,9 @@ export default function Contato() {
           <motion.form
             onSubmit={handleSubmit}
             className="space-y-8"
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2, duration: 0.6 }}
+            transition={{ delay: 0.25, duration: 0.6 }}
           >
             <div>
               <label className="text-xs font-light tracking-widest text-muted-foreground block mb-3">
