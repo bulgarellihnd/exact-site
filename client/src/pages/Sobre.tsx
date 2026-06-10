@@ -4,6 +4,14 @@ import Header from "@/components/Header";
 const whatsappLink =
   "https://wa.me/5541999723780?text=Ol%C3%A1.%20Tenho%20interesse%20em%20um%20im%C3%B3vel%20da%20EXACT%20e%20gostaria%20de%20mais%20informa%C3%A7%C3%B5es.";
 
+const exactPageTitleStyle = {
+  fontFamily: "'Raleway', sans-serif",
+  fontSize: "5rem",
+  fontWeight: 300,
+  letterSpacing: "0.08em",
+  lineHeight: 1,
+};
+
 export default function Sobre() {
   return (
     <div className="min-h-screen bg-background text-foreground">
@@ -21,7 +29,8 @@ export default function Sobre() {
           </motion.p>
 
           <motion.h1
-            className="text-[64px] md:text-[80px] font-extralight mb-16 leading-none tracking-tight text-foreground/90"
+            className="mb-16 text-foreground/90"
+            style={exactPageTitleStyle}
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.2 }}
