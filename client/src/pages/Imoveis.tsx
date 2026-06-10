@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
 import { ChevronRight } from "lucide-react";
+import Header from "@/components/Header";
 
 const operationOptions = [
   { label: "Todos", value: "TODOS" },
@@ -174,42 +175,7 @@ export default function Imoveis() {
   return (
     <div className="min-h-screen bg-background text-foreground">
 
-      {/* NAV */}
-      <nav className="fixed top-0 w-full bg-background/90 backdrop-blur-md z-50 border-b border-border/15">
-        <div className="container mx-auto px-6 py-4 flex justify-between items-center">
-          <motion.a
-            href="/"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.6 }}
-            className="text-xs tracking-[0.18em] font-light cursor-pointer"
-            style={{ fontFamily: "'Inter', sans-serif", fontWeight: 300 }}
-          >
-            EXACT
-          </motion.a>
-          <div className="flex gap-10 items-center">
-            <a href="/imoveis" className="text-xs font-light text-foreground tracking-wide border-b border-foreground/40 pb-px">
-              Imóveis
-            </a>
-            <a href="/sobre" className="text-xs font-light text-muted-foreground hover:text-foreground transition-colors duration-300 tracking-wide">
-              Sobre
-            </a>
-            <a href="/contato" className="text-xs font-light text-muted-foreground hover:text-foreground transition-colors duration-300 tracking-wide">
-              Contato
-            </a>
-            <motion.a
-              href={whatsappLink}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-xs font-light text-muted-foreground hover:text-foreground transition-colors duration-300 tracking-wide border border-border/40 hover:border-border/60 px-4 py-2 rounded-sm"
-              whileHover={{ scale: 1.01 }}
-              whileTap={{ scale: 0.99 }}
-            >
-              Atendimento Direto
-            </motion.a>
-          </div>
-        </div>
-      </nav>
+      <Header activePage="imoveis" />
 
       {/* HERO */}
       <section
