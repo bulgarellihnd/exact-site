@@ -4,7 +4,7 @@ import Header from "@/components/Header";
 
 const exactPageTitleStyle = {
   fontFamily: "'Montserrat', sans-serif",
-  fontSize: "4.2rem",
+  fontSize: "4.25rem",
   fontWeight: 200,
   letterSpacing: "0.04em",
   lineHeight: 1,
