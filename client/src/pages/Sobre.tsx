@@ -5,9 +5,9 @@ const whatsappLink =
   "https://wa.me/5541999723780?text=Ol%C3%A1.%20Tenho%20interesse%20em%20um%20im%C3%B3vel%20da%20EXACT%20e%20gostaria%20de%20mais%20informa%C3%A7%C3%B5es.";
 
 const exactPageTitleStyle = {
-  fontFamily: "'Avenir Next', 'Avenir', sans-serif",
+  fontFamily: "'Helvetica Neue', Arial, sans-serif",
   fontSize: "5rem",
-  fontWeight: 200,
+  fontWeight: 100,
   letterSpacing: "0.08em",
   lineHeight: 1,
 };
