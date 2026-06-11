@@ -3,10 +3,10 @@ import { useState } from "react";
 import Header from "@/components/Header";
 
 const exactPageTitleStyle = {
-  fontFamily: "'Raleway', sans-serif",
-  fontSize: "5rem",
-  fontWeight: 300,
-  letterSpacing: "0.08em",
+  fontFamily: "'Montserrat', sans-serif",
+  fontSize: "4.2rem",
+  fontWeight: 200,
+  letterSpacing: "0.04em",
   lineHeight: 1,
 };
 
