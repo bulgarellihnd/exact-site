@@ -2,8 +2,8 @@ import { Search, Phone, Mail, MapPinIcon } from "lucide-react";
 import { motion } from "framer-motion";
 import { useState } from "react";
 import { useLocation } from "wouter";
-import { properties } from "@/lib/properties";
 import { toast } from "sonner";
+import { supabase } from "@/lib/supabase";
 
 const whatsappLink =
   "https://wa.me/5541999723780?text=Ol%C3%A1.%20Tenho%20interesse%20em%20um%20im%C3%B3vel%20da%20EXACT%20e%20gostaria%20de%20mais%20informa%C3%A7%C3%B5es.";
@@ -18,6 +18,7 @@ const exactLogoStyle = {
 
 export default function Home() {
   const [searchCode, setSearchCode] = useState("");
+  const [isSearching, setIsSearching] = useState(false);
   const [, setLocation] = useLocation();
 
   const itemVariants = {
@@ -29,23 +30,33 @@ export default function Home() {
     },
   };
 
-  const handleSearch = () => {
-    const trimmedCode = searchCode.trim().toUpperCase();
+  async function handleSearch() {
+    const code = searchCode.trim();
 
-    if (!trimmedCode) {
+    if (!code) {
       toast.error("Digite um código para buscar");
       return;
     }
 
-    const property = properties.find((p) => p.code === trimmedCode);
+    setIsSearching(true);
 
-    if (property) {
-      setSearchCode("");
-      setLocation(`/imoveis/${property.id}`);
-    } else {
-      toast.error(`Imóvel com código "${trimmedCode}" não encontrado`);
+    const { data, error } = await supabase
+      .from("properties")
+      .select("id, slug, is_published")
+      .eq("property_code", code)
+      .eq("is_published", true)
+      .maybeSingle();
+
+    setIsSearching(false);
+
+    if (error || !data) {
+      toast.error(`Imóvel com código "${code}" não encontrado`);
+      return;
     }
-  };
+
+    setSearchCode("");
+    setLocation(`/imoveis/${data.slug || data.id}`);
+  }
 
   const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
@@ -242,9 +253,10 @@ export default function Home() {
                 whileHover={{ scale: 1.01 }}
                 whileTap={{ scale: 0.99 }}
                 onClick={handleSearch}
-                className="px-6 py-3 border border-foreground/40 hover:border-foreground/60 text-foreground rounded-sm font-light text-xs transition-all duration-300 tracking-wide"
+                disabled={isSearching}
+                className="px-6 py-3 border border-foreground/40 hover:border-foreground/60 text-foreground rounded-sm font-light text-xs transition-all duration-300 tracking-wide disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                Buscar
+                {isSearching ? "Buscando..." : "Buscar"}
               </motion.button>
             </motion.div>
           </motion.div>

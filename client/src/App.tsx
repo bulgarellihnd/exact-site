@@ -9,6 +9,7 @@ import Imoveis from "./pages/Imoveis";
 import Sobre from "./pages/Sobre";
 import Contato from "./pages/Contato";
 import PropertyDetail from "./pages/PropertyDetail";
+import Admin from "./pages/Admin";
 
 function Router() {
   return (
@@ -21,6 +22,7 @@ function Router() {
 
       <Route path="/imoveis" component={Imoveis} />
       <Route path="/imoveis/:id" component={PropertyDetail} />
+      <Route path="/admin" component={Admin} />
 
       <Route path="/sobre" component={Sobre} />
       <Route path="/contato" component={Contato} />

@@ -1,0 +1,18 @@
+export const propertyTypeOptions = [
+  { value: "APARTAMENTO", label: "Apartamento" },
+  { value: "COBERTURA", label: "Cobertura" },
+  { value: "STUDIO", label: "Studio" },
+  { value: "GARDEN", label: "Garden" },
+  { value: "LOFT", label: "Loft" },
+  { value: "CASA", label: "Casa" },
+  { value: "SOBRADO", label: "Sobrado" },
+  { value: "CASA_CONDOMINIO", label: "Casa em Condomínio" },
+  { value: "TERRENO", label: "Terreno" },
+  { value: "SALA_COMERCIAL", label: "Sala Comercial" },
+  { value: "CONJUNTO_COMERCIAL", label: "Conjunto Comercial" },
+  { value: "LOJA", label: "Loja" },
+  { value: "BARRACAO", label: "Barracão" },
+  { value: "FAZENDA", label: "Fazenda" },
+  { value: "CHACARA", label: "Chácara" },
+  { value: "SITIO", label: "Sítio" },
+] as const;
