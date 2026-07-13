@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useRoute } from "wouter";
 import {
   ChevronLeft,
@@ -47,6 +47,10 @@ export default function PropertyDetail() {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
   const [isLightboxOpen, setIsLightboxOpen] = useState(false);
+
+  const thumbnailStripRef = useRef<HTMLDivElement | null>(null);
+  const thumbnailButtonRefs = useRef<Array<HTMLButtonElement | null>>([]);
+  const preloadedImagesRef = useRef<Set<string>>(new Set());
 
   const currentImage = gallery[currentImageIndex];
 
@@ -134,6 +138,7 @@ export default function PropertyDetail() {
     };
   }, [isLightboxOpen]);
 
+
   useEffect(() => {
     if (gallery.length <= 1) return;
 
@@ -141,11 +146,58 @@ export default function PropertyDetail() {
     const previousIndex =
       (currentImageIndex - 1 + gallery.length) % gallery.length;
 
-    [nextIndex, previousIndex].forEach((index) => {
-      const image = new Image();
-      image.src = gallery[index];
-    });
+    const urlsToPreload = [gallery[nextIndex], gallery[previousIndex]].filter(
+      (url): url is string => Boolean(url)
+    );
+
+    const timeoutId = window.setTimeout(() => {
+      urlsToPreload.forEach((url) => {
+        if (preloadedImagesRef.current.has(url)) return;
+
+        preloadedImagesRef.current.add(url);
+
+        const image = new Image();
+        image.decoding = "async";
+        image.src = url;
+      });
+    }, 120);
+
+    return () => {
+      window.clearTimeout(timeoutId);
+    };
   }, [currentImageIndex, gallery]);
+
+  useEffect(() => {
+    if (!currentImage) return;
+    preloadedImagesRef.current.add(currentImage);
+  }, [currentImage]);
+
+  useEffect(() => {
+    const strip = thumbnailStripRef.current;
+    const selectedThumbnail = thumbnailButtonRefs.current[currentImageIndex];
+
+    if (!strip || !selectedThumbnail) return;
+
+    const thumbnailLeft = selectedThumbnail.offsetLeft;
+    const thumbnailRight = thumbnailLeft + selectedThumbnail.offsetWidth;
+    const visibleLeft = strip.scrollLeft;
+    const visibleRight = visibleLeft + strip.clientWidth;
+
+    if (thumbnailLeft < visibleLeft) {
+      strip.scrollTo({
+        left: Math.max(thumbnailLeft - 16, 0),
+        behavior: "smooth",
+      });
+      return;
+    }
+
+    if (thumbnailRight > visibleRight) {
+      strip.scrollTo({
+        left: thumbnailRight - strip.clientWidth + 16,
+        behavior: "smooth",
+      });
+    }
+  }, [currentImageIndex]);
 
   function nextImage() {
     if (gallery.length === 0) return;
@@ -218,25 +270,30 @@ export default function PropertyDetail() {
       <section className="w-full bg-background">
         <div className="relative h-screen w-full overflow-hidden bg-black">
           {currentImage ? (
-           <div
-  role="button"
-  tabIndex={0}
-  onClick={() => setIsLightboxOpen(true)}
-  onKeyDown={(event) => {
-    if (event.key === "Enter" || event.key === " ") {
-      setIsLightboxOpen(true);
-    }
-  }}
-  aria-label="Abrir galeria de imagens"
-  className="relative z-10 h-full w-full cursor-pointer overflow-hidden bg-black"
->
-  <img
-    key={currentImage}
-    src={currentImage}
-    alt={property.title ?? "Imagem do imóvel"}
-    className="h-full w-full object-cover object-center transition-opacity duration-500"
-  />
-</div>
+            <div
+              role="button"
+              tabIndex={0}
+              onClick={openLightbox}
+              onKeyDown={(event) => {
+                if (event.key === "Enter" || event.key === " ") {
+                  event.preventDefault();
+                  openLightbox();
+                }
+              }}
+              aria-label="Abrir galeria de imagens"
+              className="relative z-10 h-full w-full cursor-pointer overflow-hidden bg-black"
+            >
+              <img
+                key={currentImage}
+                src={currentImage}
+                alt={property.title ?? "Imagem do imóvel"}
+                loading="eager"
+                fetchPriority="high"
+                decoding="async"
+                draggable={false}
+                className="h-full w-full select-none object-cover object-center"
+              />
+            </div>
           ) : (
             <div className="flex h-full w-full items-center justify-center">
               <p className="text-sm text-white/50">Sem imagem</p>
@@ -255,7 +312,11 @@ export default function PropertyDetail() {
 
           <a
             href="/"
-            className="absolute right-6 top-6 z-50 px-3 py-2 text-sm tracking-[0.28em] text-[#FFFFFF] opacity-100 transition-colors hover:text-white md:right-10 md:top-8"
+            className="absolute right-6 top-6 z-50 px-3 py-2 text-sm tracking-[0.28em] text-white transition-opacity duration-300 hover:opacity-90 md:right-10 md:top-8"
+            style={{
+              filter: "drop-shadow(0 1px 3px rgba(0,0,0,0.35))",
+              textShadow: "0 1px 2px rgba(0,0,0,0.28), 0 0 6px rgba(255,255,255,0.10)",
+            }}
           >
             EXACT
           </a>
@@ -288,31 +349,46 @@ export default function PropertyDetail() {
         </div>
 
         {gallery.length > 1 && (
-          <div className="w-full border-b border-border/20 bg-background px-5 py-5">
-            <div className="mx-auto flex max-w-7xl items-center justify-start gap-2 overflow-x-auto md:justify-center">
-              {gallery.map((image, index) => (
-                <button
-                  key={`${image}-${index}`}
-                  type="button"
-                  onClick={() => selectImage(index)}
-                  aria-label={`Abrir foto ${index + 1}`}
-                  className={`relative h-[70px] w-[110px] shrink-0 overflow-hidden rounded-sm border transition-all duration-300 ${
-                    currentImageIndex === index
-                      ? "border-foreground opacity-100"
-                      : "border-border opacity-50 hover:border-foreground/40 hover:opacity-90"
-                  }`}
-                >
-                  <img
-                    src={image}
-                    alt={`Miniatura ${index + 1}`}
-                    className="h-full w-full object-cover"
-                  />
+          <div className="w-full border-b border-border/20 bg-background py-5">
+            <div className="w-full overflow-hidden">
+              <div
+                ref={thumbnailStripRef}
+                className="flex w-full justify-start gap-2 overflow-x-auto overscroll-x-contain px-4 pb-2 scroll-smooth md:px-8"
+              >
+                {gallery.map((image, index) => (
+                  <button
+                    key={`${image}-${index}`}
+                    ref={(element) => {
+                      thumbnailButtonRefs.current[index] = element;
+                    }}
+                    type="button"
+                    onClick={() => selectImage(index)}
+                    aria-label={`Abrir foto ${index + 1}`}
+                    aria-current={currentImageIndex === index ? "true" : undefined}
+                    className={`relative h-[70px] w-[110px] shrink-0 overflow-hidden rounded-sm border transition-all duration-300 ${
+                      currentImageIndex === index
+                        ? "border-foreground opacity-100"
+                        : "border-border opacity-50 hover:border-foreground/40 hover:opacity-90"
+                    }`}
+                  >
+                    <img
+                      src={image}
+                      alt={`Miniatura ${index + 1}`}
+                      loading="lazy"
+                      decoding="async"
+                      fetchPriority="low"
+                      width={110}
+                      height={70}
+                      draggable={false}
+                      className="h-full w-full select-none object-cover"
+                    />
 
-                  {currentImageIndex === index && (
-                    <div className="absolute bottom-0 left-0 h-[2px] w-full bg-foreground" />
-                  )}
-                </button>
-              ))}
+                    {currentImageIndex === index && (
+                      <div className="absolute bottom-0 left-0 h-[2px] w-full bg-foreground" />
+                    )}
+                  </button>
+                ))}
+              </div>
             </div>
           </div>
         )}
@@ -329,6 +405,8 @@ export default function PropertyDetail() {
             src={currentImage}
             alt=""
             aria-hidden="true"
+            loading="eager"
+            decoding="async"
             className="absolute inset-0 h-full w-full scale-110 object-cover object-center opacity-35 blur-xl"
           />
 
@@ -354,7 +432,11 @@ export default function PropertyDetail() {
             key={`lightbox-${currentImage}`}
             src={currentImage}
             alt={property.title ?? "Imagem ampliada do imóvel"}
-            className="relative z-[120] max-h-[84vh] max-w-[84vw] object-contain shadow-2xl"
+            loading="eager"
+            fetchPriority="high"
+            decoding="async"
+            draggable={false}
+            className="relative z-[120] max-h-[84vh] max-w-[84vw] select-none object-contain shadow-2xl"
           />
 
           {gallery.length > 1 && (
