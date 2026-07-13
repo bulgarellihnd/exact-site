@@ -8,12 +8,14 @@ import {
   Bath,
   Ruler,
   Car,
+  X,
 } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 import ShareButtons from "@/components/ShareButtons";
 
 type Property = {
   id: number;
+  property_code: string | null;
   title: string | null;
   slug: string | null;
   operation: string | null;
@@ -44,6 +46,9 @@ export default function PropertyDetail() {
   const [gallery, setGallery] = useState<string[]>([]);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
+  const [isLightboxOpen, setIsLightboxOpen] = useState(false);
+
+  const currentImage = gallery[currentImageIndex];
 
   useEffect(() => {
     async function loadProperty() {
@@ -59,17 +64,11 @@ export default function PropertyDetail() {
       let query = supabase
         .from("properties")
         .select(
-          "id, title, slug, operation, property_type, location, price, bedrooms, bathrooms, parking_spots, area, status, description, cover_image, is_published"
+          "id, property_code, title, slug, operation, property_type, location, price, bedrooms, bathrooms, parking_spots, area, status, description, cover_image, is_published"
         )
         .eq("is_published", true);
 
-      const numericId = Number(identifier);
-
-      if (!Number.isNaN(numericId)) {
-        query = query.eq("id", numericId);
-      } else {
-        query = query.eq("slug", identifier);
-      }
+      query = query.eq("property_code", identifier.toUpperCase());
 
       const { data: propertyData, error: propertyError } = await query.single();
 
@@ -106,6 +105,7 @@ export default function PropertyDetail() {
       setProperty(propertyData);
       setGallery(finalGallery);
       setCurrentImageIndex(0);
+      setIsLightboxOpen(false);
       setIsLoading(false);
     }
 
@@ -116,6 +116,7 @@ export default function PropertyDetail() {
     function handleKeyboardNavigation(event: KeyboardEvent) {
       if (event.key === "ArrowRight") nextImage();
       if (event.key === "ArrowLeft") prevImage();
+      if (event.key === "Escape") setIsLightboxOpen(false);
     }
 
     window.addEventListener("keydown", handleKeyboardNavigation);
@@ -124,6 +125,27 @@ export default function PropertyDetail() {
       window.removeEventListener("keydown", handleKeyboardNavigation);
     };
   }, [gallery.length]);
+
+  useEffect(() => {
+    document.body.style.overflow = isLightboxOpen ? "hidden" : "";
+
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [isLightboxOpen]);
+
+  useEffect(() => {
+    if (gallery.length <= 1) return;
+
+    const nextIndex = (currentImageIndex + 1) % gallery.length;
+    const previousIndex =
+      (currentImageIndex - 1 + gallery.length) % gallery.length;
+
+    [nextIndex, previousIndex].forEach((index) => {
+      const image = new Image();
+      image.src = gallery[index];
+    });
+  }, [currentImageIndex, gallery]);
 
   function nextImage() {
     if (gallery.length === 0) return;
@@ -143,6 +165,15 @@ export default function PropertyDetail() {
 
   function selectImage(index: number) {
     setCurrentImageIndex(index);
+  }
+
+  function openLightbox() {
+    if (!currentImage) return;
+    setIsLightboxOpen(true);
+  }
+
+  function closeLightbox() {
+    setIsLightboxOpen(false);
   }
 
   function formatPrice(price: number | null) {
@@ -186,24 +217,37 @@ export default function PropertyDetail() {
     <div className="min-h-screen bg-background text-foreground">
       <section className="w-full bg-background">
         <div className="relative h-screen w-full overflow-hidden bg-black">
-          {gallery.length > 0 ? (
-            <img
-              key={gallery[currentImageIndex]}
-              src={gallery[currentImageIndex]}
-              alt={property.title ?? "Imagem do imóvel"}
-              className="h-full w-full object-cover object-center transition-opacity duration-500"
-            />
+          {currentImage ? (
+           <div
+  role="button"
+  tabIndex={0}
+  onClick={() => setIsLightboxOpen(true)}
+  onKeyDown={(event) => {
+    if (event.key === "Enter" || event.key === " ") {
+      setIsLightboxOpen(true);
+    }
+  }}
+  aria-label="Abrir galeria de imagens"
+  className="relative z-10 h-full w-full cursor-pointer overflow-hidden bg-black"
+>
+  <img
+    key={currentImage}
+    src={currentImage}
+    alt={property.title ?? "Imagem do imóvel"}
+    className="h-full w-full object-cover object-center transition-opacity duration-500"
+  />
+</div>
           ) : (
             <div className="flex h-full w-full items-center justify-center">
               <p className="text-sm text-white/50">Sem imagem</p>
             </div>
           )}
 
-          <div className="absolute inset-0 bg-gradient-to-b from-black/35 via-transparent to-black/40" />
+          <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-black/30 via-transparent to-black/30" />
 
           <a
             href="/imoveis"
-            className="absolute left-6 top-6 z-50 flex items-center gap-2 px-3 py-2 text-sm font-light text-white/85 transition-colors hover:text-white md:left-10 md:top-8"
+            className="absolute left-6 top-6 z-50 flex items-center gap-2 px-3 py-2 text-sm font-light text-white transition-colors hover:text-white md:left-10 md:top-8"
           >
             <ChevronLeft size={18} />
             Voltar
@@ -211,7 +255,7 @@ export default function PropertyDetail() {
 
           <a
             href="/"
-            className="absolute right-6 top-6 z-50 px-3 py-2 text-sm tracking-[0.28em] text-white/85 transition-colors hover:text-white md:right-10 md:top-8"
+            className="absolute right-6 top-6 z-50 px-3 py-2 text-sm tracking-[0.28em] text-[#FFFFFF] opacity-100 transition-colors hover:text-white md:right-10 md:top-8"
           >
             EXACT
           </a>
@@ -222,7 +266,7 @@ export default function PropertyDetail() {
                 type="button"
                 onClick={prevImage}
                 aria-label="Foto anterior"
-                className="absolute left-6 top-1/2 z-40 flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full bg-black/15 text-white/70 backdrop-blur-sm transition-all duration-300 hover:bg-black/45 hover:text-white md:left-10"
+                className="absolute left-6 top-1/2 z-40 flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full bg-black/25 text-white backdrop-blur-sm transition-all duration-300 hover:bg-black/55 md:left-10"
               >
                 <ChevronLeft size={25} />
               </button>
@@ -231,12 +275,12 @@ export default function PropertyDetail() {
                 type="button"
                 onClick={nextImage}
                 aria-label="Próxima foto"
-                className="absolute right-6 top-1/2 z-40 flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full bg-black/15 text-white/70 backdrop-blur-sm transition-all duration-300 hover:bg-black/45 hover:text-white md:right-10"
+                className="absolute right-6 top-1/2 z-40 flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full bg-black/25 text-white backdrop-blur-sm transition-all duration-300 hover:bg-black/55 md:right-10"
               >
                 <ChevronRight size={25} />
               </button>
 
-              <div className="absolute bottom-6 left-1/2 z-40 -translate-x-1/2 rounded-full bg-black/25 px-3 py-1 text-[10px] font-light tracking-[0.2em] text-white/70 backdrop-blur-md">
+              <div className="absolute bottom-6 left-1/2 z-40 -translate-x-1/2 rounded-full bg-black/40 px-3 py-1 text-[10px] font-light tracking-[0.2em] text-white backdrop-blur-md">
                 {currentImageIndex + 1} / {gallery.length}
               </div>
             </>
@@ -252,7 +296,7 @@ export default function PropertyDetail() {
                   type="button"
                   onClick={() => selectImage(index)}
                   aria-label={`Abrir foto ${index + 1}`}
-                  className={`relative h-[62px] w-[96px] shrink-0 overflow-hidden rounded-sm border transition-all duration-300 ${
+                  className={`relative h-[70px] w-[110px] shrink-0 overflow-hidden rounded-sm border transition-all duration-300 ${
                     currentImageIndex === index
                       ? "border-foreground opacity-100"
                       : "border-border opacity-50 hover:border-foreground/40 hover:opacity-90"
@@ -274,10 +318,83 @@ export default function PropertyDetail() {
         )}
       </section>
 
+      {isLightboxOpen && currentImage && (
+        <div
+          className="fixed inset-0 z-[100] flex items-center justify-center overflow-hidden bg-black"
+          role="dialog"
+          aria-modal="true"
+          aria-label="Galeria de imagens do imóvel"
+        >
+          <img
+            src={currentImage}
+            alt=""
+            aria-hidden="true"
+            className="absolute inset-0 h-full w-full scale-110 object-cover object-center opacity-35 blur-xl"
+          />
+
+          <div className="absolute inset-0 bg-black/75" />
+
+          <button
+            type="button"
+            onClick={closeLightbox}
+            aria-label="Fechar galeria"
+            className="absolute right-6 top-6 z-[130] flex h-11 w-11 items-center justify-center rounded-full bg-white/10 text-white backdrop-blur-sm transition hover:bg-white/20 md:right-10 md:top-8"
+          >
+            <X size={22} />
+          </button>
+
+          <button
+            type="button"
+            onClick={closeLightbox}
+            aria-label="Fechar imagem ampliada"
+            className="absolute inset-0 z-[100] cursor-pointer"
+          />
+
+          <img
+            key={`lightbox-${currentImage}`}
+            src={currentImage}
+            alt={property.title ?? "Imagem ampliada do imóvel"}
+            className="relative z-[120] max-h-[84vh] max-w-[84vw] object-contain shadow-2xl"
+          />
+
+          {gallery.length > 1 && (
+            <>
+              <button
+                type="button"
+                onClick={prevImage}
+                aria-label="Foto anterior"
+                className="absolute left-5 top-1/2 z-[130] flex h-12 w-12 -translate-y-1/2 items-center justify-center rounded-full bg-white/10 text-white backdrop-blur-sm transition hover:bg-white/20 md:left-10"
+              >
+                <ChevronLeft size={28} />
+              </button>
+
+              <button
+                type="button"
+                onClick={nextImage}
+                aria-label="Próxima foto"
+                className="absolute right-5 top-1/2 z-[130] flex h-12 w-12 -translate-y-1/2 items-center justify-center rounded-full bg-white/10 text-white backdrop-blur-sm transition hover:bg-white/20 md:right-10"
+              >
+                <ChevronRight size={28} />
+              </button>
+
+              <div className="absolute left-6 top-6 z-[130] text-sm font-light tracking-[0.12em] text-white md:left-10 md:top-8">
+                {currentImageIndex + 1} / {gallery.length}
+              </div>
+            </>
+          )}
+        </div>
+      )}
+
       <div className="container mx-auto grid gap-16 px-6 py-24 lg:grid-cols-3">
-        <div className="space-y-12 lg:col-span-2">
+        <div className="space-y-14 lg:col-span-2">
           <div>
-            <h1 className="mb-3 text-4xl font-light tracking-tight">
+            {property.property_code && (
+              <p className="mb-4 text-[10px] font-light uppercase tracking-[0.24em] text-muted-foreground">
+                Ref. {property.property_code}
+              </p>
+            )}
+
+            <h1 className="mb-4 text-4xl font-light tracking-tight">
               {property.title ?? "Imóvel EXACT"}
             </h1>
 
@@ -287,37 +404,60 @@ export default function PropertyDetail() {
             </div>
           </div>
 
-          <div>
-            <p className="mb-3 text-[11px] tracking-[0.22em] text-muted-foreground">
-              PREÇO
+          <div className="pt-2">
+            <p className="text-[2rem] font-light tracking-tight md:text-[2.2rem]">
+              {formatPrice(property.price)}
             </p>
-            <p className="text-3xl font-light">{formatPrice(property.price)}</p>
           </div>
 
-          <div className="grid grid-cols-4 gap-8 border-y border-border/20 py-8 text-sm">
-            <div className="space-y-2">
-              <Bed size={16} />
-              <p>{property.bedrooms ?? "-"}</p>
+          <div className="grid grid-cols-2 gap-x-8 gap-y-8 border-y border-border/20 py-10 sm:grid-cols-4">
+            <div className="space-y-3">
+              <Ruler size={17} className="text-muted-foreground" />
+              <div>
+                <p className="text-lg font-light">
+                  {property.area ? `${property.area} m²` : "-"}
+                </p>
+                <p className="mt-1 text-[10px] uppercase tracking-[0.16em] text-muted-foreground">
+                  Área privativa
+                </p>
+              </div>
             </div>
 
-            <div className="space-y-2">
-              <Bath size={16} />
-              <p>{property.bathrooms ?? "-"}</p>
+            <div className="space-y-3">
+              <Bed size={17} className="text-muted-foreground" />
+              <div>
+                <p className="text-lg font-light">{property.bedrooms ?? "-"}</p>
+                <p className="mt-1 text-[10px] uppercase tracking-[0.16em] text-muted-foreground">
+                  Quartos
+                </p>
+              </div>
             </div>
 
-            <div className="space-y-2">
-              <Ruler size={16} />
-              <p>{property.area ? `${property.area}m²` : "-"}</p>
+            <div className="space-y-3">
+              <Bath size={17} className="text-muted-foreground" />
+              <div>
+                <p className="text-lg font-light">{property.bathrooms ?? "-"}</p>
+                <p className="mt-1 text-[10px] uppercase tracking-[0.16em] text-muted-foreground">
+                  Banheiros
+                </p>
+              </div>
             </div>
 
-            <div className="space-y-2">
-              <Car size={16} />
-              <p>{property.parking_spots ?? "-"}</p>
+            <div className="space-y-3">
+              <Car size={17} className="text-muted-foreground" />
+              <div>
+                <p className="text-lg font-light">
+                  {property.parking_spots ?? "-"}
+                </p>
+                <p className="mt-1 text-[10px] uppercase tracking-[0.16em] text-muted-foreground">
+                  Vagas
+                </p>
+              </div>
             </div>
           </div>
 
-          <div>
-            <p className="mb-4 text-[11px] tracking-[0.22em] text-muted-foreground">
+          <div className="max-w-3xl">
+            <p className="mb-5 text-[11px] tracking-[0.22em] text-muted-foreground">
               DESCRIÇÃO
             </p>
             <p className="whitespace-pre-line text-sm leading-8 text-muted-foreground">
@@ -329,31 +469,35 @@ export default function PropertyDetail() {
 
         <div className="space-y-5">
           <a
-            href={getWhatsAppUrl(getVisitMessage())}
-            target="_blank"
-            rel="noreferrer"
-            className="block w-full border border-border py-4 text-center text-xs tracking-[0.18em] transition hover:bg-muted"
-          >
-            AGENDAR VISITA
-          </a>
-
-          <a
             href={getWhatsAppUrl(
-              `Olá. Tenho interesse no imóvel ${property.title ?? "imóvel EXACT"} e gostaria de mais informações.`
+              `Olá. Tenho interesse no imóvel ${
+                property.title ?? "imóvel EXACT"
+              }${property.property_code ? ` (${property.property_code})` : ""} e gostaria de mais informações.`
             )}
             target="_blank"
             rel="noreferrer"
-            className="block w-full bg-white py-4 text-center text-xs tracking-[0.18em] text-black transition hover:bg-white/90"
+            className="block w-full bg-[#F2F2F2] py-4 text-center text-xs tracking-[0.18em] text-black transition hover:bg-white"
           >
             FALAR NO WHATSAPP
           </a>
 
-          <ShareButtons
-            propertyId={String(property.id)}
-            propertyName={property.title ?? "Imóvel EXACT"}
-            propertyPrice={formatPrice(property.price)}
-            propertyLocation={property.location ?? "Curitiba"}
-          />
+          <a
+            href={getWhatsAppUrl(getVisitMessage())}
+            target="_blank"
+            rel="noreferrer"
+            className="block w-full border border-border py-4 text-center text-xs tracking-[0.18em] transition hover:border-foreground/40 hover:bg-muted"
+          >
+            AGENDAR VISITA
+          </a>
+
+          <div className="pt-2">
+            <ShareButtons
+              propertyId={String(property.id)}
+              propertyName={property.title ?? "Imóvel EXACT"}
+              propertyPrice={formatPrice(property.price)}
+              propertyLocation={property.location ?? "Curitiba"}
+            />
+          </div>
         </div>
       </div>
     </div>

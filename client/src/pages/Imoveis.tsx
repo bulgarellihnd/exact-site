@@ -30,6 +30,7 @@ const sortOptions = [
 
 type Property = {
   id: number;
+  property_code: string | null;
   created_at: string;
   title: string | null;
   slug: string | null;
@@ -57,7 +58,7 @@ function formatPrice(price: number | null) {
 }
 
 function getPropertyUrl(property: Property) {
-  return `/imoveis/${property.slug || property.id}`;
+  return `/imoveis/${property.property_code ?? property.slug ?? property.id}`;
 }
 
 export default function Imoveis() {

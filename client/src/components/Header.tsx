@@ -21,8 +21,8 @@ export default function Header({ activePage = "home" }: HeaderProps) {
 
   const linkClass = (page: HeaderProps["activePage"]) =>
     page === activePage
-      ? "text-xs font-light text-foreground tracking-wide border-b border-foreground/40 pb-px"
-      : "text-xs font-light text-muted-foreground hover:text-foreground transition-colors duration-300 tracking-wide";
+      ? "text-xs font-light text-white tracking-wide border-b border-white/40 pb-px"
+      : "text-xs font-light text-white hover:text-white transition-colors duration-300 tracking-wide";
 
   return (
     <nav className="fixed top-0 w-full bg-background/95 backdrop-blur-sm z-50 border-b border-border/20">
@@ -31,7 +31,7 @@ export default function Header({ activePage = "home" }: HeaderProps) {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.6 }}
-          className="cursor-pointer text-foreground"
+          className="cursor-pointer text-white"
           style={exactLogoStyle}
           onClick={() => setLocation("/")}
         >
@@ -39,24 +39,15 @@ export default function Header({ activePage = "home" }: HeaderProps) {
         </motion.div>
 
         <div className="flex gap-10 items-center">
-          <button
-            onClick={() => setLocation("/imoveis")}
-            className={linkClass("imoveis")}
-          >
+          <button onClick={() => setLocation("/imoveis")} className={linkClass("imoveis")}>
             Imóveis
           </button>
 
-          <button
-            onClick={() => setLocation("/sobre")}
-            className={linkClass("sobre")}
-          >
+          <button onClick={() => setLocation("/sobre")} className={linkClass("sobre")}>
             Sobre
           </button>
 
-          <button
-            onClick={() => setLocation("/contato")}
-            className={linkClass("contato")}
-          >
+          <button onClick={() => setLocation("/contato")} className={linkClass("contato")}>
             Contato
           </button>
 
@@ -64,7 +55,7 @@ export default function Header({ activePage = "home" }: HeaderProps) {
             href={whatsappLink}
             target="_blank"
             rel="noopener noreferrer"
-            className="text-xs font-light text-muted-foreground hover:text-foreground transition-colors duration-300 tracking-wide border border-border/40 hover:border-border/60 px-4 py-2 rounded-sm"
+            className="text-xs font-light text-[#F4F4F4] hover:text-white transition-colors duration-300 tracking-wide border border-white/20 hover:border-white/40 px-4 py-2 rounded-sm"
             whileHover={{ scale: 1.01 }}
             whileTap={{ scale: 0.99 }}
           >
