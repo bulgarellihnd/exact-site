@@ -28,6 +28,9 @@ const sortOptions = [
   { label: "Área: maior", value: "area-desc" },
 ];
 
+const fallbackHeroImage =
+  "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=2400&q=88";
+
 type Property = {
   id: number;
   property_code: string | null;
@@ -120,6 +123,15 @@ export default function Imoveis() {
       }
     });
 
+  const heroImage =
+    [...properties]
+      .filter((property) => Boolean(property.cover_image))
+      .sort(
+        (a, b) =>
+          new Date(b.created_at).getTime() -
+          new Date(a.created_at).getTime()
+      )[0]?.cover_image ?? fallbackHeroImage;
+
   const itemVariants = {
     hidden: { opacity: 0, y: 8 },
     visible: { opacity: 1, y: 0, transition: { duration: 0.5 } },
@@ -132,30 +144,39 @@ export default function Imoveis() {
     <div className="min-h-screen bg-background text-foreground">
       <Header activePage="imoveis" />
 
-      <section
-        className="relative min-h-[55vh] flex items-end justify-start pt-20 overflow-hidden"
-        style={{
-          backgroundImage:
-            "url(https://d2xsxph8kpxj0f.cloudfront.net/310519663481007953/48chfHstyxneY6QiBvkAHj/cityscape-background-MLhhLWwxT5jepc8AoTEKAL.webp)",
-          backgroundSize: "cover",
-          backgroundPosition: "center",
-        }}
-      >
-        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-black/20" />
-        <div className="container mx-auto px-6 pb-16 relative z-10">
+      <section className="relative flex min-h-[62vh] items-end justify-start overflow-hidden pt-20 md:min-h-[68vh]">
+        <img
+          src={heroImage}
+          alt=""
+          aria-hidden="true"
+          loading="eager"
+          fetchPriority="high"
+          decoding="async"
+          draggable={false}
+          className="absolute inset-0 h-full w-full select-none object-cover object-center"
+        />
+
+        <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/28 to-black/10" />
+        <div className="absolute inset-0 bg-gradient-to-r from-black/32 via-transparent to-transparent" />
+
+        <div className="container relative z-10 mx-auto px-6 pb-16 md:pb-20">
           <motion.div
-            initial={{ opacity: 0, y: 10 }}
+            initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
+            transition={{ duration: 0.85, ease: "easeOut" }}
+            className="max-w-2xl"
           >
-            <p className="text-[10px] font-light tracking-[0.28em] text-amber-500/70 uppercase mb-4">
+            <p className="mb-5 text-[10px] font-light uppercase tracking-[0.3em] text-amber-400/75">
               Portfólio Exclusivo
             </p>
-            <h1 className="text-[42px] md:text-[56px] font-extralight mb-4 leading-none tracking-tight text-white/90">
+
+            <h1 className="mb-5 text-[44px] font-extralight leading-[0.95] tracking-[-0.025em] text-white md:text-[64px]">
               Nossos Imóveis
             </h1>
-            <p className="text-sm text-white/50 font-light tracking-wide max-w-lg">
-              Uma seleção rigorosa dos melhores imóveis de alto padrão em Curitiba.
+
+            <p className="max-w-xl text-sm font-light leading-6 tracking-wide text-white/66 md:text-[15px]">
+              Uma curadoria rigorosa de imóveis singulares, selecionados por arquitetura,
+              localização e potencial patrimonial.
             </p>
           </motion.div>
         </div>

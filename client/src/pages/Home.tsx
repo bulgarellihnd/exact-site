@@ -278,8 +278,96 @@ export default function Home() {
         </motion.div>
       </section>
 
+      <section className="border-t border-border/20 bg-background pb-16 pt-16 md:pb-20 md:pt-18">
+        <div className="container mx-auto px-6">
+          <motion.div
+            className="grid gap-12 md:grid-cols-2"
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: "-100px" }}
+            variants={{ visible: { transition: { staggerChildren: 0.12 } } }}
+          >
+            <motion.a
+              href="/imoveis?tipo=locacao"
+              variants={itemVariants}
+              className="group block"
+              whileHover={{ y: -3 }}
+            >
+              <div className="relative mb-6 h-[400px] md:h-[440px] overflow-hidden rounded-sm bg-muted/30">
+                <AnimatePresence initial={false}>
+                  <motion.img
+                    key={rentalImages[rentalImageIndex] ?? heroImage}
+                    src={rentalImages[rentalImageIndex] ?? heroImage}
+                    alt="Imóvel disponível para locação"
+                    className="absolute inset-0 h-full w-full object-cover"
+                    initial={{ opacity: 0, scale: 1.02 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0 }}
+                    transition={{ duration: 2.8, ease: "easeInOut" }}
+                  />
+                </AnimatePresence>
+                <div className="absolute inset-0 z-10 bg-gradient-to-t from-black/45 via-transparent to-transparent" />
+              </div>
+
+              <div className="flex items-end justify-between gap-6">
+                <div>
+                  <h3 className="mb-3 text-2xl font-extralight tracking-tight">
+                    Locação
+                  </h3>
+                  <p className="max-w-md text-sm leading-relaxed text-muted-foreground">
+                    Imóveis selecionados para viver com conforto e localização.
+                  </p>
+                </div>
+                <ArrowRight
+                  size={18}
+                  className="mb-1 shrink-0 text-muted-foreground transition-transform duration-300 group-hover:translate-x-1 group-hover:text-foreground"
+                />
+              </div>
+            </motion.a>
+
+            <motion.a
+              href="/imoveis?tipo=aquisicao"
+              variants={itemVariants}
+              className="group block"
+              whileHover={{ y: -3 }}
+            >
+              <div className="relative mb-6 h-[400px] md:h-[440px] overflow-hidden rounded-sm bg-muted/30">
+                <AnimatePresence initial={false}>
+                  <motion.img
+                    key={acquisitionImages[acquisitionImageIndex] ?? heroImage}
+                    src={acquisitionImages[acquisitionImageIndex] ?? heroImage}
+                    alt="Imóvel disponível para aquisição"
+                    className="absolute inset-0 h-full w-full object-cover"
+                    initial={{ opacity: 0, scale: 1.02 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0 }}
+                    transition={{ duration: 2.8, ease: "easeInOut" }}
+                  />
+                </AnimatePresence>
+                <div className="absolute inset-0 z-10 bg-gradient-to-t from-black/45 via-transparent to-transparent" />
+              </div>
+
+              <div className="flex items-end justify-between gap-6">
+                <div>
+                  <h3 className="mb-3 text-2xl font-extralight tracking-tight">
+                    Aquisição
+                  </h3>
+                  <p className="max-w-md text-sm leading-relaxed text-muted-foreground">
+                    Uma seleção criteriosa de imóveis para chamar de seu.
+                  </p>
+                </div>
+                <ArrowRight
+                  size={18}
+                  className="mb-1 shrink-0 text-muted-foreground transition-transform duration-300 group-hover:translate-x-1 group-hover:text-foreground"
+                />
+              </div>
+            </motion.a>
+          </motion.div>
+        </div>
+      </section>
+
       {highlights.length > 0 && (
-        <section className="border-t border-border/20 bg-background py-24">
+        <section className="border-t border-border/20 bg-background pb-20 pt-16 md:pb-24 md:pt-20">
           <div className="container mx-auto px-6">
             <motion.div
               initial="hidden"
@@ -289,11 +377,14 @@ export default function Home() {
             >
               <motion.div
                 variants={itemVariants}
-                className="mb-10 flex items-end justify-between gap-6"
+                className="mb-9 flex items-end justify-between gap-6"
               >
-                <h2 className="text-[11px] font-light uppercase tracking-[0.32em] text-muted-foreground">
-                  Seleção EXACT
-                </h2>
+                <div>
+                 
+                  <h2 className="text-[13px] font-light uppercase tracking-[0.32em] text-muted-foreground">
+                    Seleção EXACT
+                  </h2>
+                </div>
 
                 <a
                   href="/imoveis"
@@ -353,94 +444,6 @@ export default function Home() {
           </div>
         </section>
       )}
-
-      <section className="border-t border-border/20 bg-background py-24">
-        <div className="container mx-auto px-6">
-          <motion.div
-            className="grid gap-12 md:grid-cols-2"
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, margin: "-100px" }}
-            variants={{ visible: { transition: { staggerChildren: 0.12 } } }}
-          >
-            <motion.a
-              href="/imoveis?tipo=locacao"
-              variants={itemVariants}
-              className="group block"
-              whileHover={{ y: -3 }}
-            >
-              <div className="relative mb-6 h-[420px] overflow-hidden rounded-sm bg-muted/30">
-                <AnimatePresence initial={false}>
-                  <motion.img
-                    key={rentalImages[rentalImageIndex] ?? heroImage}
-                    src={rentalImages[rentalImageIndex] ?? heroImage}
-                    alt="Imóvel disponível para locação"
-                    className="absolute inset-0 h-full w-full object-cover"
-                    initial={{ opacity: 0, scale: 1.02 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    exit={{ opacity: 0 }}
-                    transition={{ duration: 2.8, ease: "easeInOut" }}
-                  />
-                </AnimatePresence>
-                <div className="absolute inset-0 z-10 bg-gradient-to-t from-black/45 via-transparent to-transparent" />
-              </div>
-
-              <div className="flex items-end justify-between gap-6">
-                <div>
-                  <h3 className="mb-3 text-2xl font-extralight tracking-tight">
-                    Locação
-                  </h3>
-                  <p className="max-w-md text-sm leading-relaxed text-muted-foreground">
-                    Imóveis selecionados para viver com conforto e localização.
-                  </p>
-                </div>
-                <ArrowRight
-                  size={18}
-                  className="mb-1 shrink-0 text-muted-foreground transition-transform duration-300 group-hover:translate-x-1 group-hover:text-foreground"
-                />
-              </div>
-            </motion.a>
-
-            <motion.a
-              href="/imoveis?tipo=aquisicao"
-              variants={itemVariants}
-              className="group block"
-              whileHover={{ y: -3 }}
-            >
-              <div className="relative mb-6 h-[420px] overflow-hidden rounded-sm bg-muted/30">
-                <AnimatePresence initial={false}>
-                  <motion.img
-                    key={acquisitionImages[acquisitionImageIndex] ?? heroImage}
-                    src={acquisitionImages[acquisitionImageIndex] ?? heroImage}
-                    alt="Imóvel disponível para aquisição"
-                    className="absolute inset-0 h-full w-full object-cover"
-                    initial={{ opacity: 0, scale: 1.02 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    exit={{ opacity: 0 }}
-                    transition={{ duration: 2.8, ease: "easeInOut" }}
-                  />
-                </AnimatePresence>
-                <div className="absolute inset-0 z-10 bg-gradient-to-t from-black/45 via-transparent to-transparent" />
-              </div>
-
-              <div className="flex items-end justify-between gap-6">
-                <div>
-                  <h3 className="mb-3 text-2xl font-extralight tracking-tight">
-                    Aquisição
-                  </h3>
-                  <p className="max-w-md text-sm leading-relaxed text-muted-foreground">
-                    Uma seleção criteriosa de imóveis para chamar de seu.
-                  </p>
-                </div>
-                <ArrowRight
-                  size={18}
-                  className="mb-1 shrink-0 text-muted-foreground transition-transform duration-300 group-hover:translate-x-1 group-hover:text-foreground"
-                />
-              </div>
-            </motion.a>
-          </motion.div>
-        </div>
-      </section>
 
       <section className="border-y border-border/20 bg-card/35 py-20">
         <div className="container mx-auto px-6">
