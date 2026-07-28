@@ -25,7 +25,7 @@ export default function Header({ activePage = "home" }: HeaderProps) {
       : "text-xs font-light text-white hover:text-white transition-colors duration-300 tracking-wide";
 
   return (
-    <nav className="fixed top-0 w-full bg-background/95 backdrop-blur-sm z-50 border-b border-border/20">
+    <nav className="fixed top-0 w-full bg-background/60 backdrop-blur-md z-50 border-b border-white/10">
       <div className="container mx-auto px-6 py-4 flex justify-between items-center">
         <motion.div
           initial={{ opacity: 0 }}

@@ -5,7 +5,7 @@ import {
   Phone,
   Search,
 } from "lucide-react";
-import { AnimatePresence, motion } from "framer-motion";
+import { AnimatePresence, motion, type Variants } from "framer-motion";
 import { useEffect, useState } from "react";
 import { useLocation } from "wouter";
 import { toast } from "sonner";
@@ -56,7 +56,7 @@ export default function Home() {
   const [acquisitionImageIndex, setAcquisitionImageIndex] = useState(0);
   const [, setLocation] = useLocation();
 
-  const itemVariants = {
+  const itemVariants: Variants = {
     hidden: { opacity: 0, y: 14 },
     visible: {
       opacity: 1,
@@ -83,7 +83,7 @@ export default function Home() {
 
       const properties = (data ?? []) as HighlightProperty[];
 
-      setHighlights(properties.slice(0, 3));
+      setHighlights(properties.slice(0, 6));
 
       const normalizeOperation = (value: string | null) =>
         (value ?? "")
@@ -278,7 +278,54 @@ export default function Home() {
         </motion.div>
       </section>
 
-      <section className="border-t border-border/20 bg-background pb-16 pt-16 md:pb-20 md:pt-18">
+      <section className="bg-background pb-24 pt-50 md:pb-28 md:pt-48">
+        <div className="container mx-auto px-6">
+          <motion.div
+            className="mx-auto max-w-3xl"
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: "-100px" }}
+            variants={{ visible: { transition: { staggerChildren: 0.1 } } }}
+          >
+            <motion.div variants={itemVariants} className="mb-8 text-center">
+              <h2 className="text-2xl font-extralight tracking-tight md:text-3xl">
+                Encontre um imóvel pelo código
+              </h2>
+            </motion.div>
+
+            <motion.div variants={itemVariants} className="flex gap-3">
+              <div className="relative flex-1">
+                <input
+                  type="text"
+                  placeholder="Ex.: EX0011"
+                  value={searchCode}
+                  onChange={(event) => setSearchCode(event.target.value)}
+                  onKeyDown={handleKeyPress}
+                  className="w-full rounded-sm border border-border/50 bg-background px-4 py-4 pr-12 text-sm font-light uppercase tracking-[0.08em] text-foreground placeholder:normal-case placeholder:tracking-normal placeholder:text-muted-foreground focus:border-border focus:outline-none"
+                />
+                <Search
+                  size={17}
+                  className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-muted-foreground"
+                />
+              </div>
+
+              <motion.button
+                type="button"
+                whileHover={{ y: -1 }}
+                whileTap={{ scale: 0.99 }}
+                onClick={handleSearch}
+                disabled={isSearching}
+                className="min-w-[120px] rounded-sm bg-foreground px-6 py-4 text-xs font-light tracking-wide text-background transition-opacity hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50"
+              >
+                {isSearching ? "Buscando..." : "Buscar"}
+              </motion.button>
+            </motion.div>
+          </motion.div>
+        </div>
+      </section>
+
+
+      <section className="border-t border-border/20 bg-background pb-20 pt-24 md:pb-24 md:pt-40">
         <div className="container mx-auto px-6">
           <motion.div
             className="grid gap-12 md:grid-cols-2"
@@ -366,8 +413,8 @@ export default function Home() {
         </div>
       </section>
 
-      {highlights.length > 0 && (
-        <section className="border-t border-border/20 bg-background pb-20 pt-16 md:pb-24 md:pt-20">
+            {highlights.length > 0 && (
+        <section className="border-t border-border/20 bg-background pb-20 pt-40 md:pb-24 md:pt-48">
           <div className="container mx-auto px-6">
             <motion.div
               initial="hidden"
@@ -377,31 +424,61 @@ export default function Home() {
             >
               <motion.div
                 variants={itemVariants}
-                className="mb-9 flex items-end justify-between gap-6"
+                className="mb-14 flex items-end justify-between gap-6"
               >
-                <div>
-                 
-                  <h2 className="text-[13px] font-light uppercase tracking-[0.32em] text-muted-foreground">
-                    Seleção EXACT
-                  </h2>
-                </div>
+                <div className="pl-2 relative top-3">  
+  <p className="mt-1 mb-2 text-[11px] font-light uppercase tracking-[0.32em] text-muted-foreground">
+  Seleção
+</p>
 
-                <a
-                  href="/imoveis"
-                  className="hidden items-center gap-2 text-[11px] uppercase tracking-[0.18em] text-muted-foreground transition-colors hover:text-foreground md:flex"
-                >
-                  Ver todos
-                  <ArrowRight size={14} />
-                </a>
+
+</div>
+
+                <div className="relative top-10 hidden items-center gap-2 md:flex">
+                  <button
+                    type="button"
+                    aria-label="Ver imóveis anteriores"
+                    onClick={() =>
+                      document
+                        .getElementById("selection-carousel")
+                        ?.scrollBy({
+                          left: -window.innerWidth * 0.8,
+                          behavior: "smooth",
+                        })
+                    }
+                    className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-border/30 text-sm text-muted-foreground transition-colors hover:border-border/60 hover:text-foreground"
+                  >
+                    ←
+                  </button>
+
+                  <button
+                    type="button"
+                    aria-label="Ver próximos imóveis"
+                    onClick={() =>
+                      document
+                        .getElementById("selection-carousel")
+                        ?.scrollBy({
+                          left: window.innerWidth * 0.8,
+                          behavior: "smooth",
+                        })
+                    }
+                    className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-border/30 text-sm text-muted-foreground transition-colors hover:border-border/60 hover:text-foreground"
+                  >
+                    →
+                  </button>
+                </div>
               </motion.div>
 
-              <div className="grid gap-10 md:grid-cols-3">
+              <div
+                id="selection-carousel"
+                className="flex snap-x snap-mandatory gap-6 overflow-x-auto pb-4 [scrollbar-width:none] md:gap-10 [&::-webkit-scrollbar]:hidden"
+              >
                 {highlights.map((property) => (
                   <motion.a
                     key={property.id}
                     href={`/imoveis/${property.property_code ?? property.id}`}
                     variants={itemVariants}
-                    className="group block"
+                    className="group block min-w-[86%] shrink-0 snap-start sm:min-w-[62%] md:min-w-[calc(33.333%-1.7rem)]"
                     whileHover={{ y: -4 }}
                   >
                     <div className="relative mb-5 h-[330px] overflow-hidden rounded-sm bg-muted/20">
@@ -410,6 +487,7 @@ export default function Home() {
                         alt={property.title ?? "Imóvel EXACT"}
                         className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-[1.025]"
                       />
+
                       <div className="absolute inset-0 bg-gradient-to-t from-black/45 via-transparent to-transparent opacity-70" />
 
                       {property.property_code && (
@@ -422,16 +500,20 @@ export default function Home() {
                     <p className="mb-2 text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
                       {property.property_type ?? "Imóvel"}
                     </p>
+
                     <h3 className="mb-2 text-lg font-light tracking-tight">
                       {property.title ?? "Imóvel EXACT"}
                     </h3>
+
                     <p className="mb-4 text-xs text-muted-foreground">
                       {property.location ?? "Curitiba"}
                     </p>
+
                     <div className="flex items-center justify-between border-t border-border/20 pt-4">
                       <span className="text-sm font-light">
                         {formatPrice(property.price)}
                       </span>
+
                       <ArrowRight
                         size={15}
                         className="text-muted-foreground transition-transform duration-300 group-hover:translate-x-1 group-hover:text-foreground"
@@ -440,59 +522,23 @@ export default function Home() {
                   </motion.a>
                 ))}
               </div>
+
+              <motion.div
+                variants={itemVariants}
+                className="mt-0  flex justify-end"
+              >
+                <a
+                  href="/imoveis"
+                  className="inline-flex items-center gap-3 border-b border-border/40 pb-2 text-[11px] uppercase tracking-[0.2em] text-muted-foreground transition-colors hover:border-foreground hover:text-foreground"
+                >
+                  Ver todos
+                  <ArrowRight size={14} />
+                </a>
+              </motion.div>
             </motion.div>
           </div>
         </section>
       )}
-
-      <section className="border-y border-border/20 bg-card/35 py-20">
-        <div className="container mx-auto px-6">
-          <motion.div
-            className="mx-auto max-w-3xl"
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, margin: "-100px" }}
-            variants={{ visible: { transition: { staggerChildren: 0.1 } } }}
-          >
-            <motion.div variants={itemVariants} className="mb-8 text-center">
-              <p className="mb-3 text-[10px] uppercase tracking-[0.28em] text-muted-foreground">
-                Busca direta
-              </p>
-              <h2 className="text-2xl font-extralight tracking-tight md:text-3xl">
-                Encontre um imóvel pelo código
-              </h2>
-            </motion.div>
-
-            <motion.div variants={itemVariants} className="flex gap-3">
-              <div className="relative flex-1">
-                <input
-                  type="text"
-                  placeholder="Ex.: EX0011"
-                  value={searchCode}
-                  onChange={(event) => setSearchCode(event.target.value)}
-                  onKeyDown={handleKeyPress}
-                  className="w-full rounded-sm border border-border/50 bg-background px-4 py-4 pr-12 text-sm font-light uppercase tracking-[0.08em] text-foreground placeholder:normal-case placeholder:tracking-normal placeholder:text-muted-foreground focus:border-border focus:outline-none"
-                />
-                <Search
-                  size={17}
-                  className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-muted-foreground"
-                />
-              </div>
-
-              <motion.button
-                type="button"
-                whileHover={{ y: -1 }}
-                whileTap={{ scale: 0.99 }}
-                onClick={handleSearch}
-                disabled={isSearching}
-                className="min-w-[120px] rounded-sm bg-foreground px-6 py-4 text-xs font-light tracking-wide text-background transition-opacity hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50"
-              >
-                {isSearching ? "Buscando..." : "Buscar"}
-              </motion.button>
-            </motion.div>
-          </motion.div>
-        </div>
-      </section>
 
       <footer id="contact" className="bg-background py-24">
         <div className="container mx-auto px-6">

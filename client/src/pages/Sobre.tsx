@@ -45,13 +45,13 @@ export default function Sobre() {
             transition={{ duration: 0.8, delay: 0.35 }}
           >
             <p className="text-sm text-muted-foreground font-light leading-relaxed tracking-wide mb-12">
-              Consultoria imobiliária especializada em gestão patrimonial em Curitiba.
+              Gestão patrimonial com inteligência e precisão.
             </p>
 
             <div className="space-y-0 border-t border-border/20">
               {[
-                "Portfólio selecionado com exatidão.",
-                "Execução precisa.",
+                "Imóveis selecionados com rigor.",
+                "Processos simples.",
                 "Atendimento direto.",
               ].map((text, i) => (
                 <motion.div
@@ -84,7 +84,7 @@ export default function Sobre() {
               </h4>
 
               <p className="text-xs text-muted-foreground font-light leading-relaxed">
-                Curadoria imobiliária com análise precisa.
+                Gestão patrimonial com inteligência e precisão.
               </p>
             </div>
 

@@ -144,7 +144,7 @@ export default function Imoveis() {
     <div className="min-h-screen bg-background text-foreground">
       <Header activePage="imoveis" />
 
-      <section className="relative flex min-h-[62vh] items-end justify-start overflow-hidden pt-20 md:min-h-[68vh]">
+      <section className="relative flex min-h-[68vh] items-end justify-start overflow-hidden pt-20 md:min-h-[74vh]">
         <img
           src={heroImage}
           alt=""
@@ -159,24 +159,21 @@ export default function Imoveis() {
         <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/28 to-black/10" />
         <div className="absolute inset-0 bg-gradient-to-r from-black/32 via-transparent to-transparent" />
 
-        <div className="container relative z-10 mx-auto px-6 pb-16 md:pb-20">
+        <div className="container relative z-10 mx-auto px-6 pb-20 md:pb-24">
           <motion.div
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.85, ease: "easeOut" }}
             className="max-w-2xl"
           >
-            <p className="mb-5 text-[10px] font-light uppercase tracking-[0.3em] text-amber-400/75">
-              Portfólio Exclusivo
-            </p>
+        
 
             <h1 className="mb-5 text-[44px] font-extralight leading-[0.95] tracking-[-0.025em] text-white md:text-[64px]">
               Nossos Imóveis
             </h1>
 
             <p className="max-w-xl text-sm font-light leading-6 tracking-wide text-white/66 md:text-[15px]">
-              Uma curadoria rigorosa de imóveis singulares, selecionados por arquitetura,
-              localização e potencial patrimonial.
+  Uma seleção rigorosa de imóveis, escolhidos por arquitetura e localização.
             </p>
           </motion.div>
         </div>
@@ -301,57 +298,66 @@ export default function Imoveis() {
                   </a>
 
                   <div className="space-y-2">
-                    <a href={getPropertyUrl(property)}>
-                      <h3 className="text-base font-light leading-tight tracking-tight hover:text-muted-foreground transition-colors duration-300">
-                        {property.title}
-                      </h3>
-                    </a>
+  <a href={getPropertyUrl(property)}>
+    <h3 className="text-base font-light leading-tight tracking-tight hover:text-muted-foreground transition-colors duration-300">
+      {property.title}
+    </h3>
+  </a>
 
-                    <p className="text-xs text-muted-foreground font-light">
-                      {property.location}
-                    </p>
+  <p className="text-xs text-muted-foreground font-light">
+    {property.location}
+  </p>
 
-                    <p className="text-sm font-light tracking-wide pt-1">
-                      {formatPrice(property.price)}
-                    </p>
+  <p className="text-sm font-light tracking-wide pt-1">
+    {formatPrice(property.price)}
+  </p>
 
-                    <div className="flex gap-6 pt-4 border-t border-border/15">
-                      <div>
-                        <p className="text-[10px] text-muted-foreground/60 font-light mb-1 uppercase tracking-wider">
-                          Quartos
-                        </p>
-                        <p className="text-xs font-light">
-                          {property.bedrooms ?? "-"}
-                        </p>
-                      </div>
+  <div className="flex items-start pt-4 border-t border-border/15">
+    <div className="mr-6">
+      <p className="text-[10px] text-muted-foreground/60 font-light mb-1 uppercase tracking-wider">
+        Quartos
+      </p>
+      <p className="text-xs font-light">
+        {property.bedrooms ?? "-"}
+      </p>
+    </div>
 
-                      <div>
-                        <p className="text-[10px] text-muted-foreground/60 font-light mb-1 uppercase tracking-wider">
-                          Banheiros
-                        </p>
-                        <p className="text-xs font-light">
-                          {property.bathrooms ?? "-"}
-                        </p>
-                      </div>
+    <div className="mr-6">
+      <p className="text-[10px] text-muted-foreground/60 font-light mb-1 uppercase tracking-wider">
+        Banheiros
+      </p>
+      <p className="text-xs font-light">
+        {property.bathrooms ?? "-"}
+      </p>
+    </div>
 
-                      <div>
-                        <p className="text-[10px] text-muted-foreground/60 font-light mb-1 uppercase tracking-wider">
-                          Área
-                        </p>
-                        <p className="text-xs font-light">
-                          {property.area ? `${property.area}m²` : "-"}
-                        </p>
-                      </div>
-                    </div>
+    <div>
+      <p className="text-[10px] text-muted-foreground/60 font-light mb-1 uppercase tracking-wider">
+        Área
+      </p>
+      <p className="text-xs font-light">
+        {property.area ? `${property.area}m²` : "-"}
+      </p>
+    </div>
 
-                    <a href={getPropertyUrl(property)}>
-                      <div className="flex items-center gap-1.5 text-[10px] font-light tracking-widest text-muted-foreground/60 hover:text-foreground transition-colors duration-300 mt-4 uppercase">
-                        Mais informações
-                        <ChevronRight size={12} />
-                      </div>
-                    </a>
-                  </div>
-                </motion.div>
+    <div className="ml-auto text-right">
+      <p className="text-[10px] text-muted-foreground/60 font-light mb-1 uppercase tracking-wider">
+        Ref
+      </p>
+      <p className="text-xs font-light">
+        {property.property_code ?? "-"}
+      </p>
+    </div>
+  </div>
+
+  <a href={getPropertyUrl(property)}>
+    <div className="flex items-center gap-1.5 text-[10px] font-light tracking-widest text-muted-foreground/60 hover:text-foreground transition-colors duration-300 mt-4 uppercase">
+      Mais informações
+      <ChevronRight size={12} />
+    </div>
+  </a>
+</div>
+</motion.div>
               ))
             ) : (
               <div className="col-span-3 text-center py-24">
