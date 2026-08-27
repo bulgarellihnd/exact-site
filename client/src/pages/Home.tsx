@@ -15,7 +15,7 @@ const whatsappLink =
   "https://wa.me/5541999723780?text=Ol%C3%A1.%20Tenho%20interesse%20em%20um%20im%C3%B3vel%20da%20EXACT%20e%20gostaria%20de%20mais%20informa%C3%A7%C3%B5es.";
 
 const heroImage =
-  "https://d2xsxph8kpxj0f.cloudfront.net/310519663481007953/48chfHstyxneY6QiBvkAHj/aquisicao-premium-jDyVv7f4YExbawLTYJ3kud.webp";
+  "https://bvhgrzurigzzjtrnyknl.supabase.co/storage/v1/object/public/site-assets/hero-home.png";
 
 const exactLogoStyle = {
   fontFamily: "'Raleway', sans-serif",
