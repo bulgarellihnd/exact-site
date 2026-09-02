@@ -167,7 +167,7 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-background text-foreground">
       <nav className="fixed top-0 z-50 w-full border-b border-white/10 bg-black/20 backdrop-blur-md">
-        <div className="container mx-auto flex items-center justify-between px-6 py-4">
+        <div className="container mx-auto flex items-center justify-between px-5 py-4 md:px-6">
           <motion.button
             type="button"
             initial={{ opacity: 0 }}
@@ -180,7 +180,7 @@ export default function Home() {
             EXACT
           </motion.button>
 
-          <div className="hidden items-center gap-10 md:flex">
+          <div className="flex items-center gap-4 md:gap-10">
             <a
               href="/imoveis"
               className="text-xs font-light tracking-wide text-white/88 transition-colors duration-300 hover:text-white"
@@ -203,7 +203,7 @@ export default function Home() {
               href={whatsappLink}
               target="_blank"
               rel="noopener noreferrer"
-              className="rounded-sm border border-white/25 px-4 py-2 text-xs font-light tracking-wide text-white/95 transition-all duration-300 hover:border-white/50 hover:text-white"
+              className="hidden rounded-sm border border-white/25 px-4 py-2 text-xs font-light tracking-wide text-white/95 transition-all duration-300 hover:border-white/50 hover:text-white md:inline-flex"
               whileHover={{ y: -1 }}
               whileTap={{ scale: 0.99 }}
             >
@@ -325,7 +325,7 @@ export default function Home() {
       </section>
 
 
-      <section className="border-t border-border/20 bg-background pb-20 pt-24 md:pb-24 md:pt-40">
+      <section className="bg-background pb-20 pt-24 md:pb-24 md:pt-40">
         <div className="container mx-auto px-6">
           <motion.div
             className="grid gap-12 md:grid-cols-2"
@@ -414,7 +414,7 @@ export default function Home() {
       </section>
 
             {highlights.length > 0 && (
-        <section className="border-t border-border/20 bg-background pb-20 pt-40 md:pb-24 md:pt-48">
+        <section className="bg-background pb-20 pt-40 md:pb-24 md:pt-48">
           <div className="container mx-auto px-6">
             <motion.div
               initial="hidden"
@@ -645,7 +645,7 @@ export default function Home() {
             </div>
 
             <div className="mt-6 space-y-1 text-[11px] text-white/45">
-              <p>EXACT Gestão Patrimonial Ltda.</p>
+              <p>EXACT Imóveis</p>
               <p>CNPJ 66.285.005/0001-16</p>
             </div>
           </div>

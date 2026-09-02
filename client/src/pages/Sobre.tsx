@@ -45,7 +45,7 @@ export default function Sobre() {
             transition={{ duration: 0.8, delay: 0.35 }}
           >
             <p className="text-sm text-muted-foreground font-light leading-relaxed tracking-wide mb-12">
-              Gestão patrimonial com inteligência e precisão.
+              Negócios imobiliários com inteligência e precisão.
             </p>
 
             <div className="space-y-0 border-t border-border/20">
@@ -84,7 +84,7 @@ export default function Sobre() {
               </h4>
 
               <p className="text-xs text-muted-foreground font-light leading-relaxed">
-                Gestão patrimonial com inteligência e precisão.
+                Negócios imobiliários com inteligência e precisão.
               </p>
             </div>
 
@@ -162,3 +162,4 @@ export default function Sobre() {
     </div>
   );
 }
+

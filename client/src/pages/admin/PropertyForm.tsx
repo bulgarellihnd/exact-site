@@ -17,6 +17,8 @@ type PropertyFormProps = {
   propertyBedrooms: string;
   propertyBathrooms: string;
   propertyParkingSpots: string;
+  propertySuites: string;
+  propertyLavabos: string;
   propertyArea: string;
   propertyStatus: string;
   propertyDescription: string;
@@ -36,6 +38,8 @@ type PropertyFormProps = {
   onBedroomsChange: (value: string) => void;
   onBathroomsChange: (value: string) => void;
   onParkingSpotsChange: (value: string) => void;
+  onSuitesChange: (value: string) => void;
+  onLavabosChange: (value: string) => void;
   onAreaChange: (value: string) => void;
   onStatusChange: (value: string) => void;
   onDescriptionChange: (value: string) => void;
@@ -68,6 +72,8 @@ export default function PropertyForm({
   propertyBedrooms,
   propertyBathrooms,
   propertyParkingSpots,
+  propertySuites,
+  propertyLavabos,
   propertyArea,
   propertyStatus,
   propertyDescription,
@@ -87,6 +93,8 @@ export default function PropertyForm({
   onBedroomsChange,
   onBathroomsChange,
   onParkingSpotsChange,
+  onSuitesChange,
+  onLavabosChange,
   onAreaChange,
   onStatusChange,
   onDescriptionChange,
@@ -296,6 +304,22 @@ export default function PropertyForm({
               onChange={(event) => onParkingSpotsChange(event.target.value)}
               className="w-full bg-transparent border border-border/40 rounded-sm px-4 py-3 text-sm font-light outline-none focus:border-foreground/40"
             />
+
+            <input
+              type="number"
+              placeholder="Suítes"
+              value={propertySuites}
+              onChange={(event) => onSuitesChange(event.target.value)}
+              className="w-full bg-transparent border border-border/40 rounded-sm px-4 py-3 text-sm font-light outline-none focus:border-foreground/40"
+            />
+
+            <input
+              type="number"
+              placeholder="Lavabos"
+              value={propertyLavabos}
+              onChange={(event) => onLavabosChange(event.target.value)}
+              className="w-full bg-transparent border border-border/40 rounded-sm px-4 py-3 text-sm font-light outline-none focus:border-foreground/40"
+            />
           </div>
         </section>
       )}
@@ -308,7 +332,7 @@ export default function PropertyForm({
       )}
 
       {activeTab === "publishing" && (
-        <section>
+        <section className="space-y-6">
           <p className="text-[11px] tracking-[0.22em] uppercase text-muted-foreground mb-5">
             Publicação
           </p>
@@ -321,6 +345,7 @@ export default function PropertyForm({
             />
             Publicado no site
           </label>
+
         </section>
       )}
 
@@ -345,3 +370,4 @@ export default function PropertyForm({
     </div>
   );
 }
+

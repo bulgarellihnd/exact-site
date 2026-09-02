@@ -47,6 +47,7 @@ export default function PropertyDetail() {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
   const [isLightboxOpen, setIsLightboxOpen] = useState(false);
+  const [isHeroImageLoaded, setIsHeroImageLoaded] = useState(false);
 
   const thumbnailStripRef = useRef<HTMLDivElement | null>(null);
   const thumbnailButtonRefs = useRef<Array<HTMLButtonElement | null>>([]);
@@ -110,6 +111,7 @@ export default function PropertyDetail() {
       setGallery(finalGallery);
       setCurrentImageIndex(0);
       setIsLightboxOpen(false);
+      setIsHeroImageLoaded(false);
       setIsLoading(false);
     }
 
@@ -173,6 +175,54 @@ export default function PropertyDetail() {
   }, [currentImage]);
 
   useEffect(() => {
+    if (!property) return;
+
+    const previousTitle = document.title;
+    const title = `${property.title ?? "Imóvel"} | EXACT Imóveis`;
+    const description = [
+      property.property_type,
+      property.location,
+      property.area ? `${property.area} m²` : null,
+    ]
+      .filter(Boolean)
+      .join(" · ");
+    const canonicalUrl = `${window.location.origin}/imoveis/${property.property_code ?? params?.id ?? ""}`;
+
+    document.title = title;
+
+    const setMeta = (selector: string, attribute: string, content: string) => {
+      let element = document.head.querySelector<HTMLMetaElement>(selector);
+      if (!element) {
+        element = document.createElement("meta");
+        const [name, value] = selector.match(/meta\[([^=]+)="([^"]+)"\]/)?.slice(1) ?? [];
+        if (name && value) element.setAttribute(name, value);
+        document.head.appendChild(element);
+      }
+      element.setAttribute(attribute, content);
+    };
+
+    setMeta('meta[name="description"]', "content", description);
+    setMeta('meta[property="og:title"]', "content", title);
+    setMeta('meta[property="og:description"]', "content", description);
+    setMeta('meta[property="og:url"]', "content", canonicalUrl);
+    if (property.cover_image) {
+      setMeta('meta[property="og:image"]', "content", property.cover_image);
+    }
+
+    let canonical = document.head.querySelector<HTMLLinkElement>('link[rel="canonical"]');
+    if (!canonical) {
+      canonical = document.createElement("link");
+      canonical.rel = "canonical";
+      document.head.appendChild(canonical);
+    }
+    canonical.href = canonicalUrl;
+
+    return () => {
+      document.title = previousTitle;
+    };
+  }, [params?.id, property]);
+
+  useEffect(() => {
     const strip = thumbnailStripRef.current;
     const selectedThumbnail = thumbnailButtonRefs.current[currentImageIndex];
 
@@ -216,6 +266,7 @@ export default function PropertyDetail() {
   }
 
   function selectImage(index: number) {
+    setIsHeroImageLoaded(false);
     setCurrentImageIndex(index);
   }
 
@@ -227,6 +278,71 @@ export default function PropertyDetail() {
   function closeLightbox() {
     setIsLightboxOpen(false);
   }
+
+  const descriptionParagraphs = (property?.description ?? "")
+    .replace(/\s+\*\s+/g, "\n\n")
+    .split(/\n{2,}|(?=\s+-\s+)/)
+    .map((paragraph) => paragraph.replace(/^\s*-\s*/, "").trim())
+    .filter((paragraph) =>
+      Boolean(paragraph) &&
+      !/^agend[ae]\s+(?:a\s+)?sua\s+visita[.!]?$/i.test(paragraph) &&
+      !/^entre\s+em\s+contato\b.*agendar\s+uma\s+visita[.!]?$/i.test(paragraph)
+    );
+
+  type DescriptionBlock = {
+    kind: "paragraph" | "details-heading" | "development-heading" | "subheading" | "detail";
+    text: string;
+  };
+  let isDetailsSection = false;
+  let hasDevelopmentSection = false;
+  const descriptionBlocks: DescriptionBlock[] = [];
+
+  descriptionParagraphs.forEach((paragraph, index) => {
+    if (/^destaques(?:\s+do\s+im[oó]vel)?\s*:?$/i.test(paragraph)) {
+      isDetailsSection = true;
+      descriptionBlocks.push({ kind: "details-heading", text: "DETALHES" });
+      return;
+    }
+
+    const beginsImplicitDetails =
+      !isDetailsSection &&
+      index >= 2 &&
+      /^\d+\s*m²(?:\s|$)/i.test(paragraph);
+
+    if (beginsImplicitDetails) {
+      isDetailsSection = true;
+      descriptionBlocks.push({ kind: "details-heading", text: "DETALHES" });
+    }
+
+    const beginsDevelopmentSection =
+      isDetailsSection &&
+      !hasDevelopmentSection &&
+      (/^(?:edif[ií]cio|condom[ií]nio|residencial)\b/i.test(paragraph) ||
+        /\b(?:residence|residences)\s*$/i.test(paragraph));
+
+    if (beginsDevelopmentSection) {
+      hasDevelopmentSection = true;
+      descriptionBlocks.push({
+        kind: "development-heading",
+        text: "O EMPREENDIMENTO",
+      });
+      descriptionBlocks.push({ kind: "subheading", text: paragraph });
+      return;
+    }
+
+    if (isDetailsSection && /:\s*$/.test(paragraph)) {
+      descriptionBlocks.push({
+        kind: "subheading",
+        text: paragraph.replace(/:\s*$/, ""),
+      });
+      return;
+    }
+
+    descriptionBlocks.push({
+      kind: isDetailsSection ? "detail" : "paragraph",
+      text: paragraph,
+    });
+  });
 
   function formatPrice(price: number | null) {
     if (!price) return "Sob consulta";
@@ -240,13 +356,20 @@ export default function PropertyDetail() {
 
   function getVisitMessage() {
     const title = property?.title ?? "imóvel EXACT";
-    const location = property?.location ? `, em ${property.location}` : "";
+    const reference = property?.property_code ? ` (${property.property_code})` : "";
 
-    return `Olá. Tenho interesse em agendar uma visita para o imóvel ${title}${location}.`;
+    return `Olá. Tenho interesse em agendar uma visita para o imóvel ${title}${reference}.`;
   }
 
   function getWhatsAppUrl(message: string) {
-    return `https://wa.me/5541997683715?text=${encodeURIComponent(message)}`;
+    return `https://wa.me/5541999723780?text=${encodeURIComponent(message)}`;
+  }
+
+  function handleBack() {
+    const returnUrl = sessionStorage.getItem("exact-properties-return");
+    window.location.href = returnUrl?.startsWith("/imoveis")
+      ? returnUrl
+      : "/imoveis";
   }
 
   if (isLoading) {
@@ -283,6 +406,9 @@ export default function PropertyDetail() {
               aria-label="Abrir galeria de imagens"
               className="relative z-10 h-full w-full cursor-pointer overflow-hidden bg-black"
             >
+              {!isHeroImageLoaded && (
+                <div className="absolute inset-0 animate-pulse bg-gradient-to-br from-[#111] via-[#181818] to-[#0b0b0b]" />
+              )}
               <img
                 key={currentImage}
                 src={currentImage}
@@ -291,7 +417,10 @@ export default function PropertyDetail() {
                 fetchPriority="high"
                 decoding="async"
                 draggable={false}
-                className="h-full w-full select-none object-cover object-center"
+                onLoad={() => setIsHeroImageLoaded(true)}
+                className={`h-full w-full select-none object-cover object-center transition-opacity duration-700 ${
+                  isHeroImageLoaded ? "opacity-100" : "opacity-0"
+                }`}
               />
             </div>
           ) : (
@@ -302,13 +431,14 @@ export default function PropertyDetail() {
 
           <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-black/30 via-transparent to-black/30" />
 
-          <a
-            href="/imoveis"
+          <button
+            type="button"
+            onClick={handleBack}
             className="absolute left-6 top-6 z-50 flex items-center gap-2 px-3 py-2 text-sm font-light text-white transition-colors hover:text-white md:left-10 md:top-8"
           >
             <ChevronLeft size={18} />
             Voltar
-          </a>
+          </button>
 
           <a
             href="/"
@@ -355,7 +485,7 @@ export default function PropertyDetail() {
                 ref={thumbnailStripRef}
                 className="flex w-full justify-start gap-2 overflow-x-auto overscroll-x-contain px-4 pb-2 scroll-smooth md:px-8"
               >
-                {gallery.map((image, index) => (
+                {gallery.slice(0, 12).map((image, index) => (
                   <button
                     key={`${image}-${index}`}
                     ref={(element) => {
@@ -388,6 +518,16 @@ export default function PropertyDetail() {
                     )}
                   </button>
                 ))}
+
+                {gallery.length > 12 && (
+                  <button
+                    type="button"
+                    onClick={openLightbox}
+                    className="flex h-[70px] w-[150px] shrink-0 items-center justify-center rounded-sm border border-border bg-foreground/[0.03] px-4 text-[10px] uppercase tracking-[0.16em] text-muted-foreground transition hover:border-foreground/40 hover:text-foreground"
+                  >
+                    Ver todas · {gallery.length}
+                  </button>
+                )}
               </div>
             </div>
           </div>
@@ -489,6 +629,9 @@ export default function PropertyDetail() {
           <div className="pt-2">
             <p className="text-[2rem] font-light tracking-tight md:text-[2.2rem]">
               {formatPrice(property.price)}
+              {property.operation === "locacao" && property.price ? (
+                <span className="ml-2 text-sm text-muted-foreground">/mês</span>
+              ) : null}
             </p>
           </div>
 
@@ -542,20 +685,53 @@ export default function PropertyDetail() {
             <p className="mb-5 text-[11px] tracking-[0.22em] text-muted-foreground">
               DESCRIÇÃO
             </p>
-            <p className="whitespace-pre-line text-sm leading-8 text-muted-foreground">
-              {property.description ||
-                "Imóvel selecionado dentro do padrão EXACT. Localização estratégica, distribuição inteligente e potencial claro de valorização."}
-            </p>
+            <div className="space-y-4 text-sm leading-8 text-muted-foreground">
+              {(descriptionBlocks.length > 0
+                ? descriptionBlocks
+                : [{
+                    kind: "paragraph" as const,
+                    text: "Imóvel selecionado dentro do padrão EXACT, com localização estratégica e distribuição inteligente.",
+                  }]
+              ).map((block, index) => {
+                if (block.kind === "details-heading" || block.kind === "development-heading") {
+                  return <h2 key={`${block.text}-${index}`} className="pt-5 text-[11px] font-normal tracking-[0.22em] text-foreground">{block.text}</h2>;
+                }
+
+                if (block.kind === "subheading") {
+                  return <h3 key={`${block.text}-${index}`} className="pt-3 text-sm font-normal text-foreground">{block.text}</h3>;
+                }
+
+                if (block.kind === "detail") {
+                  return <p key={`${block.text}-${index}`} className="flex gap-3"><span aria-hidden className="text-foreground/60">—</span><span>{block.text}</span></p>;
+                }
+
+                return <p key={`${block.text}-${index}`}>{block.text}</p>;
+              })}
+            </div>
+
+            <div className="mt-12 border-t border-border/20 pt-8">
+              <p className="text-xl font-light text-foreground">
+                Conheça este imóvel de perto.
+              </p>
+              <a
+                href={getWhatsAppUrl(getVisitMessage())}
+                target="_blank"
+                rel="noreferrer"
+                className="mt-5 inline-flex border-b border-foreground/60 pb-2 text-[11px] uppercase tracking-[0.18em] text-foreground transition hover:border-foreground/25 hover:text-muted-foreground"
+              >
+                Agendar visita
+              </a>
+            </div>
           </div>
         </div>
 
         <div className="space-y-5">
+          <div className="mb-8 hidden border-b border-border/20 pb-7 lg:block">
+            <p className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground">Atendimento EXACT</p>
+            <p className="mt-3 text-2xl font-light leading-snug">Conheça este imóvel de perto.</p>
+          </div>
           <a
-            href={getWhatsAppUrl(
-              `Olá. Tenho interesse no imóvel ${
-                property.title ?? "imóvel EXACT"
-              }${property.property_code ? ` (${property.property_code})` : ""} e gostaria de mais informações.`
-            )}
+            href={getWhatsAppUrl(getVisitMessage())}
             target="_blank"
             rel="noreferrer"
             className="block w-full bg-[#F2F2F2] py-4 text-center text-xs tracking-[0.18em] text-black transition hover:bg-white"
@@ -585,3 +761,4 @@ export default function PropertyDetail() {
     </div>
   );
 }
+

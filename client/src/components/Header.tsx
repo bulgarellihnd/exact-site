@@ -26,7 +26,7 @@ export default function Header({ activePage = "home" }: HeaderProps) {
 
   return (
     <nav className="fixed top-0 w-full bg-background/60 backdrop-blur-md z-50 border-b border-white/10">
-      <div className="container mx-auto px-6 py-4 flex justify-between items-center">
+      <div className="container mx-auto flex items-center justify-between px-5 py-4 md:px-6">
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
@@ -38,7 +38,7 @@ export default function Header({ activePage = "home" }: HeaderProps) {
           EXACT
         </motion.div>
 
-        <div className="flex gap-10 items-center">
+        <div className="flex items-center gap-5 md:gap-10">
           <button onClick={() => setLocation("/imoveis")} className={linkClass("imoveis")}>
             Imóveis
           </button>
@@ -55,7 +55,7 @@ export default function Header({ activePage = "home" }: HeaderProps) {
             href={whatsappLink}
             target="_blank"
             rel="noopener noreferrer"
-            className="text-xs font-light text-[#F4F4F4] hover:text-white transition-colors duration-300 tracking-wide border border-white/20 hover:border-white/40 px-4 py-2 rounded-sm"
+            className="hidden text-xs font-light text-[#F4F4F4] hover:text-white transition-colors duration-300 tracking-wide border border-white/20 hover:border-white/40 px-4 py-2 rounded-sm lg:inline-flex"
             whileHover={{ scale: 1.01 }}
             whileTap={{ scale: 0.99 }}
           >
@@ -66,3 +66,4 @@ export default function Header({ activePage = "home" }: HeaderProps) {
     </nav>
   );
 }
+
