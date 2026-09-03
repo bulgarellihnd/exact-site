@@ -4,6 +4,8 @@ import {
   MapPinIcon,
   Phone,
   Search,
+  Moon,
+  Sun,
 } from "lucide-react";
 import { AnimatePresence, motion, type Variants } from "framer-motion";
 import { useEffect, useState } from "react";
@@ -14,8 +16,10 @@ import { supabase } from "@/lib/supabase";
 const whatsappLink =
   "https://wa.me/5541999723780?text=Ol%C3%A1.%20Tenho%20interesse%20em%20um%20im%C3%B3vel%20da%20EXACT%20e%20gostaria%20de%20mais%20informa%C3%A7%C3%B5es.";
 
-const heroImage =
-  "https://bvhgrzurigzzjtrnyknl.supabase.co/storage/v1/object/public/site-assets/hero-home.png";
+const heroImages = {
+  light: "/images/exact-home-day.webp",
+  dark: "/images/exact-home-night.webp",
+} as const;
 
 const exactLogoStyle = {
   fontFamily: "'Raleway', sans-serif",
@@ -47,6 +51,12 @@ function formatPrice(price: number | null) {
 }
 
 export default function Home() {
+  const [theme, setTheme] = useState<"light" | "dark">(() => {
+    if (typeof window === "undefined") return "dark";
+    const savedTheme = window.localStorage.getItem("exact-theme-v2");
+    if (savedTheme === "light" || savedTheme === "dark") return savedTheme;
+    return "dark";
+  });
   const [searchCode, setSearchCode] = useState("");
   const [isSearching, setIsSearching] = useState(false);
   const [highlights, setHighlights] = useState<HighlightProperty[]>([]);
@@ -55,6 +65,10 @@ export default function Home() {
   const [rentalImageIndex, setRentalImageIndex] = useState(0);
   const [acquisitionImageIndex, setAcquisitionImageIndex] = useState(0);
   const [, setLocation] = useLocation();
+
+  useEffect(() => {
+    window.localStorage.setItem("exact-theme-v2", theme);
+  }, [theme]);
 
   const itemVariants: Variants = {
     hidden: { opacity: 0, y: 14 },
@@ -165,9 +179,13 @@ export default function Home() {
   }
 
   return (
-    <div className="min-h-screen bg-background text-foreground">
+    <div
+      className={`min-h-screen bg-background text-foreground transition-colors duration-700 ${
+        theme === "light" ? "home-light" : "home-dark"
+      }`}
+    >
       <nav className="fixed top-0 z-50 w-full border-b border-white/10 bg-black/20 backdrop-blur-md">
-        <div className="container mx-auto flex items-center justify-between px-5 py-4 md:px-6">
+        <div className="container relative mx-auto flex items-center justify-between px-5 py-4 md:px-6">
           <motion.button
             type="button"
             initial={{ opacity: 0 }}
@@ -209,23 +227,51 @@ export default function Home() {
             >
               Atendimento Direto
             </motion.a>
+            <motion.button
+              type="button"
+              aria-label={theme === "dark" ? "Ativar tema claro" : "Ativar tema escuro"}
+              title={theme === "dark" ? "Tema claro" : "Tema escuro"}
+              onClick={() => setTheme((current) => (current === "dark" ? "light" : "dark"))}
+              className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-white/25 text-white transition-colors hover:border-white/55 hover:bg-white/10 md:absolute md:left-[calc(100%+28px)] md:top-1/2 md:-translate-y-1/2"
+              whileHover={{ y: -1 }}
+              whileTap={{ scale: 0.96 }}
+            >
+              <AnimatePresence mode="wait" initial={false}>
+                <motion.span
+                  key={theme}
+                  initial={{ opacity: 0, rotate: -25, scale: 0.8 }}
+                  animate={{ opacity: 1, rotate: 0, scale: 1 }}
+                  exit={{ opacity: 0, rotate: 25, scale: 0.8 }}
+                  transition={{ duration: 0.25 }}
+                >
+                  {theme === "dark" ? <Sun size={15} /> : <Moon size={15} />}
+                </motion.span>
+              </AnimatePresence>
+            </motion.button>
           </div>
         </div>
       </nav>
 
       <section className="relative flex min-h-screen items-center justify-center overflow-hidden">
-        <motion.img
-          src={heroImage}
-          alt=""
-          aria-hidden="true"
-          className="absolute inset-0 h-full w-full object-cover"
-          initial={{ scale: 1.04 }}
-          animate={{ scale: 1 }}
-          transition={{ duration: 1.8, ease: "easeOut" }}
-        />
+        <AnimatePresence mode="sync" initial={false}>
+          <motion.img
+            key={theme}
+            src={heroImages[theme]}
+            alt="Interior residencial contemporâneo com vista para Curitiba"
+            className="absolute inset-0 h-full w-full object-cover"
+            initial={{ opacity: 0, scale: 1.025 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ opacity: { duration: 0.8 }, scale: { duration: 8, ease: "easeOut" } }}
+          />
+        </AnimatePresence>
 
-        <div className="absolute inset-0 bg-black/58" />
-        <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-black/15 to-black/55" />
+        <motion.div
+          className="absolute inset-0 bg-black"
+          animate={{ opacity: theme === "dark" ? 0.28 : 0.26 }}
+          transition={{ duration: 0.8 }}
+        />
+        <div className="absolute inset-0 bg-gradient-to-b from-black/28 via-black/10 to-black/52" />
 
         <motion.div
           className="relative z-10 h-screen w-full px-6 text-center"
@@ -235,12 +281,12 @@ export default function Home() {
         >
           <div className="absolute left-1/2 top-[40%] w-full max-w-4xl -translate-x-1/2 -translate-y-1/2 px-6">
             <motion.p
-              className="mb-5 text-[10px] font-light uppercase tracking-[0.34em] text-white/78"
+              className="mb-6 text-[10px] font-light uppercase tracking-[0.34em] text-white/82"
               initial={{ opacity: 0, y: 8 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.35, duration: 0.8 }}
             >
-              Seleção imobiliária · Curitiba
+              EXACT Imóveis · Curitiba
             </motion.p>
 
             <motion.h1
@@ -278,7 +324,7 @@ export default function Home() {
         </motion.div>
       </section>
 
-      <section className="bg-background pb-24 pt-50 md:pb-28 md:pt-48">
+      <section className="relative z-20 border-b border-border/30 bg-background py-24 transition-colors duration-700 md:py-28">
         <div className="container mx-auto px-6">
           <motion.div
             className="mx-auto max-w-3xl"
@@ -301,7 +347,8 @@ export default function Home() {
                   value={searchCode}
                   onChange={(event) => setSearchCode(event.target.value)}
                   onKeyDown={handleKeyPress}
-                  className="w-full rounded-sm border border-border/50 bg-background px-4 py-4 pr-12 text-sm font-light uppercase tracking-[0.08em] text-foreground placeholder:normal-case placeholder:tracking-normal placeholder:text-muted-foreground focus:border-border focus:outline-none"
+                  aria-label="Código de referência do imóvel"
+                  className="w-full rounded-sm border border-border bg-background/50 px-4 py-4 pr-12 text-sm font-light uppercase tracking-[0.08em] text-foreground placeholder:normal-case placeholder:tracking-normal placeholder:text-muted-foreground focus:border-foreground/45 focus:outline-none"
                 />
                 <Search
                   size={17}
@@ -315,7 +362,7 @@ export default function Home() {
                 whileTap={{ scale: 0.99 }}
                 onClick={handleSearch}
                 disabled={isSearching}
-                className="min-w-[120px] rounded-sm bg-foreground px-6 py-4 text-xs font-light tracking-wide text-background transition-opacity hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50"
+                className="min-w-[104px] rounded-sm bg-foreground px-5 py-4 text-xs font-normal tracking-wide text-background transition-opacity hover:opacity-85 disabled:cursor-not-allowed disabled:opacity-50 sm:min-w-[120px] sm:px-6"
               >
                 {isSearching ? "Buscando..." : "Buscar"}
               </motion.button>
@@ -325,7 +372,7 @@ export default function Home() {
       </section>
 
 
-      <section className="bg-background pb-20 pt-24 md:pb-24 md:pt-40">
+      <section className="bg-background pb-20 pt-28 md:pb-28 md:pt-40">
         <div className="container mx-auto px-6">
           <motion.div
             className="grid gap-12 md:grid-cols-2"
@@ -340,11 +387,14 @@ export default function Home() {
               className="group block"
               whileHover={{ y: -3 }}
             >
-              <div className="relative mb-6 h-[400px] md:h-[440px] overflow-hidden rounded-sm bg-muted/30">
+              <h3 className="mb-5 text-2xl font-extralight tracking-tight">
+                Locação
+              </h3>
+              <div className="relative mb-6 h-[360px] overflow-hidden rounded-sm bg-muted/30 md:h-[500px]">
                 <AnimatePresence initial={false}>
                   <motion.img
-                    key={rentalImages[rentalImageIndex] ?? heroImage}
-                    src={rentalImages[rentalImageIndex] ?? heroImage}
+                    key={rentalImages[rentalImageIndex] ?? heroImages[theme]}
+                    src={rentalImages[rentalImageIndex] ?? heroImages[theme]}
                     alt="Imóvel disponível para locação"
                     className="absolute inset-0 h-full w-full object-cover"
                     initial={{ opacity: 0, scale: 1.02 }}
@@ -358,9 +408,6 @@ export default function Home() {
 
               <div className="flex items-end justify-between gap-6">
                 <div>
-                  <h3 className="mb-3 text-2xl font-extralight tracking-tight">
-                    Locação
-                  </h3>
                   <p className="max-w-md text-sm leading-relaxed text-muted-foreground">
                     Imóveis selecionados para viver com conforto e localização.
                   </p>
@@ -378,11 +425,14 @@ export default function Home() {
               className="group block"
               whileHover={{ y: -3 }}
             >
-              <div className="relative mb-6 h-[400px] md:h-[440px] overflow-hidden rounded-sm bg-muted/30">
+              <h3 className="mb-5 text-right text-2xl font-extralight tracking-tight">
+                Aquisição
+              </h3>
+              <div className="relative mb-6 h-[360px] overflow-hidden rounded-sm bg-muted/30 md:h-[500px]">
                 <AnimatePresence initial={false}>
                   <motion.img
-                    key={acquisitionImages[acquisitionImageIndex] ?? heroImage}
-                    src={acquisitionImages[acquisitionImageIndex] ?? heroImage}
+                    key={acquisitionImages[acquisitionImageIndex] ?? heroImages[theme]}
+                    src={acquisitionImages[acquisitionImageIndex] ?? heroImages[theme]}
                     alt="Imóvel disponível para aquisição"
                     className="absolute inset-0 h-full w-full object-cover"
                     initial={{ opacity: 0, scale: 1.02 }}
@@ -396,9 +446,6 @@ export default function Home() {
 
               <div className="flex items-end justify-between gap-6">
                 <div>
-                  <h3 className="mb-3 text-2xl font-extralight tracking-tight">
-                    Aquisição
-                  </h3>
                   <p className="max-w-md text-sm leading-relaxed text-muted-foreground">
                     Uma seleção criteriosa de imóveis para chamar de seu.
                   </p>
@@ -410,11 +457,31 @@ export default function Home() {
               </div>
             </motion.a>
           </motion.div>
+
+          <motion.div
+            className="mt-14 flex justify-center md:mt-18"
+            initial={{ opacity: 0, y: 12 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-80px" }}
+            transition={{ duration: 0.65, ease: "easeOut" }}
+          >
+            <a
+              href="/imoveis"
+              className="group inline-flex items-center gap-4 border-b border-border pb-2 text-[11px] uppercase tracking-[0.2em] text-muted-foreground transition-colors hover:border-foreground hover:text-foreground"
+            >
+              Ver todos os imóveis
+              <ArrowRight
+                size={14}
+                className="transition-transform duration-300 group-hover:translate-x-1"
+              />
+            </a>
+          </motion.div>
         </div>
       </section>
 
-            {highlights.length > 0 && (
-        <section className="bg-background pb-20 pt-40 md:pb-24 md:pt-48">
+      {highlights.length > 0 && (
+        <>
+        <section className="sticky top-0 z-10 flex min-h-[100svh] items-center bg-card pb-[220px] pt-14 transition-colors duration-700 md:pb-[228px] md:pt-16">
           <div className="container mx-auto px-6">
             <motion.div
               initial="hidden"
@@ -424,17 +491,15 @@ export default function Home() {
             >
               <motion.div
                 variants={itemVariants}
-                className="mb-14 flex items-end justify-between gap-6"
+                className="mb-12 flex items-end justify-between gap-6 md:mb-16"
               >
-                <div className="pl-2 relative top-3">  
-  <p className="mt-1 mb-2 text-[11px] font-light uppercase tracking-[0.32em] text-muted-foreground">
-  Seleção
-</p>
+                <div>
+                  <p className="text-[11px] font-light uppercase tracking-[0.32em] text-muted-foreground">
+                    Seleção
+                  </p>
+                </div>
 
-
-</div>
-
-                <div className="relative top-10 hidden items-center gap-2 md:flex">
+                <div className="hidden items-center gap-2 md:flex">
                   <button
                     type="button"
                     aria-label="Ver imóveis anteriores"
@@ -481,7 +546,7 @@ export default function Home() {
                     className="group block min-w-[86%] shrink-0 snap-start sm:min-w-[62%] md:min-w-[calc(33.333%-1.7rem)]"
                     whileHover={{ y: -4 }}
                   >
-                    <div className="relative mb-5 h-[330px] overflow-hidden rounded-sm bg-muted/20">
+                    <div className="relative mb-5 h-[38svh] min-h-[240px] max-h-[310px] overflow-hidden rounded-sm bg-muted/20">
                       <img
                         src={property.cover_image ?? ""}
                         alt={property.title ?? "Imóvel EXACT"}
@@ -509,7 +574,7 @@ export default function Home() {
                       {property.location ?? "Curitiba"}
                     </p>
 
-                    <div className="flex items-center justify-between border-t border-border/20 pt-4">
+                    <div className="flex items-center justify-between pt-1">
                       <span className="text-sm font-light">
                         {formatPrice(property.price)}
                       </span>
@@ -523,24 +588,16 @@ export default function Home() {
                 ))}
               </div>
 
-              <motion.div
-                variants={itemVariants}
-                className="mt-0  flex justify-end"
-              >
-                <a
-                  href="/imoveis"
-                  className="inline-flex items-center gap-3 border-b border-border/40 pb-2 text-[11px] uppercase tracking-[0.2em] text-muted-foreground transition-colors hover:border-foreground hover:text-foreground"
-                >
-                  Ver todos
-                  <ArrowRight size={14} />
-                </a>
-              </motion.div>
             </motion.div>
           </div>
         </section>
+        </>
       )}
 
-      <footer id="contact" className="bg-background py-24">
+      <footer
+        id="contact"
+        className="relative z-20 rounded-t-[28px] border-t border-border/20 bg-background py-24 transition-colors duration-700 md:rounded-t-[36px]"
+      >
         <div className="container mx-auto px-6">
           <div className="mb-20 grid gap-16 md:grid-cols-4">
             <div>
@@ -548,7 +605,7 @@ export default function Home() {
                 EXACT
               </h3>
               <p className="max-w-xs text-xs leading-relaxed text-muted-foreground">
-                Curadoria imobiliária com análise precisa.
+                Imóveis selecionados com precisão.
               </p>
             </div>
 
@@ -624,27 +681,27 @@ export default function Home() {
           </div>
 
           <div className="border-t border-border/20 pt-12 text-center">
-            <p className="text-xs text-white/60">
+            <p className="text-xs text-muted-foreground">
               &copy; 2026 EXACT. Todos os direitos reservados.
             </p>
 
-            <div className="mt-5 flex items-center justify-center gap-3 text-xs text-white/50">
+            <div className="mt-5 flex items-center justify-center gap-3 text-xs text-muted-foreground">
               <a
                 href="/politica-de-privacidade"
-                className="transition-colors duration-300 hover:text-white/80"
+                className="transition-colors duration-300 hover:text-foreground"
               >
                 Política de Privacidade
               </a>
               <span>·</span>
               <a
                 href="/termos-de-uso"
-                className="transition-colors duration-300 hover:text-white/80"
+                className="transition-colors duration-300 hover:text-foreground"
               >
                 Termos de Uso
               </a>
             </div>
 
-            <div className="mt-6 space-y-1 text-[11px] text-white/45">
+            <div className="mt-6 space-y-1 text-[11px] text-muted-foreground">
               <p>EXACT Imóveis</p>
               <p>CNPJ 66.285.005/0001-16</p>
             </div>

@@ -107,7 +107,7 @@ export default function Imoveis() {
       <p className="mb-2 mt-5 text-[9px] uppercase tracking-[.17em] text-white/48">{p.operation === "locacao" ? "Locação" : "Aquisição"}</p><h2 className="text-[17px] font-light leading-snug text-white">{p.title}</h2><p className="mt-2 text-[11px] leading-5 text-white/55">{p.location}</p><p className="mt-4 text-sm text-white">{price(p)}</p>
       <div className="mt-5 grid grid-cols-4 border-t border-white/12 pt-4 text-[9px] uppercase tracking-[.1em] text-white/45"><Fact label="Quartos" value={p.bedrooms}/><Fact label="Vagas" value={p.parking_spots} icon/><Fact label="Área" value={p.area ? `${p.area} m²` : null}/><Fact label="Referência" value={p.property_code} right/></div>
     </motion.a>)}</motion.div>}</main>
-    <footer className="border-t border-white/10 px-6 py-16"><div className="container mx-auto flex flex-col justify-between gap-8 text-xs text-white/55 md:flex-row"><div><p className="mb-3 tracking-[.18em] text-white">EXACT</p><p>Curadoria imobiliária com análise precisa.</p></div><div className="flex gap-8"><a href={whatsappLink} target="_blank" rel="noreferrer">(41) 99972-3780</a><a href="mailto:contato@exactbr.com">contato@exactbr.com</a></div></div></footer>
+    <footer className="border-t border-white/10 px-6 py-16"><div className="container mx-auto flex flex-col justify-between gap-8 text-xs text-white/55 md:flex-row"><div><p className="mb-3 tracking-[.18em] text-white">EXACT</p><p>Imóveis selecionados com precisão.</p></div><div className="flex gap-8"><a href={whatsappLink} target="_blank" rel="noreferrer">(41) 99972-3780</a><a href="mailto:contato@exactbr.com">contato@exactbr.com</a></div></div></footer>
   </div>;
 }
 

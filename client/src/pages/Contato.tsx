@@ -162,7 +162,7 @@ export default function Contato() {
               </h4>
 
               <p className="text-xs text-muted-foreground font-light leading-relaxed">
-                Curadoria imobiliária com análise precisa.
+                Imóveis selecionados com precisão.
               </p>
             </div>
 

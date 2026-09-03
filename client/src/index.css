@@ -215,3 +215,27 @@
     }
   }
 }
+
+.home-light {
+  --background: #fafafa;
+  --foreground: #111111;
+  --card: #f1f1f1;
+  --card-foreground: #111111;
+  --muted: #e7e7e7;
+  --muted-foreground: rgba(17, 17, 17, 0.66);
+  --border: #d0d0d0;
+  --input: #ffffff;
+  --ring: #111111;
+}
+
+.home-dark {
+  --background: #000000;
+  --foreground: #ffffff;
+  --card: #050505;
+  --card-foreground: #ffffff;
+  --muted: #2e2e2e;
+  --muted-foreground: rgba(255, 255, 255, 0.72);
+  --border: #303030;
+  --input: #1b1b1b;
+  --ring: #f4f4f4;
+}
