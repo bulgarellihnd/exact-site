@@ -185,7 +185,7 @@ export default function Home() {
       }`}
     >
       <nav className="fixed top-0 z-50 w-full border-b border-white/10 bg-black/20 backdrop-blur-md">
-        <div className="container relative mx-auto flex items-center justify-between px-5 py-4 md:px-6">
+        <div className="relative flex w-full items-center justify-between px-5 py-4 md:px-6">
           <motion.button
             type="button"
             initial={{ opacity: 0 }}
@@ -198,7 +198,7 @@ export default function Home() {
             EXACT
           </motion.button>
 
-          <div className="flex items-center gap-4 md:gap-10">
+          <div className="flex items-center gap-4 pr-14 md:gap-10 md:pr-16">
             <a
               href="/imoveis"
               className="text-xs font-light tracking-wide text-white/88 transition-colors duration-300 hover:text-white"
@@ -232,7 +232,7 @@ export default function Home() {
               aria-label={theme === "dark" ? "Ativar tema claro" : "Ativar tema escuro"}
               title={theme === "dark" ? "Tema claro" : "Tema escuro"}
               onClick={() => setTheme((current) => (current === "dark" ? "light" : "dark"))}
-              className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-white/25 text-white transition-colors hover:border-white/55 hover:bg-white/10 md:absolute md:left-[calc(100%+28px)] md:top-1/2 md:-translate-y-1/2"
+              className="absolute right-5 top-4 inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-white/25 text-white transition-colors hover:border-white/55 hover:bg-white/10 md:right-6"
               whileHover={{ y: -1 }}
               whileTap={{ scale: 0.96 }}
             >
