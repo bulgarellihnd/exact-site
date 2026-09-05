@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
 import PropertyForm from "./admin/PropertyForm";
+import ImovelwebImport from "./admin/ImovelwebImport";
 
 type Property = {
   id: number;
@@ -1022,6 +1023,8 @@ export default function Admin() {
         </button>
       </div>
 
+      <ImovelwebImport onImported={loadProperties} />
+
       {showPropertyForm && (
         <div className="mb-10 space-y-6">
           <PropertyForm
@@ -1305,4 +1308,5 @@ export default function Admin() {
     </div>
   );
 }
+
 
