@@ -1225,7 +1225,7 @@ export default function Admin() {
           properties.map((property) => (
             <div
               key={property.id}
-              className="grid grid-cols-[96px_1fr_120px_120px_120px_120px_150px] gap-6 items-center border-b border-border/15 px-5 py-4 last:border-b-0"
+              className="grid grid-cols-[96px_1fr_120px_120px_120px_120px_210px] gap-6 items-center border-b border-border/15 px-5 py-4 last:border-b-0"
             >
               <div className="h-16 w-24 overflow-hidden rounded-sm border border-border/20 bg-background">
                 {property.cover_image ? (
@@ -1282,6 +1282,17 @@ export default function Admin() {
               </button>
 
               <div className="flex items-center justify-end gap-3">
+                {property.property_code && (
+                  <a
+                    href={`/imoveis/${property.property_code}?preview=1`}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="text-xs text-muted-foreground hover:text-foreground"
+                  >
+                    Visualizar
+                  </a>
+                )}
+
                 <button
                   type="button"
                   onClick={() => handleStartEditProperty(property)}
