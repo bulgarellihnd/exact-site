@@ -62,31 +62,39 @@ async function copyImages(
     is_cover: boolean;
   }> = [];
 
-  for (const [index, url] of urls.entries()) {
-    const response = await fetch(url);
-    if (!response.ok) {
-      throw new Error(`Foto ${index + 1}: HTTP ${response.status}`);
-    }
+  const concurrency = 6;
+  for (let offset = 0; offset < urls.length; offset += concurrency) {
+    const batch = urls.slice(offset, offset + concurrency);
+    const batchResults = await Promise.all(
+      batch.map(async (url, batchIndex) => {
+        const index = offset + batchIndex;
+        const response = await fetch(url);
+        if (!response.ok) {
+          throw new Error(`Foto ${index + 1}: HTTP ${response.status}`);
+        }
 
-    const bytes = await response.arrayBuffer();
-    const extension = extensionFor(response.headers.get("content-type"), url);
-    const storagePath = `imports/${propertyCode}/${String(index + 1).padStart(3, "0")}.${extension}`;
-    const { error: uploadError } = await supabase.storage
-      .from("properties")
-      .upload(storagePath, bytes, {
-        contentType: response.headers.get("content-type") ?? "image/jpeg",
-        upsert: true,
-      });
-    if (uploadError) throw uploadError;
+        const bytes = await response.arrayBuffer();
+        const extension = extensionFor(response.headers.get("content-type"), url);
+        const storagePath = `imports/${propertyCode}/${String(index + 1).padStart(3, "0")}.${extension}`;
+        const { error: uploadError } = await supabase.storage
+          .from("properties")
+          .upload(storagePath, bytes, {
+            contentType: response.headers.get("content-type") ?? "image/jpeg",
+            upsert: true,
+          });
+        if (uploadError) throw uploadError;
 
-    const { data } = supabase.storage.from("properties").getPublicUrl(storagePath);
-    uploaded.push({
-      property_id: propertyId,
-      image_url: data.publicUrl,
-      storage_path: storagePath,
-      sort_order: index,
-      is_cover: index === 0,
-    });
+        const { data } = supabase.storage.from("properties").getPublicUrl(storagePath);
+        return {
+          property_id: propertyId,
+          image_url: data.publicUrl,
+          storage_path: storagePath,
+          sort_order: index,
+          is_cover: index === 0,
+        };
+      })
+    );
+    uploaded.push(...batchResults);
   }
 
   const { error: deleteError } = await supabase
