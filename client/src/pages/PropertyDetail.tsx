@@ -66,12 +66,20 @@ export default function PropertyDetail() {
 
       setIsLoading(true);
 
+      const previewRequested =
+        new URLSearchParams(window.location.search).get("preview") === "1";
+      const { data: sessionData } = previewRequested
+        ? await supabase.auth.getSession()
+        : { data: { session: null } };
+      const canPreview = previewRequested && Boolean(sessionData.session);
+
       let query = supabase
         .from("properties")
         .select(
           "id, property_code, title, slug, operation, property_type, location, price, bedrooms, bathrooms, parking_spots, area, status, description, cover_image, is_published"
-        )
-        .eq("is_published", true);
+        );
+
+      if (!canPreview) query = query.eq("is_published", true);
 
       query = query.eq("property_code", identifier.toUpperCase());
 
@@ -392,6 +400,12 @@ export default function PropertyDetail() {
     <div className="min-h-screen bg-background text-foreground">
       <section className="w-full bg-background">
         <div className="relative h-screen w-full overflow-hidden bg-black">
+          {property.is_published === false && (
+            <div className="absolute left-1/2 top-6 z-[60] -translate-x-1/2 rounded-sm border border-white/20 bg-black/70 px-4 py-2 text-[10px] uppercase tracking-[0.2em] text-white backdrop-blur-md">
+              Pré-visualização · imóvel oculto
+            </div>
+          )}
+
           {currentImage ? (
             <div
               role="button"
@@ -761,4 +775,5 @@ export default function PropertyDetail() {
     </div>
   );
 }
+
 
