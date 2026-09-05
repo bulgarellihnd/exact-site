@@ -294,7 +294,8 @@ export default function PropertyDetail() {
     .filter((paragraph) =>
       Boolean(paragraph) &&
       !/^agend[ae]\s+(?:a\s+)?sua\s+visita[.!]?$/i.test(paragraph) &&
-      !/^entre\s+em\s+contato\b.*agendar\s+uma\s+visita[.!]?$/i.test(paragraph)
+      !/^entre\s+em\s+contato\b.*agendar\s+uma\s+visita[.!]?$/i.test(paragraph) &&
+      !/^informa[cç][oõ]es\s+e\s+agendamento\s+via\s+whatsapp[.!]?$/i.test(paragraph)
     );
 
   type DescriptionBlock = {
@@ -725,7 +726,7 @@ export default function PropertyDetail() {
 
             <div className="mt-12 border-t border-border/20 pt-8">
               <p className="text-xl font-light text-foreground">
-                Conheça este imóvel de perto.
+                Veja de perto.
               </p>
               <a
                 href={getWhatsAppUrl(getVisitMessage())}
@@ -733,7 +734,7 @@ export default function PropertyDetail() {
                 rel="noreferrer"
                 className="mt-5 inline-flex border-b border-foreground/60 pb-2 text-[11px] uppercase tracking-[0.18em] text-foreground transition hover:border-foreground/25 hover:text-muted-foreground"
               >
-                Agendar visita
+                Agendar uma visita
               </a>
             </div>
           </div>
@@ -742,7 +743,7 @@ export default function PropertyDetail() {
         <div className="space-y-5">
           <div className="mb-8 hidden border-b border-border/20 pb-7 lg:block">
             <p className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground">Atendimento EXACT</p>
-            <p className="mt-3 text-2xl font-light leading-snug">Conheça este imóvel de perto.</p>
+            <p className="mt-3 text-2xl font-light leading-snug">Veja de perto.</p>
           </div>
           <a
             href={getWhatsAppUrl(getVisitMessage())}
@@ -750,7 +751,7 @@ export default function PropertyDetail() {
             rel="noreferrer"
             className="block w-full bg-[#F2F2F2] py-4 text-center text-xs tracking-[0.18em] text-black transition hover:bg-white"
           >
-            FALAR NO WHATSAPP
+            AGENDAR UMA VISITA
           </a>
 
           <a
@@ -759,7 +760,7 @@ export default function PropertyDetail() {
             rel="noreferrer"
             className="block w-full border border-border py-4 text-center text-xs tracking-[0.18em] transition hover:border-foreground/40 hover:bg-muted"
           >
-            AGENDAR VISITA
+            FALAR COM A EXACT
           </a>
 
           <div className="pt-2">
