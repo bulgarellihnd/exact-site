@@ -295,7 +295,7 @@ export default function PropertyDetail() {
       Boolean(paragraph) &&
       !/^agend[ae]\s+(?:a\s+)?sua\s+visita[.!]?$/i.test(paragraph) &&
       !/^entre\s+em\s+contato\b.*agendar\s+uma\s+visita[.!]?$/i.test(paragraph) &&
-      !/^informa[cç][oõ]es\s+e\s+agendamento\s+via\s+whatsapp[.!]?$/i.test(paragraph)
+      !/^informa[cç][oõ]es\s+e\s+agendamento(?:\s+de\s+visitas?)?\s+via\s+whatsapp[.!]?$/i.test(paragraph)
     );
 
   type DescriptionBlock = {
