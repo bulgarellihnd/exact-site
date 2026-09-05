@@ -109,7 +109,7 @@ function propertyPayload(listing: ImovelwebListing, now: string) {
   return {
     title: listing.title,
     slug: slugify(`${listing.title}-${listing.sourceListingId}`),
-    operation: listing.operation === "locacao" ? "Locação" : "Aquisição",
+    operation: listing.operation,
     property_type: listing.propertyType,
     location: listing.location,
     price: listing.price,
