@@ -97,21 +97,36 @@ export default function Home() {
 
       const properties = (data ?? []) as HighlightProperty[];
 
-      setHighlights(properties.slice(0, 6));
-
       const normalizeOperation = (value: string | null) =>
         (value ?? "")
           .normalize("NFD")
           .replace(/[\u0300-\u036f]/g, "")
           .toLowerCase();
 
-      const rentalCovers = properties
+      const byPrice = (left: HighlightProperty, right: HighlightProperty) =>
+        (right.price ?? 0) - (left.price ?? 0);
+
+      const rentals = properties
         .filter((property) => normalizeOperation(property.operation) === "locacao")
+        .sort(byPrice);
+
+      const acquisitions = properties
+        .filter((property) => normalizeOperation(property.operation) === "aquisicao")
+        .sort(byPrice);
+
+      const editorialHighlights = Array.from({ length: 3 }).flatMap((_, index) =>
+        [acquisitions[index], rentals[index]].filter(
+          (property): property is HighlightProperty => Boolean(property)
+        )
+      );
+
+      setHighlights(editorialHighlights.slice(0, 6));
+
+      const rentalCovers = rentals
         .map((property) => property.cover_image)
         .filter((image): image is string => Boolean(image));
 
-      const acquisitionCovers = properties
-        .filter((property) => normalizeOperation(property.operation) === "aquisicao")
+      const acquisitionCovers = acquisitions
         .map((property) => property.cover_image)
         .filter((image): image is string => Boolean(image));
 
@@ -546,39 +561,45 @@ export default function Home() {
                     className="group block min-w-[86%] shrink-0 snap-start sm:min-w-[62%] md:min-w-[calc(33.333%-1.7rem)]"
                     whileHover={{ y: -4 }}
                   >
-                    <div className="relative mb-5 h-[38svh] min-h-[240px] max-h-[310px] overflow-hidden rounded-sm bg-muted/20">
+                    <div className="relative mb-5 h-[40svh] min-h-[260px] max-h-[360px] overflow-hidden rounded-sm bg-muted/20">
                       <img
                         src={property.cover_image ?? ""}
                         alt={property.title ?? "Imóvel EXACT"}
+                        loading="lazy"
+                        decoding="async"
                         className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-[1.025]"
                       />
 
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/45 via-transparent to-transparent opacity-70" />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/65 via-transparent to-black/10" />
+
+                      <span className="absolute left-4 top-4 rounded-full border border-white/20 bg-black/30 px-3 py-1.5 text-[10px] uppercase tracking-[0.18em] text-white/90 backdrop-blur-md">
+                        {property.operation === "locacao" ? "Locação" : "Aquisição"}
+                      </span>
 
                       {property.property_code && (
-                        <span className="absolute bottom-4 left-4 text-[10px] uppercase tracking-[0.2em] text-white/88">
+                        <span className="absolute bottom-4 left-4 text-[11px] uppercase tracking-[0.18em] text-white/90">
                           {property.property_code}
                         </span>
                       )}
+
+                      <span className="absolute bottom-4 right-4 text-sm font-light text-white">
+                        {formatPrice(property.price)}
+                      </span>
                     </div>
 
                     <p className="mb-2 text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
                       {property.property_type ?? "Imóvel"}
                     </p>
 
-                    <h3 className="mb-2 text-lg font-light tracking-tight">
+                    <h3 className="mb-2 line-clamp-2 text-xl font-light leading-snug tracking-tight">
                       {property.title ?? "Imóvel EXACT"}
                     </h3>
 
-                    <p className="mb-4 text-xs text-muted-foreground">
+                    <p className="mb-4 text-sm leading-relaxed text-muted-foreground">
                       {property.location ?? "Curitiba"}
                     </p>
 
-                    <div className="flex items-center justify-between pt-1">
-                      <span className="text-sm font-light">
-                        {formatPrice(property.price)}
-                      </span>
-
+                    <div className="flex items-center justify-end pt-1">
                       <ArrowRight
                         size={15}
                         className="text-muted-foreground transition-transform duration-300 group-hover:translate-x-1 group-hover:text-foreground"
@@ -711,3 +732,4 @@ export default function Home() {
     </div>
   );
 }
+
