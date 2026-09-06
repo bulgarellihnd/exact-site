@@ -324,7 +324,7 @@ export default function Home() {
         </motion.div>
       </section>
 
-      <section className="relative z-20 border-b border-border/30 bg-background py-24 transition-colors duration-700 md:py-28">
+      <section className="relative z-20 bg-background py-24 transition-colors duration-700 md:py-28">
         <div className="container mx-auto px-6">
           <motion.div
             className="mx-auto max-w-3xl"
