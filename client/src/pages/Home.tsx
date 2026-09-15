@@ -701,7 +701,7 @@ export default function Home() {
 
       {highlights.length > 0 && (
         <>
-        <section className="sticky top-0 z-10 flex min-h-[100svh] items-center bg-card pb-[220px] pt-14 transition-colors duration-700 md:pb-[228px] md:pt-16">
+        <section className="sticky top-0 z-10 flex min-h-[100svh] items-center bg-card pb-[220px] pt-10 transition-colors duration-700 md:pb-[228px] md:pt-12">
           <div className="container mx-auto px-6">
             <motion.div
               initial="hidden"
@@ -711,7 +711,7 @@ export default function Home() {
             >
               <motion.div
                 variants={itemVariants}
-                className="mb-12 flex items-end justify-between gap-6 md:mb-16"
+                className="mb-9 flex items-end justify-between gap-6 md:mb-11"
               >
                 <div>
                   <p className="text-[11px] font-light uppercase tracking-[0.32em] text-muted-foreground">
@@ -767,7 +767,7 @@ export default function Home() {
                     className="group flex w-[76%] min-w-0 max-w-[76%] flex-none basis-[76%] snap-start flex-col sm:w-[48%] sm:max-w-[48%] sm:basis-[48%] md:w-[38%] md:max-w-[38%] md:basis-[38%]"
                     whileHover={{ y: -4 }}
                   >
-                    <div className="relative mb-5 aspect-[4/5] w-full overflow-hidden rounded-sm bg-muted/20">
+                    <div className="relative mb-5 h-[38svh] min-h-[290px] max-h-[420px] w-full overflow-hidden rounded-sm bg-muted/20 md:h-[40svh]">
                       <img
                         src={property.cover_image ?? ""}
                         alt={property.title ?? "Imóvel EXACT"}
