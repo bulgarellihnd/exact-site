@@ -8,7 +8,7 @@ import {
   Sun,
 } from "lucide-react";
 import { AnimatePresence, motion, type Variants } from "framer-motion";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useLocation } from "wouter";
 import { toast } from "sonner";
 import { supabase } from "@/lib/supabase";
@@ -17,9 +17,24 @@ const whatsappLink =
   "https://wa.me/5541999723780?text=Ol%C3%A1.%20Tenho%20interesse%20em%20um%20im%C3%B3vel%20da%20EXACT%20e%20gostaria%20de%20mais%20informa%C3%A7%C3%B5es.";
 
 const heroImages = {
-  light: "/images/exact-home-day.webp",
-  dark: "/images/exact-home-night.webp",
+  light: "/images/exact-ecoville-day-v3.png",
+  dark: "/images/exact-ecoville-night-v3.png",
 } as const;
+
+function canonicalPropertyCode(value: string) {
+  const digits = value.toUpperCase().replace(/^EX/, "").replace(/\D/g, "");
+  if (!digits || digits.length > 4) return null;
+  return `EX${digits.padStart(4, "0")}`;
+}
+
+function shuffled<T>(items: T[]) {
+  const result = [...items];
+  for (let index = result.length - 1; index > 0; index -= 1) {
+    const randomIndex = Math.floor(Math.random() * (index + 1));
+    [result[index], result[randomIndex]] = [result[randomIndex], result[index]];
+  }
+  return result;
+}
 
 const exactLogoStyle = {
   fontFamily: "'Raleway', sans-serif",
@@ -59,16 +74,72 @@ export default function Home() {
   });
   const [searchCode, setSearchCode] = useState("");
   const [isSearching, setIsSearching] = useState(false);
+  const [isReferenceSearchOpen, setIsReferenceSearchOpen] = useState(false);
+  const [referenceMatch, setReferenceMatch] = useState<HighlightProperty | null>(null);
+  const [isReferenceLoading, setIsReferenceLoading] = useState(false);
   const [highlights, setHighlights] = useState<HighlightProperty[]>([]);
   const [rentalImages, setRentalImages] = useState<string[]>([]);
   const [acquisitionImages, setAcquisitionImages] = useState<string[]>([]);
   const [rentalImageIndex, setRentalImageIndex] = useState(0);
   const [acquisitionImageIndex, setAcquisitionImageIndex] = useState(0);
   const [, setLocation] = useLocation();
+  const referenceSearchRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     window.localStorage.setItem("exact-theme-v2", theme);
   }, [theme]);
+
+  useEffect(() => {
+    if (!isReferenceSearchOpen) return;
+
+    const closeSearch = (event: PointerEvent) => {
+      if (!referenceSearchRef.current?.contains(event.target as Node)) {
+        setIsReferenceSearchOpen(false);
+        setSearchCode("");
+        setReferenceMatch(null);
+      }
+    };
+
+    const closeOnEscape = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        setIsReferenceSearchOpen(false);
+        setSearchCode("");
+        setReferenceMatch(null);
+      }
+    };
+
+    document.addEventListener("pointerdown", closeSearch);
+    document.addEventListener("keydown", closeOnEscape);
+    return () => {
+      document.removeEventListener("pointerdown", closeSearch);
+      document.removeEventListener("keydown", closeOnEscape);
+    };
+  }, [isReferenceSearchOpen]);
+
+  useEffect(() => {
+    const code = canonicalPropertyCode(searchCode.trim());
+    setReferenceMatch(null);
+
+    if (!isReferenceSearchOpen || !code) {
+      setIsReferenceLoading(false);
+      return;
+    }
+
+    const timeout = window.setTimeout(async () => {
+      setIsReferenceLoading(true);
+      const { data } = await supabase
+        .from("properties")
+        .select("id, property_code, title, property_type, operation, price, location, cover_image")
+        .eq("property_code", code)
+        .eq("is_published", true)
+        .maybeSingle();
+
+      setReferenceMatch((data ?? null) as HighlightProperty | null);
+      setIsReferenceLoading(false);
+    }, 220);
+
+    return () => window.clearTimeout(timeout);
+  }, [searchCode, isReferenceSearchOpen]);
 
   const itemVariants: Variants = {
     hidden: { opacity: 0, y: 14 },
@@ -107,22 +178,39 @@ export default function Home() {
         (right.price ?? 0) - (left.price ?? 0);
 
       const rentals = properties
-        .filter((property) => normalizeOperation(property.operation) === "locacao")
+        .filter(
+          (property) =>
+            normalizeOperation(property.operation) === "locacao" &&
+            property.property_code?.toUpperCase() !== "EX0009"
+        )
         .sort(byPrice);
 
       const acquisitions = properties
-        .filter((property) => normalizeOperation(property.operation) === "aquisicao")
+        .filter(
+          (property) =>
+            normalizeOperation(property.operation) === "aquisicao" &&
+            property.property_code?.toUpperCase() !== "EX0009"
+        )
         .sort(byPrice);
 
-      const editorialHighlights = Array.from({ length: 3 }).flatMap((_, index) =>
-        [acquisitions[index], rentals[index]].filter(
-          (property): property is HighlightProperty => Boolean(property)
-        )
+      const eligibleRentals = rentals.filter(
+        (property) => property.property_code?.toUpperCase() !== "EX0009"
       );
+      const eligibleAcquisitions = acquisitions.filter(
+        (property) => property.property_code?.toUpperCase() !== "EX0009"
+      );
+      const editorialHighlights = [
+        ...shuffled(eligibleRentals.slice(0, 10)).slice(0, 4),
+        ...shuffled(eligibleAcquisitions.slice(0, 10)).slice(0, 2),
+      ];
 
-      setHighlights(editorialHighlights.slice(0, 6));
+      setHighlights(shuffled(editorialHighlights));
 
+      const featuredRental = rentals.find(
+        (property) => property.property_code?.toUpperCase() === "EX0019"
+      );
       const rentalCovers = rentals
+        .filter((property) => property.property_code?.toUpperCase() !== "EX0019")
         .map((property) => property.cover_image)
         .filter((image): image is string => Boolean(image));
 
@@ -130,8 +218,12 @@ export default function Home() {
         .map((property) => property.cover_image)
         .filter((image): image is string => Boolean(image));
 
-      setRentalImages(rentalCovers);
-      setAcquisitionImages(acquisitionCovers);
+      setRentalImages([
+        ...(featuredRental?.cover_image ? [featuredRental.cover_image] : []),
+        ...shuffled(rentalCovers),
+      ]);
+      setRentalImageIndex(0);
+      setAcquisitionImages(shuffled(acquisitionCovers));
     }
 
     loadHomeProperties();
@@ -160,7 +252,7 @@ export default function Home() {
   }, [acquisitionImages]);
 
   async function handleSearch() {
-    const code = searchCode.trim().toUpperCase();
+    const code = canonicalPropertyCode(searchCode.trim());
 
     if (!code) {
       toast.error("Digite um código para buscar");
@@ -184,6 +276,7 @@ export default function Home() {
     }
 
     setSearchCode("");
+    setIsReferenceSearchOpen(false);
     setLocation(`/imoveis/${data.property_code}`);
   }
 
@@ -213,7 +306,7 @@ export default function Home() {
             EXACT
           </motion.button>
 
-          <div className="flex items-center gap-4 pr-14 md:gap-10 md:pr-16">
+          <div className="flex items-center gap-4 md:gap-10">
             <a
               href="/imoveis"
               className="text-xs font-light tracking-wide text-white/88 transition-colors duration-300 hover:text-white"
@@ -236,33 +329,145 @@ export default function Home() {
               href={whatsappLink}
               target="_blank"
               rel="noopener noreferrer"
-              className="hidden rounded-sm border border-white/25 px-4 py-2 text-xs font-light tracking-wide text-white/95 transition-all duration-300 hover:border-white/50 hover:text-white md:inline-flex"
+              animate={{ marginRight: isReferenceSearchOpen ? 292 : 88 }}
+              transition={{ duration: 0.38, ease: [0.22, 1, 0.36, 1] }}
+              className="hidden rounded-sm border border-white/25 px-4 py-2 text-xs font-light tracking-wide text-white/95 transition-colors duration-300 hover:border-white/50 hover:text-white md:inline-flex"
               whileHover={{ y: -1 }}
               whileTap={{ scale: 0.99 }}
             >
               Atendimento Direto
             </motion.a>
-            <motion.button
-              type="button"
-              aria-label={theme === "dark" ? "Ativar tema claro" : "Ativar tema escuro"}
-              title={theme === "dark" ? "Tema claro" : "Tema escuro"}
-              onClick={() => setTheme((current) => (current === "dark" ? "light" : "dark"))}
-              className="absolute right-5 top-4 inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-white/25 text-white transition-colors hover:border-white/55 hover:bg-white/10 md:right-6"
-              whileHover={{ y: -1 }}
-              whileTap={{ scale: 0.96 }}
-            >
+            <div ref={referenceSearchRef} className="absolute right-5 top-3.5 md:right-6">
               <AnimatePresence mode="wait" initial={false}>
-                <motion.span
-                  key={theme}
-                  initial={{ opacity: 0, rotate: -25, scale: 0.8 }}
-                  animate={{ opacity: 1, rotate: 0, scale: 1 }}
-                  exit={{ opacity: 0, rotate: 25, scale: 0.8 }}
-                  transition={{ duration: 0.25 }}
-                >
-                  {theme === "dark" ? <Sun size={15} /> : <Moon size={15} />}
-                </motion.span>
+                {isReferenceSearchOpen ? (
+                  <motion.div
+                    key="reference-field"
+                    initial={{ opacity: 0, width: 40, scaleX: 0.72, filter: "blur(3px)" }}
+                    animate={{ opacity: 1, width: 292, scaleX: 1, filter: "blur(0px)" }}
+                    exit={{ opacity: 0, width: 40, scaleX: 0.72, filter: "blur(3px)" }}
+                    transition={{ duration: 0.46, ease: [0.16, 1, 0.3, 1] }}
+                    className="relative origin-right"
+                  >
+                    <div className="flex h-10 items-center gap-1 rounded-full border border-white/30 bg-gradient-to-r from-black/55 to-black/25 px-1.5 shadow-[0_12px_40px_rgba(0,0,0,0.28)] backdrop-blur-xl">
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setIsReferenceSearchOpen(false);
+                          setSearchCode("");
+                          setReferenceMatch(null);
+                        }}
+                        className="inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-full text-white/65 transition-colors hover:bg-white/10 hover:text-white"
+                        aria-label="Fechar busca"
+                        title="Fechar busca"
+                      >
+                        <Search size={14} />
+                      </button>
+                      <input
+                        autoFocus
+                        type="text"
+                        inputMode="numeric"
+                        placeholder="Código do imóvel"
+                        value={searchCode}
+                        maxLength={6}
+                        onChange={(event) => {
+                          const typed = event.target.value.toUpperCase().replace(/\s/g, "");
+                          const hasPrefix = typed.startsWith("EX");
+                          const digits = typed.replace(/^EX/, "").replace(/\D/g, "").slice(0, 4);
+                          setSearchCode(hasPrefix && digits ? `EX${digits}` : digits);
+                        }}
+                        onKeyDown={handleKeyPress}
+                        aria-label="Codigo de referencia do imovel"
+                        className="min-w-0 flex-1 bg-transparent px-2 text-xs uppercase tracking-[0.12em] text-white outline-none placeholder:text-white/40"
+                      />
+                      <button
+                        type="button"
+                        onClick={handleSearch}
+                        disabled={isSearching}
+                        className="inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-white text-black transition-opacity hover:opacity-85 disabled:opacity-50"
+                        aria-label="Confirmar busca"
+                      >
+                        <ArrowRight size={13} />
+                      </button>
+                    </div>
+
+                    <AnimatePresence>
+                      {(Boolean(canonicalPropertyCode(searchCode)) || isReferenceLoading) && (
+                        <motion.div
+                          initial={{ opacity: 0, y: -5 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          exit={{ opacity: 0, y: -5 }}
+                          className="absolute right-0 top-[calc(100%+10px)] w-[min(340px,calc(100vw-40px))] overflow-hidden rounded-lg border border-white/15 bg-[#0a0a0a]/95 shadow-2xl backdrop-blur-xl"
+                        >
+                          {isReferenceLoading ? (
+                            <p className="px-4 py-4 text-xs tracking-wide text-white/50">Localizando imóvel…</p>
+                          ) : referenceMatch ? (
+                            <button
+                              type="button"
+                              onClick={() => {
+                                setIsReferenceSearchOpen(false);
+                                setLocation(`/imoveis/${referenceMatch.property_code}`);
+                              }}
+                              className="group flex w-full items-center gap-3 p-2 text-left"
+                            >
+                              <img
+                                src={referenceMatch.cover_image ?? heroImages.dark}
+                                alt=""
+                                className="h-16 w-20 shrink-0 rounded-md object-cover"
+                              />
+                              <span className="min-w-0 flex-1">
+                                <span className="block text-[9px] uppercase tracking-[0.2em] text-white/45">
+                                  {referenceMatch.property_code}
+                                </span>
+                                <span className="mt-1 block truncate text-xs font-light text-white">
+                                  {referenceMatch.title ?? referenceMatch.property_type}
+                                </span>
+                                <span className="mt-1 block truncate text-[10px] text-white/50">
+                                  {referenceMatch.location} · {formatPrice(referenceMatch.price)}
+                                </span>
+                              </span>
+                              <ArrowRight size={14} className="mr-2 text-white/45 transition-transform group-hover:translate-x-1" />
+                            </button>
+                          ) : (
+                            <p className="px-4 py-4 text-xs tracking-wide text-white/50">Referência não encontrada.</p>
+                          )}
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
+                  </motion.div>
+                ) : (
+                  <motion.div
+                    key="header-actions"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    className="flex items-center gap-2"
+                  >
+                    <motion.button
+                      type="button"
+                      aria-label="Buscar imóvel por referência"
+                      title="Buscar por referência"
+                      onClick={() => setIsReferenceSearchOpen(true)}
+                      className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-white/20 text-white transition-colors hover:border-white/50 hover:bg-white/10"
+                      whileHover={{ y: -1 }}
+                      whileTap={{ scale: 0.96 }}
+                    >
+                      <Search size={15} />
+                    </motion.button>
+                    <motion.button
+                      type="button"
+                      aria-label={theme === "dark" ? "Ativar tema claro" : "Ativar tema escuro"}
+                      title={theme === "dark" ? "Tema claro" : "Tema escuro"}
+                      onClick={() => setTheme((current) => (current === "dark" ? "light" : "dark"))}
+                      className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-white/25 text-white transition-colors hover:border-white/55 hover:bg-white/10"
+                      whileHover={{ y: -1 }}
+                      whileTap={{ scale: 0.96 }}
+                    >
+                      {theme === "dark" ? <Sun size={15} /> : <Moon size={15} />}
+                    </motion.button>
+                  </motion.div>
+                )}
               </AnimatePresence>
-            </motion.button>
+            </div>
           </div>
         </div>
       </nav>
@@ -339,7 +544,7 @@ export default function Home() {
         </motion.div>
       </section>
 
-      <section className="relative z-20 bg-background py-24 transition-colors duration-700 md:py-28">
+      <section className="hidden" aria-hidden="true">
         <div className="container mx-auto px-6">
           <motion.div
             className="mx-auto max-w-3xl"
@@ -387,7 +592,7 @@ export default function Home() {
       </section>
 
 
-      <section className="bg-background pb-20 pt-28 md:pb-28 md:pt-40">
+      <section className="bg-background pb-20 pt-20 md:pb-28 md:pt-28">
         <div className="container mx-auto px-6">
           <motion.div
             className="grid gap-12 md:grid-cols-2"
@@ -549,19 +754,20 @@ export default function Home() {
                 </div>
               </motion.div>
 
-              <div
-                id="selection-carousel"
-                className="flex snap-x snap-mandatory gap-6 overflow-x-auto pb-4 [scrollbar-width:none] md:gap-10 [&::-webkit-scrollbar]:hidden"
-              >
+              <div className="relative">
+                <div
+                  id="selection-carousel"
+                  className="flex snap-x snap-mandatory gap-6 overflow-x-auto pb-4 pr-[14%] [scrollbar-width:none] md:gap-8 md:pr-[12%] [&::-webkit-scrollbar]:hidden"
+                >
                 {highlights.map((property) => (
                   <motion.a
                     key={property.id}
                     href={`/imoveis/${property.property_code ?? property.id}`}
                     variants={itemVariants}
-                    className="group block min-w-[86%] shrink-0 snap-start sm:min-w-[62%] md:min-w-[calc(33.333%-1.7rem)]"
+                    className="group flex w-[76%] min-w-0 max-w-[76%] flex-none basis-[76%] snap-start flex-col sm:w-[48%] sm:max-w-[48%] sm:basis-[48%] md:w-[38%] md:max-w-[38%] md:basis-[38%]"
                     whileHover={{ y: -4 }}
                   >
-                    <div className="relative mb-5 h-[40svh] min-h-[260px] max-h-[360px] overflow-hidden rounded-sm bg-muted/20">
+                    <div className="relative mb-5 aspect-[4/5] w-full overflow-hidden rounded-sm bg-muted/20">
                       <img
                         src={property.cover_image ?? ""}
                         alt={property.title ?? "Imóvel EXACT"}
@@ -591,15 +797,15 @@ export default function Home() {
                       {property.property_type ?? "Imóvel"}
                     </p>
 
-                    <h3 className="mb-2 line-clamp-2 text-xl font-light leading-snug tracking-tight">
+                    <h3 className="mb-2 min-h-[3.25rem] line-clamp-2 text-xl font-light leading-snug tracking-tight">
                       {property.title ?? "Imóvel EXACT"}
                     </h3>
 
-                    <p className="mb-4 text-sm leading-relaxed text-muted-foreground">
+                    <p className="mb-4 min-h-[2.6rem] text-sm leading-relaxed text-muted-foreground">
                       {property.location ?? "Curitiba"}
                     </p>
 
-                    <div className="flex items-center justify-end pt-1">
+                    <div className="mt-auto flex items-center justify-end pt-1">
                       <ArrowRight
                         size={15}
                         className="text-muted-foreground transition-transform duration-300 group-hover:translate-x-1 group-hover:text-foreground"
@@ -607,6 +813,8 @@ export default function Home() {
                     </div>
                   </motion.a>
                 ))}
+                </div>
+                <div className="pointer-events-none absolute inset-y-0 right-0 w-[10%] bg-gradient-to-l from-card via-card/55 to-transparent" />
               </div>
 
             </motion.div>
@@ -617,10 +825,60 @@ export default function Home() {
 
       <footer
         id="contact"
-        className="relative z-20 rounded-t-[28px] border-t border-border/20 bg-background py-24 transition-colors duration-700 md:rounded-t-[36px]"
+        className="relative z-20 flex items-center rounded-t-[28px] border-t border-border/20 bg-background py-8 transition-colors duration-700 md:rounded-t-[36px] md:py-10"
       >
         <div className="container mx-auto px-6">
-          <div className="mb-20 grid gap-16 md:grid-cols-4">
+          <div className="relative mb-10 min-h-[40svh] max-h-[430px] overflow-hidden rounded-[24px] border border-border/25 md:mb-12 md:rounded-[32px]">
+            <img
+              src={highlights[0]?.cover_image ?? heroImages[theme]}
+              alt="Ambiente residencial selecionado pela EXACT Imóveis"
+              className="absolute inset-0 h-full w-full object-cover"
+            />
+            <div className="absolute inset-0 bg-gradient-to-r from-background via-background/90 to-background/15" />
+            <div className="absolute inset-0 bg-gradient-to-t from-background/70 via-transparent to-transparent" />
+            <motion.div
+              initial={{ opacity: 0, y: 18 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, amount: 0.35 }}
+              transition={{ duration: 0.75, ease: "easeOut" }}
+              className="relative z-10 flex min-h-[40svh] max-w-2xl flex-col justify-center px-7 py-10 md:px-14 md:py-12"
+            >
+              <p className="mb-5 text-[10px] uppercase tracking-[0.32em] text-muted-foreground">Vamos conversar</p>
+              <h2 className="max-w-xl text-4xl font-extralight leading-[1.05] tracking-[-0.04em] text-foreground md:text-5xl">
+                O próximo endereço começa com uma conversa.
+              </h2>
+              <p className="mt-5 max-w-lg text-sm font-light leading-relaxed text-muted-foreground">
+                Conte-nos o que procura e o que importa para você. A partir daí, encontramos possibilidades com clareza e precisão.
+              </p>
+              <a href={whatsappLink} target="_blank" rel="noopener noreferrer" className="group mt-7 inline-flex w-fit items-center gap-5 rounded-sm bg-foreground px-7 py-3.5 text-[10px] uppercase tracking-[0.2em] text-background transition-opacity hover:opacity-85">
+                Falar com a EXACT
+                <ArrowRight size={14} className="transition-transform duration-300 group-hover:translate-x-1" />
+              </a>
+            </motion.div>
+          </div>
+          <div className="hidden">
+            <div>
+              <p className="mb-5 text-[10px] uppercase tracking-[0.32em] text-muted-foreground">
+                Curitiba, Paraná
+              </p>
+              <h2 className="text-5xl font-extralight tracking-[-0.04em] text-foreground md:text-7xl">
+                EXACT Imóveis
+              </h2>
+            </div>
+            <a
+              href={whatsappLink}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="group inline-flex items-center gap-5 border-b border-border pb-2 text-[11px] uppercase tracking-[0.2em] text-muted-foreground transition-colors hover:border-foreground hover:text-foreground"
+            >
+              Atendimento direto
+              <ArrowRight
+                size={14}
+                className="transition-transform duration-300 group-hover:translate-x-1"
+              />
+            </a>
+          </div>
+          <div className="mb-10 grid gap-9 md:grid-cols-4 md:gap-12">
             <div>
               <h3 className="mb-5 text-foreground" style={exactLogoStyle}>
                 EXACT
@@ -701,7 +959,7 @@ export default function Home() {
             </div>
           </div>
 
-          <div className="border-t border-border/20 pt-12 text-center">
+          <div className="border-t border-border/20 pt-7 text-center">
             <p className="text-xs text-muted-foreground">
               &copy; 2026 EXACT. Todos os direitos reservados.
             </p>
@@ -722,7 +980,7 @@ export default function Home() {
               </a>
             </div>
 
-            <div className="mt-6 space-y-1 text-[11px] text-muted-foreground">
+            <div className="mt-4 space-y-1 text-[11px] text-muted-foreground">
               <p>EXACT Imóveis</p>
               <p>CNPJ 66.285.005/0001-16</p>
             </div>
@@ -732,4 +990,3 @@ export default function Home() {
     </div>
   );
 }
-
