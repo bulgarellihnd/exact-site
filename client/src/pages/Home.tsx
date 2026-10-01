@@ -837,9 +837,24 @@ export default function Home() {
                       behavior: "smooth",
                     })
                   }
-                  className="group/next absolute right-0 top-[clamp(145px,19svh,210px)] z-20 inline-flex h-20 w-16 -translate-y-1/2 items-center justify-center text-foreground/65 transition-colors duration-300 hover:text-foreground focus-visible:rounded-sm focus-visible:outline focus-visible:outline-1 focus-visible:outline-offset-2 focus-visible:outline-foreground/50 md:top-[clamp(145px,20svh,210px)]"
+                  className="group/next absolute right-0 top-[clamp(145px,19svh,210px)] z-20 inline-flex h-20 w-14 -translate-y-1/2 items-center justify-center text-foreground/45 transition-colors duration-500 hover:text-foreground/90 focus-visible:rounded-sm focus-visible:outline focus-visible:outline-1 focus-visible:outline-offset-2 focus-visible:outline-foreground/50 md:top-[clamp(145px,20svh,210px)]"
                 >
-                  <ArrowRight size={30} strokeWidth={1} className="transition-transform duration-300 ease-out group-hover/next:translate-x-1.5 group-focus-visible/next:translate-x-1.5" />
+                  <svg
+                    width="42"
+                    height="18"
+                    viewBox="0 0 42 18"
+                    fill="none"
+                    aria-hidden="true"
+                    className="transition-transform duration-500 ease-out group-hover/next:translate-x-1 group-focus-visible/next:translate-x-1"
+                  >
+                    <path
+                      d="M2 9H39M33 3L39 9L33 15"
+                      stroke="currentColor"
+                      strokeWidth="1.1"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                  </svg>
                 </button>
               </div>
 
