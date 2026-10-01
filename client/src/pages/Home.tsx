@@ -583,7 +583,7 @@ export default function Home() {
           </div>
 
           <motion.div
-            className="absolute bottom-[max(32px,8svh)] left-1/2 flex w-full max-w-sm -translate-x-1/2 flex-row items-stretch justify-center gap-2 px-5 md:bottom-[11%] md:ml-[7px] md:w-auto md:max-w-none md:flex-row md:gap-4"
+            className="absolute bottom-[max(32px,8svh)] left-1/2 flex w-[calc(100%-64px)] max-w-[300px] -translate-x-1/2 md:w-auto flex-row items-stretch justify-center gap-2 px-5 md:bottom-[11%] md:ml-[7px] md:w-auto md:max-w-none md:flex-row md:gap-4"
             initial={{ opacity: 0, y: 14 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.7, duration: 0.8 }}
@@ -764,7 +764,7 @@ export default function Home() {
 
       {highlights.length > 0 && (
         <>
-        <section className="sticky top-[-180px] z-10 flex items-center bg-card pb-16 pt-[60px] transition-colors duration-700 md:top-[-250px] md:min-h-[100svh] md:pb-[218px] md:pt-[68px]">
+        <section className="sticky top-[-174px] z-10 flex items-center bg-card pb-16 pt-[60px] transition-colors duration-700 md:top-[-250px] md:min-h-[100svh] md:pb-[218px] md:pt-[68px]">
           <div className="container mx-auto px-6">
             <motion.div
               initial="hidden"
