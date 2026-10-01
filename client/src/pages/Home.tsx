@@ -84,6 +84,41 @@ export default function Home() {
   const [acquisitionImageIndex, setAcquisitionImageIndex] = useState(0);
   const [, setLocation] = useLocation();
   const referenceSearchRef = useRef<HTMLDivElement>(null);
+  const selectionDrag = useRef({ active: false, moved: false, startX: 0, scrollLeft: 0 });
+
+  function startSelectionDrag(event: React.PointerEvent<HTMLDivElement>) {
+    if (event.pointerType !== "mouse" || event.button !== 0) return;
+    selectionDrag.current = {
+      active: true,
+      moved: false,
+      startX: event.clientX,
+      scrollLeft: event.currentTarget.scrollLeft,
+    };
+  }
+
+  function moveSelectionDrag(event: React.PointerEvent<HTMLDivElement>) {
+    const drag = selectionDrag.current;
+    if (!drag.active) return;
+    const distance = event.clientX - drag.startX;
+    if (!drag.moved && Math.abs(distance) < 6) return;
+    if (!drag.moved) {
+      drag.moved = true;
+      event.currentTarget.setPointerCapture(event.pointerId);
+      event.currentTarget.style.scrollSnapType = "none";
+      event.currentTarget.style.cursor = "grabbing";
+    }
+    event.preventDefault();
+    event.currentTarget.scrollLeft = drag.scrollLeft - distance;
+  }
+
+  function endSelectionDrag(event: React.PointerEvent<HTMLDivElement>) {
+    selectionDrag.current.active = false;
+    event.currentTarget.style.scrollSnapType = "";
+    event.currentTarget.style.cursor = "";
+    if (event.currentTarget.hasPointerCapture(event.pointerId)) {
+      event.currentTarget.releasePointerCapture(event.pointerId);
+    }
+  }
 
   useEffect(() => {
     window.localStorage.setItem("exact-theme-v2", theme);
@@ -719,45 +754,25 @@ export default function Home() {
                   </p>
                 </div>
 
-                <div className="hidden items-center gap-2 md:flex">
-                  <button
-                    type="button"
-                    aria-label="Ver imóveis anteriores"
-                    onClick={() =>
-                      document
-                        .getElementById("selection-carousel")
-                        ?.scrollBy({
-                          left: -window.innerWidth * 0.8,
-                          behavior: "smooth",
-                        })
-                    }
-                    className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-border/30 text-sm text-muted-foreground transition-colors hover:border-border/60 hover:text-foreground"
-                  >
-                    ←
-                  </button>
-
-                  <button
-                    type="button"
-                    aria-label="Ver próximos imóveis"
-                    onClick={() =>
-                      document
-                        .getElementById("selection-carousel")
-                        ?.scrollBy({
-                          left: window.innerWidth * 0.8,
-                          behavior: "smooth",
-                        })
-                    }
-                    className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-border/30 text-sm text-muted-foreground transition-colors hover:border-border/60 hover:text-foreground"
-                  >
-                    →
-                  </button>
-                </div>
               </motion.div>
 
               <div className="relative">
                 <div
                   id="selection-carousel"
-                  className="flex snap-x snap-mandatory gap-6 overflow-x-auto pb-4 pr-[14%] [scrollbar-width:none] md:gap-8 md:pr-[12%] [&::-webkit-scrollbar]:hidden"
+                  onPointerDown={startSelectionDrag}
+                  onPointerMove={moveSelectionDrag}
+                  onPointerUp={endSelectionDrag}
+                  onPointerCancel={endSelectionDrag}
+                  onLostPointerCapture={endSelectionDrag}
+                  onDragStart={(event) => event.preventDefault()}
+                  onClickCapture={(event) => {
+                    if (selectionDrag.current.moved) {
+                      event.preventDefault();
+                      event.stopPropagation();
+                      selectionDrag.current.moved = false;
+                    }
+                  }}
+                  className="flex cursor-grab select-none snap-x snap-mandatory gap-6 overflow-x-auto pb-4 pr-[14%] [scrollbar-width:none] md:gap-8 md:pr-[12%] [&::-webkit-scrollbar]:hidden"
                 >
                 {highlights.map((property) => (
                   <motion.a
@@ -815,6 +830,19 @@ export default function Home() {
                 ))}
                 </div>
                 <div className="pointer-events-none absolute inset-y-0 right-0 w-[10%] bg-gradient-to-l from-card via-card/55 to-transparent" />
+                <button
+                  type="button"
+                  aria-label="Ver próximos imóveis"
+                  onClick={() =>
+                    document.getElementById("selection-carousel")?.scrollBy({
+                      left: (document.getElementById("selection-carousel")?.clientWidth ?? 600) * 0.65,
+                      behavior: "smooth",
+                    })
+                  }
+                  className="absolute right-2 top-[clamp(145px,19svh,210px)] z-20 inline-flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full border border-white/25 bg-black/25 text-white/80 shadow-lg backdrop-blur-md transition-colors hover:bg-black/45 hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white md:top-[clamp(145px,20svh,210px)]"
+                >
+                  <ArrowRight size={20} strokeWidth={1.5} />
+                </button>
               </div>
 
             </motion.div>
