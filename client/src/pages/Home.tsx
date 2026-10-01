@@ -735,7 +735,7 @@ export default function Home() {
 
       {highlights.length > 0 && (
         <>
-        <section className="sticky top-[-260px] z-10 flex min-h-[100svh] items-center bg-card pb-[220px] pt-[60px] transition-colors duration-700 md:pb-[228px] md:pt-[68px]">
+        <section className="sticky top-[-260px] z-10 flex min-h-[100svh] items-center bg-card pb-[210px] pt-[60px] transition-colors duration-700 md:pb-[218px] md:pt-[68px]">
           <div className="container mx-auto px-6">
             <motion.div
               initial="hidden"
