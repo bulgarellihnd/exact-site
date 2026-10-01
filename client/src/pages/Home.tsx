@@ -837,18 +837,18 @@ export default function Home() {
                       behavior: "smooth",
                     })
                   }
-                  className="group/next absolute right-0 top-[clamp(145px,19svh,210px)] z-20 inline-flex h-20 w-14 -translate-y-1/2 items-center justify-center text-foreground/45 transition-colors duration-500 hover:text-foreground/90 focus-visible:rounded-sm focus-visible:outline focus-visible:outline-1 focus-visible:outline-offset-2 focus-visible:outline-foreground/50 md:top-[clamp(145px,20svh,210px)]"
+                  className="group/next absolute -right-3 top-[clamp(145px,19svh,210px)] z-20 inline-flex h-20 w-14 -translate-y-1/2 items-center justify-center text-foreground/[0.08] transition-colors duration-500 hover:text-foreground/55 focus-visible:text-foreground/55 focus-visible:rounded-sm focus-visible:outline focus-visible:outline-1 focus-visible:outline-offset-2 focus-visible:outline-foreground/50 md:top-[clamp(145px,20svh,210px)]"
                 >
                   <svg
-                    width="42"
-                    height="18"
-                    viewBox="0 0 42 18"
+                    width="26"
+                    height="44"
+                    viewBox="0 0 26 44"
                     fill="none"
                     aria-hidden="true"
-                    className="transition-transform duration-500 ease-out group-hover/next:translate-x-1 group-focus-visible/next:translate-x-1"
+                    className="transition-transform duration-500 ease-out group-hover/next:translate-x-3 group-focus-visible/next:translate-x-3"
                   >
                     <path
-                      d="M2 9H39M33 3L39 9L33 15"
+                      d="M7 3L17 22L7 41"
                       stroke="currentColor"
                       strokeWidth="1.1"
                       strokeLinecap="round"
