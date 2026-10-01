@@ -6,6 +6,8 @@ import {
   Search,
   Moon,
   Sun,
+  Menu,
+  X,
   Bed,
   Car,
   Ruler,
@@ -78,6 +80,7 @@ export default function Home() {
     if (savedTheme === "light" || savedTheme === "dark") return savedTheme;
     return "dark";
   });
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [searchCode, setSearchCode] = useState("");
   const [isSearching, setIsSearching] = useState(false);
   const [isReferenceSearchOpen, setIsReferenceSearchOpen] = useState(false);
@@ -339,7 +342,7 @@ export default function Home() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.6 }}
-            className="text-white"
+            className={isReferenceSearchOpen ? "invisible text-white md:visible" : "text-white"}
             style={exactLogoStyle}
             onClick={() => setLocation("/")}
           >
@@ -349,19 +352,19 @@ export default function Home() {
           <div className="flex items-center gap-4 md:gap-10">
             <a
               href="/imoveis"
-              className="text-xs font-light tracking-wide text-white/88 transition-colors duration-300 hover:text-white"
+              className="hidden text-xs font-light tracking-wide text-white/88 transition-colors duration-300 hover:text-white md:inline"
             >
               Imóveis
             </a>
             <a
               href="/sobre"
-              className="text-xs font-light tracking-wide text-white/88 transition-colors duration-300 hover:text-white"
+              className="hidden text-xs font-light tracking-wide text-white/88 transition-colors duration-300 hover:text-white md:inline"
             >
               Sobre
             </a>
             <a
               href="/contato"
-              className="text-xs font-light tracking-wide text-white/88 transition-colors duration-300 hover:text-white"
+              className="hidden text-xs font-light tracking-wide text-white/88 transition-colors duration-300 hover:text-white md:inline"
             >
               Contato
             </a>
@@ -386,7 +389,7 @@ export default function Home() {
                     animate={{ opacity: 1, width: 292, scaleX: 1, filter: "blur(0px)" }}
                     exit={{ opacity: 0, width: 40, scaleX: 0.72, filter: "blur(3px)" }}
                     transition={{ duration: 0.46, ease: [0.16, 1, 0.3, 1] }}
-                    className="relative origin-right"
+                    className="relative max-w-[calc(100vw-40px)] origin-right"
                   >
                     <div className="flex h-10 items-center gap-1 rounded-full border border-white/30 bg-gradient-to-r from-black/55 to-black/25 px-1.5 shadow-[0_12px_40px_rgba(0,0,0,0.28)] backdrop-blur-xl">
                       <button
@@ -417,7 +420,7 @@ export default function Home() {
                         }}
                         onKeyDown={handleKeyPress}
                         aria-label="Codigo de referencia do imovel"
-                        className="min-w-0 flex-1 bg-transparent px-2 text-xs uppercase tracking-[0.12em] text-white outline-none placeholder:text-white/40"
+                        className="min-w-0 flex-1 bg-transparent px-2 text-base uppercase tracking-[0.12em] md:text-xs text-white outline-none placeholder:text-white/40"
                       />
                       <button
                         type="button"
@@ -486,7 +489,7 @@ export default function Home() {
                       type="button"
                       aria-label="Buscar imóvel por referência"
                       title="Buscar por referência"
-                      onClick={() => setIsReferenceSearchOpen(true)}
+                      onClick={() => { setIsMobileMenuOpen(false); setIsReferenceSearchOpen(true); }}
                       className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-white/20 text-white transition-colors hover:border-white/50 hover:bg-white/10"
                       whileHover={{ y: -1 }}
                       whileTap={{ scale: 0.96 }}
@@ -504,15 +507,35 @@ export default function Home() {
                     >
                       {theme === "dark" ? <Sun size={15} /> : <Moon size={15} />}
                     </motion.button>
+                    <button
+                      type="button"
+                      aria-label={isMobileMenuOpen ? "Fechar menu" : "Abrir menu"}
+                      aria-expanded={isMobileMenuOpen}
+                      aria-controls="mobile-home-menu"
+                      onClick={() => setIsMobileMenuOpen((open) => !open)}
+                      className="inline-flex h-11 w-11 items-center justify-center text-white md:hidden"
+                    >
+                      {isMobileMenuOpen ? <X size={21} /> : <Menu size={21} />}
+                    </button>
                   </motion.div>
                 )}
               </AnimatePresence>
             </div>
           </div>
         </div>
+        {isMobileMenuOpen && (
+          <div id="mobile-home-menu" className="border-t border-white/10 bg-black/95 px-5 py-5 md:hidden">
+            <div className="flex flex-col gap-1">
+              {[["/imoveis", "Imóveis"], ["/sobre", "Sobre"], ["/contato", "Contato"]].map(([href, label]) => (
+                <a key={href} href={href} onClick={() => setIsMobileMenuOpen(false)} className="py-3 text-sm text-white/90">{label}</a>
+              ))}
+              <a href={whatsappLink} target="_blank" rel="noopener noreferrer" className="mt-3 rounded-sm border border-white/25 px-4 py-3 text-center text-sm text-white">Atendimento Direto</a>
+            </div>
+          </div>
+        )}
       </nav>
 
-      <section className="relative flex min-h-screen items-center justify-center overflow-hidden">
+      <section className="relative flex min-h-[100svh] items-center justify-center overflow-hidden md:min-h-screen">
         <AnimatePresence mode="sync" initial={false}>
           <motion.img
             key={theme}
@@ -534,7 +557,7 @@ export default function Home() {
         <div className="absolute inset-0 bg-gradient-to-b from-black/28 via-black/10 to-black/52" />
 
         <motion.div
-          className="relative z-10 h-screen w-full px-6 text-center"
+          className="relative z-10 h-[100svh] w-full px-5 text-center md:h-screen md:px-6"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 1, delay: 0.15 }}
@@ -560,7 +583,7 @@ export default function Home() {
           </div>
 
           <motion.div
-            className="absolute bottom-[11%] left-1/2 ml-[7px] flex -translate-x-1/2 flex-wrap justify-center gap-4 px-6"
+            className="absolute bottom-[max(32px,8svh)] left-1/2 flex w-full max-w-sm -translate-x-1/2 flex-col items-stretch justify-center gap-3 px-6 md:bottom-[11%] md:ml-[7px] md:w-auto md:max-w-none md:flex-row md:gap-4"
             initial={{ opacity: 0, y: 14 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.7, duration: 0.8 }}
@@ -650,7 +673,7 @@ export default function Home() {
               <h3 className="mb-5 text-2xl font-extralight tracking-tight">
                 Locação
               </h3>
-              <div className="relative mb-6 h-[360px] overflow-hidden rounded-sm bg-muted/30 md:h-[500px]">
+              <div className="relative mb-6 h-[300px] overflow-hidden rounded-sm bg-muted/30 sm:h-[360px] md:h-[500px]">
                 <AnimatePresence initial={false}>
                   <motion.img
                     key={rentalImages[rentalImageIndex] ?? heroImages[theme]}
@@ -688,7 +711,7 @@ export default function Home() {
               <h3 className="mb-5 text-right text-2xl font-extralight tracking-tight">
                 Aquisição
               </h3>
-              <div className="relative mb-6 h-[360px] overflow-hidden rounded-sm bg-muted/30 md:h-[500px]">
+              <div className="relative mb-6 h-[300px] overflow-hidden rounded-sm bg-muted/30 sm:h-[360px] md:h-[500px]">
                 <AnimatePresence initial={false}>
                   <motion.img
                     key={acquisitionImages[acquisitionImageIndex] ?? heroImages[theme]}
@@ -741,7 +764,7 @@ export default function Home() {
 
       {highlights.length > 0 && (
         <>
-        <section className="sticky top-[-250px] z-10 flex min-h-[100svh] items-center bg-card pb-[210px] pt-[60px] transition-colors duration-700 md:pb-[218px] md:pt-[68px]">
+        <section className="relative z-10 flex items-center bg-card pb-16 pt-[60px] transition-colors duration-700 md:sticky md:top-[-250px] md:min-h-[100svh] md:pb-[218px] md:pt-[68px]">
           <div className="container mx-auto px-6">
             <motion.div
               initial="hidden"
@@ -788,7 +811,7 @@ export default function Home() {
                     className="group flex w-[76%] min-w-0 max-w-[76%] flex-none basis-[76%] flex-col sm:w-[48%] sm:max-w-[48%] sm:basis-[48%] md:w-[38%] md:max-w-[38%] md:basis-[38%]"
                     whileHover={{ y: -4 }}
                   >
-                    <div className="relative mb-5 h-[38svh] min-h-[290px] max-h-[420px] w-full overflow-hidden rounded-sm bg-muted/20 md:h-[40svh]">
+                    <div className="relative mb-5 h-[340px] min-h-0 max-h-[420px] w-full overflow-hidden rounded-sm bg-muted/20 md:h-[40svh]">
                       <img
                         src={property.cover_image ?? ""}
                         alt={property.title ?? "Imóvel EXACT"}
@@ -818,7 +841,7 @@ export default function Home() {
                       {property.property_type ?? "Imóvel"}
                     </p>
 
-                    <h3 className="mb-2 min-h-[3.25rem] line-clamp-2 text-xl font-light leading-snug tracking-tight">
+                    <h3 className="mb-2 min-h-[3.25rem] line-clamp-2 text-lg font-light leading-snug tracking-tight md:text-xl">
                       {property.title ?? "Imóvel EXACT"}
                     </h3>
 
@@ -867,7 +890,7 @@ export default function Home() {
                       behavior: "smooth",
                     })
                   }
-                  className="group/previous absolute left-[-29px] top-[clamp(145px,19svh,210px)] z-20 inline-flex h-20 w-14 -translate-y-1/2 items-center justify-center text-foreground/[0.08] transition-colors duration-500 hover:text-foreground/55 focus-visible:text-foreground/55 focus-visible:rounded-sm focus-visible:outline focus-visible:outline-1 focus-visible:outline-offset-2 focus-visible:outline-foreground/50 md:top-[clamp(145px,20svh,210px)]"
+                  className="group/previous absolute left-[-12px] md:left-[-29px] top-[170px] z-20 inline-flex h-20 w-14 -translate-y-1/2 items-center justify-center text-foreground/30 md:text-foreground/[0.08] transition-colors duration-500 hover:text-foreground/55 focus-visible:text-foreground/55 focus-visible:rounded-sm focus-visible:outline focus-visible:outline-1 focus-visible:outline-offset-2 focus-visible:outline-foreground/50 md:top-[clamp(145px,20svh,210px)]"
                 >
                   <svg
                     width="26"
@@ -896,7 +919,7 @@ export default function Home() {
                       behavior: "smooth",
                     })
                   }
-                  className="group/next absolute right-[-29px] top-[clamp(145px,19svh,210px)] z-20 inline-flex h-20 w-14 -translate-y-1/2 items-center justify-center text-foreground/[0.08] transition-colors duration-500 hover:text-foreground/55 focus-visible:text-foreground/55 focus-visible:rounded-sm focus-visible:outline focus-visible:outline-1 focus-visible:outline-offset-2 focus-visible:outline-foreground/50 md:top-[clamp(145px,20svh,210px)]"
+                  className="group/next absolute right-[-12px] md:right-[-29px] top-[170px] z-20 inline-flex h-20 w-14 -translate-y-1/2 items-center justify-center text-foreground/30 md:text-foreground/[0.08] transition-colors duration-500 hover:text-foreground/55 focus-visible:text-foreground/55 focus-visible:rounded-sm focus-visible:outline focus-visible:outline-1 focus-visible:outline-offset-2 focus-visible:outline-foreground/50 md:top-[clamp(145px,20svh,210px)]"
                 >
                   <svg
                     width="26"
@@ -928,7 +951,7 @@ export default function Home() {
         className="relative z-20 flex items-center rounded-t-[28px] border-t border-border/20 bg-background py-8 transition-colors duration-700 md:rounded-t-[36px] md:py-10"
       >
         <div className="container mx-auto px-6">
-          <div className="relative mb-10 min-h-[40svh] max-h-[430px] overflow-hidden rounded-[24px] border border-border/25 md:mb-12 md:rounded-[32px]">
+          <div className="relative mb-10 min-h-[40svh] md:max-h-[430px] overflow-hidden rounded-[24px] border border-border/25 md:mb-12 md:rounded-[32px]">
             <img
               src={highlights[0]?.cover_image ?? heroImages[theme]}
               alt="Ambiente residencial selecionado pela EXACT Imóveis"
@@ -944,7 +967,7 @@ export default function Home() {
               className="relative z-10 flex min-h-[40svh] max-w-2xl flex-col justify-center px-7 py-10 md:px-14 md:py-12"
             >
               <p className="mb-5 text-[10px] uppercase tracking-[0.32em] text-muted-foreground">Vamos conversar</p>
-              <h2 className="max-w-xl text-4xl font-extralight leading-[1.05] tracking-[-0.04em] text-foreground md:text-5xl">
+              <h2 className="max-w-xl text-3xl font-extralight leading-[1.1] sm:text-4xl tracking-[-0.04em] text-foreground md:text-5xl">
                 O próximo endereço começa com uma conversa.
               </h2>
               <p className="mt-5 max-w-lg text-sm font-light leading-relaxed text-muted-foreground">
