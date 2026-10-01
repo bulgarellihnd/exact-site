@@ -104,7 +104,6 @@ export default function Home() {
     if (!drag.moved) {
       drag.moved = true;
       event.currentTarget.setPointerCapture(event.pointerId);
-      event.currentTarget.style.scrollSnapType = "none";
       event.currentTarget.style.cursor = "grabbing";
     }
     event.preventDefault();
@@ -113,7 +112,6 @@ export default function Home() {
 
   function endSelectionDrag(event: React.PointerEvent<HTMLDivElement>) {
     selectionDrag.current.active = false;
-    event.currentTarget.style.scrollSnapType = "";
     event.currentTarget.style.cursor = "";
     if (event.currentTarget.hasPointerCapture(event.pointerId)) {
       event.currentTarget.releasePointerCapture(event.pointerId);
@@ -772,14 +770,14 @@ export default function Home() {
                       selectionDrag.current.moved = false;
                     }
                   }}
-                  className="flex cursor-grab select-none snap-x snap-mandatory gap-6 overflow-x-auto pb-4 pr-[14%] [scrollbar-width:none] md:gap-8 md:pr-[12%] [&::-webkit-scrollbar]:hidden"
+                  className="flex cursor-grab select-none gap-6 overflow-x-auto pb-4 pr-[14%] [scrollbar-width:none] md:gap-8 md:pr-[12%] [&::-webkit-scrollbar]:hidden"
                 >
                 {highlights.map((property) => (
                   <motion.a
                     key={property.id}
                     href={`/imoveis/${property.property_code ?? property.id}`}
                     variants={itemVariants}
-                    className="group flex w-[76%] min-w-0 max-w-[76%] flex-none basis-[76%] snap-start flex-col sm:w-[48%] sm:max-w-[48%] sm:basis-[48%] md:w-[38%] md:max-w-[38%] md:basis-[38%]"
+                    className="group flex w-[76%] min-w-0 max-w-[76%] flex-none basis-[76%] flex-col sm:w-[48%] sm:max-w-[48%] sm:basis-[48%] md:w-[38%] md:max-w-[38%] md:basis-[38%]"
                     whileHover={{ y: -4 }}
                   >
                     <div className="relative mb-5 h-[38svh] min-h-[290px] max-h-[420px] w-full overflow-hidden rounded-sm bg-muted/20 md:h-[40svh]">
@@ -839,9 +837,9 @@ export default function Home() {
                       behavior: "smooth",
                     })
                   }
-                  className="absolute right-2 top-[clamp(145px,19svh,210px)] z-20 inline-flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full border border-white/25 bg-black/25 text-white/80 shadow-lg backdrop-blur-md transition-colors hover:bg-black/45 hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white md:top-[clamp(145px,20svh,210px)]"
+                  className="group/next absolute right-0 top-[clamp(145px,19svh,210px)] z-20 inline-flex h-20 w-16 -translate-y-1/2 items-center justify-center text-foreground/65 transition-colors duration-300 hover:text-foreground focus-visible:rounded-sm focus-visible:outline focus-visible:outline-1 focus-visible:outline-offset-2 focus-visible:outline-foreground/50 md:top-[clamp(145px,20svh,210px)]"
                 >
-                  <ArrowRight size={20} strokeWidth={1.5} />
+                  <ArrowRight size={30} strokeWidth={1} className="transition-transform duration-300 ease-out group-hover/next:translate-x-1.5 group-focus-visible/next:translate-x-1.5" />
                 </button>
               </div>
 
