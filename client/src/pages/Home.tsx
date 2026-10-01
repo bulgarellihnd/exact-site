@@ -77,6 +77,7 @@ export default function Home() {
   const [isReferenceSearchOpen, setIsReferenceSearchOpen] = useState(false);
   const [referenceMatch, setReferenceMatch] = useState<HighlightProperty | null>(null);
   const [isReferenceLoading, setIsReferenceLoading] = useState(false);
+  const [canScrollSelectionBack, setCanScrollSelectionBack] = useState(false);
   const [highlights, setHighlights] = useState<HighlightProperty[]>([]);
   const [rentalImages, setRentalImages] = useState<string[]>([]);
   const [acquisitionImages, setAcquisitionImages] = useState<string[]>([]);
@@ -757,6 +758,7 @@ export default function Home() {
               <div className="relative">
                 <div
                   id="selection-carousel"
+                  onScroll={(event) => setCanScrollSelectionBack(event.currentTarget.scrollLeft > 1)}
                   onPointerDown={startSelectionDrag}
                   onPointerMove={moveSelectionDrag}
                   onPointerUp={endSelectionDrag}
@@ -828,6 +830,36 @@ export default function Home() {
                 ))}
                 </div>
                 <div className="pointer-events-none absolute inset-y-0 right-0 w-[10%] bg-gradient-to-l from-card via-card/55 to-transparent" />
+                {canScrollSelectionBack && (
+                <button
+                  type="button"
+                  aria-label="Ver imóveis anteriores"
+                  onClick={() =>
+                    document.getElementById("selection-carousel")?.scrollBy({
+                      left: -(document.getElementById("selection-carousel")?.clientWidth ?? 600) * 0.65,
+                      behavior: "smooth",
+                    })
+                  }
+                  className="group/previous absolute -left-6 top-[clamp(145px,19svh,210px)] z-20 inline-flex h-20 w-14 -translate-y-1/2 items-center justify-center text-foreground/[0.08] transition-colors duration-500 hover:text-foreground/55 focus-visible:text-foreground/55 focus-visible:rounded-sm focus-visible:outline focus-visible:outline-1 focus-visible:outline-offset-2 focus-visible:outline-foreground/50 md:top-[clamp(145px,20svh,210px)]"
+                >
+                  <svg
+                    width="26"
+                    height="44"
+                    viewBox="0 0 26 44"
+                    fill="none"
+                    aria-hidden="true"
+                    className="transition-transform duration-500 ease-out group-hover/previous:-translate-x-3 group-focus-visible/previous:-translate-x-3"
+                  >
+                    <path
+                      d="M19 3L9 22L19 41"
+                      stroke="currentColor"
+                      strokeWidth="1.1"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                  </svg>
+                </button>
+                )}
                 <button
                   type="button"
                   aria-label="Ver próximos imóveis"
@@ -837,7 +869,7 @@ export default function Home() {
                       behavior: "smooth",
                     })
                   }
-                  className="group/next absolute -right-3 top-[clamp(145px,19svh,210px)] z-20 inline-flex h-20 w-14 -translate-y-1/2 items-center justify-center text-foreground/[0.08] transition-colors duration-500 hover:text-foreground/55 focus-visible:text-foreground/55 focus-visible:rounded-sm focus-visible:outline focus-visible:outline-1 focus-visible:outline-offset-2 focus-visible:outline-foreground/50 md:top-[clamp(145px,20svh,210px)]"
+                  className="group/next absolute -right-6 top-[clamp(145px,19svh,210px)] z-20 inline-flex h-20 w-14 -translate-y-1/2 items-center justify-center text-foreground/[0.08] transition-colors duration-500 hover:text-foreground/55 focus-visible:text-foreground/55 focus-visible:rounded-sm focus-visible:outline focus-visible:outline-1 focus-visible:outline-offset-2 focus-visible:outline-foreground/50 md:top-[clamp(145px,20svh,210px)]"
                 >
                   <svg
                     width="26"
