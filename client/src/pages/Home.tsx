@@ -6,6 +6,9 @@ import {
   Search,
   Moon,
   Sun,
+  Bed,
+  Car,
+  Ruler,
 } from "lucide-react";
 import { AnimatePresence, motion, type Variants } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
@@ -53,6 +56,9 @@ type HighlightProperty = {
   price: number | null;
   location: string | null;
   cover_image: string | null;
+  bedrooms: number | null;
+  parking_spots: number | null;
+  area: number | null;
 };
 
 function formatPrice(price: number | null) {
@@ -163,7 +169,7 @@ export default function Home() {
       setIsReferenceLoading(true);
       const { data } = await supabase
         .from("properties")
-        .select("id, property_code, title, property_type, operation, price, location, cover_image")
+        .select("id, property_code, title, property_type, operation, price, location, cover_image, bedrooms, parking_spots, area")
         .eq("property_code", code)
         .eq("is_published", true)
         .maybeSingle();
@@ -189,7 +195,7 @@ export default function Home() {
       const { data, error } = await supabase
         .from("properties")
         .select(
-          "id, property_code, title, property_type, operation, price, location, cover_image"
+          "id, property_code, title, property_type, operation, price, location, cover_image, bedrooms, parking_spots, area"
         )
         .eq("is_published", true)
         .not("cover_image", "is", null)
@@ -820,6 +826,27 @@ export default function Home() {
                       {property.location ?? "Curitiba"}
                     </p>
 
+                    <div className="mb-5 flex flex-wrap items-center gap-x-5 gap-y-2 text-xs font-light text-muted-foreground">
+                      {property.bedrooms != null && (
+                        <span className="inline-flex items-center gap-2">
+                          <Bed size={15} strokeWidth={1.4} aria-hidden="true" />
+                          {property.bedrooms} {property.bedrooms === 1 ? "quarto" : "quartos"}
+                        </span>
+                      )}
+                      {property.parking_spots != null && (
+                        <span className="inline-flex items-center gap-2">
+                          <Car size={15} strokeWidth={1.4} aria-hidden="true" />
+                          {property.parking_spots} {property.parking_spots === 1 ? "vaga" : "vagas"}
+                        </span>
+                      )}
+                      {property.area != null && property.area > 0 && (
+                        <span className="inline-flex items-center gap-2" title="Área privativa">
+                          <Ruler size={15} strokeWidth={1.4} aria-hidden="true" />
+                          {new Intl.NumberFormat("pt-BR").format(property.area)} m²
+                        </span>
+                      )}
+                    </div>
+
                     <div className="mt-auto flex items-center justify-end pt-1">
                       <ArrowRight
                         size={15}
@@ -840,7 +867,7 @@ export default function Home() {
                       behavior: "smooth",
                     })
                   }
-                  className="group/previous absolute left-[-34px] top-[clamp(145px,19svh,210px)] z-20 inline-flex h-20 w-14 -translate-y-1/2 items-center justify-center text-foreground/[0.08] transition-colors duration-500 hover:text-foreground/55 focus-visible:text-foreground/55 focus-visible:rounded-sm focus-visible:outline focus-visible:outline-1 focus-visible:outline-offset-2 focus-visible:outline-foreground/50 md:top-[clamp(145px,20svh,210px)]"
+                  className="group/previous absolute left-[-29px] top-[clamp(145px,19svh,210px)] z-20 inline-flex h-20 w-14 -translate-y-1/2 items-center justify-center text-foreground/[0.08] transition-colors duration-500 hover:text-foreground/55 focus-visible:text-foreground/55 focus-visible:rounded-sm focus-visible:outline focus-visible:outline-1 focus-visible:outline-offset-2 focus-visible:outline-foreground/50 md:top-[clamp(145px,20svh,210px)]"
                 >
                   <svg
                     width="26"
@@ -869,7 +896,7 @@ export default function Home() {
                       behavior: "smooth",
                     })
                   }
-                  className="group/next absolute right-[-34px] top-[clamp(145px,19svh,210px)] z-20 inline-flex h-20 w-14 -translate-y-1/2 items-center justify-center text-foreground/[0.08] transition-colors duration-500 hover:text-foreground/55 focus-visible:text-foreground/55 focus-visible:rounded-sm focus-visible:outline focus-visible:outline-1 focus-visible:outline-offset-2 focus-visible:outline-foreground/50 md:top-[clamp(145px,20svh,210px)]"
+                  className="group/next absolute right-[-29px] top-[clamp(145px,19svh,210px)] z-20 inline-flex h-20 w-14 -translate-y-1/2 items-center justify-center text-foreground/[0.08] transition-colors duration-500 hover:text-foreground/55 focus-visible:text-foreground/55 focus-visible:rounded-sm focus-visible:outline focus-visible:outline-1 focus-visible:outline-offset-2 focus-visible:outline-foreground/50 md:top-[clamp(145px,20svh,210px)]"
                 >
                   <svg
                     width="26"
