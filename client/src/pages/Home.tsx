@@ -77,6 +77,7 @@ export default function Home() {
   const [isReferenceSearchOpen, setIsReferenceSearchOpen] = useState(false);
   const [referenceMatch, setReferenceMatch] = useState<HighlightProperty | null>(null);
   const [isReferenceLoading, setIsReferenceLoading] = useState(false);
+  const [canScrollSelectionBack, setCanScrollSelectionBack] = useState(false);
   const [highlights, setHighlights] = useState<HighlightProperty[]>([]);
   const [rentalImages, setRentalImages] = useState<string[]>([]);
   const [acquisitionImages, setAcquisitionImages] = useState<string[]>([]);
@@ -84,6 +85,39 @@ export default function Home() {
   const [acquisitionImageIndex, setAcquisitionImageIndex] = useState(0);
   const [, setLocation] = useLocation();
   const referenceSearchRef = useRef<HTMLDivElement>(null);
+  const selectionDrag = useRef({ active: false, moved: false, startX: 0, scrollLeft: 0 });
+
+  function startSelectionDrag(event: React.PointerEvent<HTMLDivElement>) {
+    if (event.pointerType !== "mouse" || event.button !== 0) return;
+    selectionDrag.current = {
+      active: true,
+      moved: false,
+      startX: event.clientX,
+      scrollLeft: event.currentTarget.scrollLeft,
+    };
+  }
+
+  function moveSelectionDrag(event: React.PointerEvent<HTMLDivElement>) {
+    const drag = selectionDrag.current;
+    if (!drag.active) return;
+    const distance = event.clientX - drag.startX;
+    if (!drag.moved && Math.abs(distance) < 6) return;
+    if (!drag.moved) {
+      drag.moved = true;
+      event.currentTarget.setPointerCapture(event.pointerId);
+      event.currentTarget.style.cursor = "grabbing";
+    }
+    event.preventDefault();
+    event.currentTarget.scrollLeft = drag.scrollLeft - distance;
+  }
+
+  function endSelectionDrag(event: React.PointerEvent<HTMLDivElement>) {
+    selectionDrag.current.active = false;
+    event.currentTarget.style.cursor = "";
+    if (event.currentTarget.hasPointerCapture(event.pointerId)) {
+      event.currentTarget.releasePointerCapture(event.pointerId);
+    }
+  }
 
   useEffect(() => {
     window.localStorage.setItem("exact-theme-v2", theme);
@@ -701,7 +735,7 @@ export default function Home() {
 
       {highlights.length > 0 && (
         <>
-        <section className="sticky top-0 z-10 flex min-h-[100svh] items-center bg-card pb-[220px] pt-10 transition-colors duration-700 md:pb-[228px] md:pt-12">
+        <section className="sticky top-[-250px] z-10 flex min-h-[100svh] items-center bg-card pb-[210px] pt-[60px] transition-colors duration-700 md:pb-[218px] md:pt-[68px]">
           <div className="container mx-auto px-6">
             <motion.div
               initial="hidden"
@@ -719,52 +753,33 @@ export default function Home() {
                   </p>
                 </div>
 
-                <div className="hidden items-center gap-2 md:flex">
-                  <button
-                    type="button"
-                    aria-label="Ver imóveis anteriores"
-                    onClick={() =>
-                      document
-                        .getElementById("selection-carousel")
-                        ?.scrollBy({
-                          left: -window.innerWidth * 0.8,
-                          behavior: "smooth",
-                        })
-                    }
-                    className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-border/30 text-sm text-muted-foreground transition-colors hover:border-border/60 hover:text-foreground"
-                  >
-                    ←
-                  </button>
-
-                  <button
-                    type="button"
-                    aria-label="Ver próximos imóveis"
-                    onClick={() =>
-                      document
-                        .getElementById("selection-carousel")
-                        ?.scrollBy({
-                          left: window.innerWidth * 0.8,
-                          behavior: "smooth",
-                        })
-                    }
-                    className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-border/30 text-sm text-muted-foreground transition-colors hover:border-border/60 hover:text-foreground"
-                  >
-                    →
-                  </button>
-                </div>
               </motion.div>
 
               <div className="relative">
                 <div
                   id="selection-carousel"
-                  className="flex snap-x snap-mandatory gap-6 overflow-x-auto pb-4 pr-[14%] [scrollbar-width:none] md:gap-8 md:pr-[12%] [&::-webkit-scrollbar]:hidden"
+                  onScroll={(event) => setCanScrollSelectionBack(event.currentTarget.scrollLeft > 1)}
+                  onPointerDown={startSelectionDrag}
+                  onPointerMove={moveSelectionDrag}
+                  onPointerUp={endSelectionDrag}
+                  onPointerCancel={endSelectionDrag}
+                  onLostPointerCapture={endSelectionDrag}
+                  onDragStart={(event) => event.preventDefault()}
+                  onClickCapture={(event) => {
+                    if (selectionDrag.current.moved) {
+                      event.preventDefault();
+                      event.stopPropagation();
+                      selectionDrag.current.moved = false;
+                    }
+                  }}
+                  className="flex cursor-grab select-none gap-6 overflow-x-auto pb-4 pr-[14%] [scrollbar-width:none] md:gap-8 md:pr-[12%] [&::-webkit-scrollbar]:hidden"
                 >
                 {highlights.map((property) => (
                   <motion.a
                     key={property.id}
                     href={`/imoveis/${property.property_code ?? property.id}`}
                     variants={itemVariants}
-                    className="group flex w-[76%] min-w-0 max-w-[76%] flex-none basis-[76%] snap-start flex-col sm:w-[48%] sm:max-w-[48%] sm:basis-[48%] md:w-[38%] md:max-w-[38%] md:basis-[38%]"
+                    className="group flex w-[76%] min-w-0 max-w-[76%] flex-none basis-[76%] flex-col sm:w-[48%] sm:max-w-[48%] sm:basis-[48%] md:w-[38%] md:max-w-[38%] md:basis-[38%]"
                     whileHover={{ y: -4 }}
                   >
                     <div className="relative mb-5 h-[38svh] min-h-[290px] max-h-[420px] w-full overflow-hidden rounded-sm bg-muted/20 md:h-[40svh]">
@@ -815,6 +830,64 @@ export default function Home() {
                 ))}
                 </div>
                 <div className="pointer-events-none absolute inset-y-0 right-0 w-[10%] bg-gradient-to-l from-card via-card/55 to-transparent" />
+                {canScrollSelectionBack && (
+                <button
+                  type="button"
+                  aria-label="Ver imóveis anteriores"
+                  onClick={() =>
+                    document.getElementById("selection-carousel")?.scrollBy({
+                      left: -(document.getElementById("selection-carousel")?.clientWidth ?? 600) * 0.65,
+                      behavior: "smooth",
+                    })
+                  }
+                  className="group/previous absolute left-[-34px] top-[clamp(145px,19svh,210px)] z-20 inline-flex h-20 w-14 -translate-y-1/2 items-center justify-center text-foreground/[0.08] transition-colors duration-500 hover:text-foreground/55 focus-visible:text-foreground/55 focus-visible:rounded-sm focus-visible:outline focus-visible:outline-1 focus-visible:outline-offset-2 focus-visible:outline-foreground/50 md:top-[clamp(145px,20svh,210px)]"
+                >
+                  <svg
+                    width="26"
+                    height="44"
+                    viewBox="0 0 26 44"
+                    fill="none"
+                    aria-hidden="true"
+                    className="transition-transform duration-500 ease-out group-hover/previous:-translate-x-3 group-focus-visible/previous:-translate-x-3"
+                  >
+                    <path
+                      d="M19 3L9 22L19 41"
+                      stroke="currentColor"
+                      strokeWidth="1.1"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                  </svg>
+                </button>
+                )}
+                <button
+                  type="button"
+                  aria-label="Ver próximos imóveis"
+                  onClick={() =>
+                    document.getElementById("selection-carousel")?.scrollBy({
+                      left: (document.getElementById("selection-carousel")?.clientWidth ?? 600) * 0.65,
+                      behavior: "smooth",
+                    })
+                  }
+                  className="group/next absolute right-[-34px] top-[clamp(145px,19svh,210px)] z-20 inline-flex h-20 w-14 -translate-y-1/2 items-center justify-center text-foreground/[0.08] transition-colors duration-500 hover:text-foreground/55 focus-visible:text-foreground/55 focus-visible:rounded-sm focus-visible:outline focus-visible:outline-1 focus-visible:outline-offset-2 focus-visible:outline-foreground/50 md:top-[clamp(145px,20svh,210px)]"
+                >
+                  <svg
+                    width="26"
+                    height="44"
+                    viewBox="0 0 26 44"
+                    fill="none"
+                    aria-hidden="true"
+                    className="transition-transform duration-500 ease-out group-hover/next:translate-x-3 group-focus-visible/next:translate-x-3"
+                  >
+                    <path
+                      d="M7 3L17 22L7 41"
+                      stroke="currentColor"
+                      strokeWidth="1.1"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                  </svg>
+                </button>
               </div>
 
             </motion.div>
