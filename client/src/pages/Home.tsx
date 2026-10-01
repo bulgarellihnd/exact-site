@@ -735,7 +735,7 @@ export default function Home() {
 
       {highlights.length > 0 && (
         <>
-        <section className="sticky top-[-260px] z-10 flex min-h-[100svh] items-center bg-card pb-[220px] pt-10 transition-colors duration-700 md:pb-[228px] md:pt-12">
+        <section className="sticky top-[-260px] z-10 flex min-h-[100svh] items-center bg-card pb-[220px] pt-[60px] transition-colors duration-700 md:pb-[228px] md:pt-[68px]">
           <div className="container mx-auto px-6">
             <motion.div
               initial="hidden"
@@ -840,7 +840,7 @@ export default function Home() {
                       behavior: "smooth",
                     })
                   }
-                  className="group/previous absolute -left-6 top-[clamp(145px,19svh,210px)] z-20 inline-flex h-20 w-14 -translate-y-1/2 items-center justify-center text-foreground/[0.08] transition-colors duration-500 hover:text-foreground/55 focus-visible:text-foreground/55 focus-visible:rounded-sm focus-visible:outline focus-visible:outline-1 focus-visible:outline-offset-2 focus-visible:outline-foreground/50 md:top-[clamp(145px,20svh,210px)]"
+                  className="group/previous absolute left-[-34px] top-[clamp(145px,19svh,210px)] z-20 inline-flex h-20 w-14 -translate-y-1/2 items-center justify-center text-foreground/[0.08] transition-colors duration-500 hover:text-foreground/55 focus-visible:text-foreground/55 focus-visible:rounded-sm focus-visible:outline focus-visible:outline-1 focus-visible:outline-offset-2 focus-visible:outline-foreground/50 md:top-[clamp(145px,20svh,210px)]"
                 >
                   <svg
                     width="26"
@@ -869,7 +869,7 @@ export default function Home() {
                       behavior: "smooth",
                     })
                   }
-                  className="group/next absolute -right-6 top-[clamp(145px,19svh,210px)] z-20 inline-flex h-20 w-14 -translate-y-1/2 items-center justify-center text-foreground/[0.08] transition-colors duration-500 hover:text-foreground/55 focus-visible:text-foreground/55 focus-visible:rounded-sm focus-visible:outline focus-visible:outline-1 focus-visible:outline-offset-2 focus-visible:outline-foreground/50 md:top-[clamp(145px,20svh,210px)]"
+                  className="group/next absolute right-[-34px] top-[clamp(145px,19svh,210px)] z-20 inline-flex h-20 w-14 -translate-y-1/2 items-center justify-center text-foreground/[0.08] transition-colors duration-500 hover:text-foreground/55 focus-visible:text-foreground/55 focus-visible:rounded-sm focus-visible:outline focus-visible:outline-1 focus-visible:outline-offset-2 focus-visible:outline-foreground/50 md:top-[clamp(145px,20svh,210px)]"
                 >
                   <svg
                     width="26"
