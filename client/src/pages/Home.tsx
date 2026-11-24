@@ -17,6 +17,7 @@ import { useEffect, useRef, useState } from "react";
 import { useLocation } from "wouter";
 import { toast } from "sonner";
 import { supabase } from "@/lib/supabase";
+import { propertyCardTitle, propertyNeighborhood, propertyTypeLabel } from "@/lib/propertyDisplay";
 
 const whatsappLink =
   "https://wa.me/5541999723780?text=Ol%C3%A1.%20Tenho%20interesse%20em%20um%20im%C3%B3vel%20da%20EXACT%20e%20gostaria%20de%20mais%20informa%C3%A7%C3%B5es.";
@@ -814,7 +815,7 @@ export default function Home() {
                     <div className="relative mb-5 h-[340px] min-h-0 max-h-[420px] w-full overflow-hidden rounded-sm bg-muted/20 md:h-[40svh]">
                       <img
                         src={property.cover_image ?? ""}
-                        alt={property.title ?? "Imóvel EXACT"}
+                        alt={propertyCardTitle(property)}
                         loading="lazy"
                         decoding="async"
                         className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-[1.025]"
@@ -838,7 +839,7 @@ export default function Home() {
                     </div>
 
                     <p className="mb-2 text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
-                      {property.property_type ?? "Imóvel"}
+                      {propertyTypeLabel(property.property_type ?? "") || "Imóvel"}
                     </p>
 
                     <h3 className="mb-2 min-h-[3.25rem] line-clamp-2 text-lg font-light leading-snug tracking-tight md:text-xl">
@@ -846,7 +847,7 @@ export default function Home() {
                     </h3>
 
                     <p className="mb-4 min-h-[2.6rem] text-sm leading-relaxed text-muted-foreground">
-                      {property.location ?? "Curitiba"}
+                      {propertyNeighborhood(property.location) || property.location || "Curitiba"}
                     </p>
 
                     <div className="mb-5 flex flex-wrap items-center gap-x-5 gap-y-2 text-xs font-light text-muted-foreground">

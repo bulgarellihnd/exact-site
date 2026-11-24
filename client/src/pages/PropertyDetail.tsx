@@ -12,6 +12,7 @@ import {
 } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 import ShareButtons from "@/components/ShareButtons";
+import { rentalCharges } from "@/lib/rentalCharges";
 
 type Property = {
   id: number;
@@ -370,6 +371,12 @@ export default function PropertyDetail() {
     return `Olá. Tenho interesse em agendar uma visita para o imóvel ${title}${reference}.`;
   }
 
+  function getQuestionMessage() {
+    const reference = property?.property_code;
+    const subject = reference ? `o imóvel ${reference}` : "este imóvel";
+    return `Olá. Gostaria de tirar uma dúvida sobre ${subject}.`;
+  }
+
   function getWhatsAppUrl(message: string) {
     return `https://wa.me/5541999723780?text=${encodeURIComponent(message)}`;
   }
@@ -648,6 +655,9 @@ export default function PropertyDetail() {
                 <span className="ml-2 text-sm text-muted-foreground">/mês</span>
               ) : null}
             </p>
+            {property.operation === "locacao" && property.property_code && (
+              <RentalCharges code={property.property_code} rent={property.price} />
+            )}
           </div>
 
           <div className="grid grid-cols-2 gap-x-8 gap-y-8 border-y border-border/20 py-10 sm:grid-cols-4">
@@ -755,7 +765,7 @@ export default function PropertyDetail() {
           </a>
 
           <a
-            href={getWhatsAppUrl(getVisitMessage())}
+            href={getWhatsAppUrl(getQuestionMessage())}
             target="_blank"
             rel="noreferrer"
             className="block w-full border border-border py-4 text-center text-xs tracking-[0.18em] transition hover:border-foreground/40 hover:bg-muted"
@@ -778,3 +788,27 @@ export default function PropertyDetail() {
 }
 
 
+
+function RentalCharges({ code, rent }: { code: string; rent: number | null }) {
+  const charges = rentalCharges[code];
+  if (!charges) return null;
+
+  const currency = new Intl.NumberFormat("pt-BR", {
+    style: "currency",
+    currency: "BRL",
+    maximumFractionDigits: 2,
+    minimumFractionDigits: 0,
+  });
+  const { condominium, iptu } = charges;
+  const total = rent !== null && condominium !== null && iptu !== null
+    ? rent + condominium + iptu
+    : null;
+
+  return (
+    <dl className="mt-4 max-w-sm space-y-2 text-sm text-muted-foreground">
+      {condominium !== null && <div className="flex justify-between gap-4"><dt>Condomínio mensal</dt><dd>{currency.format(condominium)}</dd></div>}
+      {iptu !== null && <div className="flex justify-between gap-4"><dt>IPTU mensal</dt><dd>{currency.format(iptu)}</dd></div>}
+      {total !== null && <div className="flex justify-between gap-4 border-t border-border/30 pt-2 text-foreground"><dt>Custos mensais informados</dt><dd className="shrink-0">{currency.format(total)}</dd></div>}
+    </dl>
+  );
+}
