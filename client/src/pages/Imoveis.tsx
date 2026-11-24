@@ -3,6 +3,7 @@ import { Car, ChevronDown, Search, X } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import Header from "@/components/Header";
 import { supabase } from "@/lib/supabase";
+import { propertyCardTitle, propertyNeighborhood, propertyTypeLabel } from "@/lib/propertyDisplay";
 
 const whatsappLink = "https://wa.me/5541999723780?text=Ol%C3%A1.%20Tenho%20interesse%20em%20um%20im%C3%B3vel%20da%20EXACT%20e%20gostaria%20de%20mais%20informa%C3%A7%C3%B5es.";
 const heroExcludedPropertyCodes = new Set(["EX0009"]);
@@ -21,15 +22,15 @@ const sortOptions: Array<{ label: string; value: SortOption }> = [
   { label: "Maior valor", value: "price-desc" }, { label: "Menor área", value: "area-asc" },
   { label: "Maior área", value: "area-desc" },
 ];
+const budget = (value: string) => value.trim() && Number.isFinite(Number(value)) && Number(value) >= 0 ? Number(value) : null;
 const initial = () => { const p = new URLSearchParams(location.search); return {
-  operation: p.get("operacao") ?? p.get("tipo") ?? "todos", type: p.get("imovel") ?? "todos",
+  operation: p.get("operacao") ?? p.get("tipo") ?? "todos", type: p.has("imovel") ? propertyTypeLabel(p.get("imovel") ?? "") || "todos" : "todos",
+  neighborhood: p.get("bairro") ?? "", minPrice: p.get("precoMin") ?? "", maxPrice: p.get("precoMax") ?? "",
   bedrooms: Number(p.get("quartos") ?? 0), parking: Number(p.get("vagas") ?? 0),
   sort: (p.get("ordem") as SortOption | null) ?? "recent", reference: p.get("ref") ?? "",
 }; };
-const typeLabel = (value: string) => value.toLowerCase().replaceAll("_", " ").replace(/(^|\s)\S/g, c => c.toUpperCase());
 const propertyUrl = (p: Property) => `/imoveis/${p.property_code ?? p.slug ?? p.id}`;
 const price = (p: Property) => !p.price ? "Sob consulta" : `${new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL", maximumFractionDigits: 0 }).format(p.price)}${p.operation === "locacao" ? "/mês" : ""}`;
-const displayTitle = (title: string | null) => title?.split("|")[0].trim() || "Imóvel EXACT";
 
 export default function Imoveis() {
   const start = useMemo(initial, []);
@@ -37,6 +38,12 @@ export default function Imoveis() {
   const [operation, setOperation] = useState(start.operation), [kind, setKind] = useState(start.type);
   const [bedrooms, setBedrooms] = useState(start.bedrooms), [parking, setParking] = useState(start.parking);
   const [sort, setSort] = useState<SortOption>(start.sort), [reference, setReference] = useState(start.reference);
+  const [neighborhood, setNeighborhood] = useState(start.neighborhood);
+  const [minPrice, setMinPrice] = useState(start.minPrice);
+  const [maxPrice, setMaxPrice] = useState(start.maxPrice);
+  const minimum = budget(minPrice);
+  const maximum = budget(maxPrice);
+  const invalidRange = minimum !== null && maximum !== null && minimum > maximum;
   const [heroIndex, setHeroIndex] = useState(0);
 
   useEffect(() => { (async () => {
@@ -49,10 +56,14 @@ export default function Imoveis() {
     if (operation !== "todos") p.set("operacao", operation); if (kind !== "todos") p.set("imovel", kind);
     if (bedrooms) p.set("quartos", String(bedrooms)); if (parking) p.set("vagas", String(parking));
     if (sort !== "recent") p.set("ordem", sort); if (reference.trim()) p.set("ref", reference.trim().toUpperCase());
+    if (neighborhood) p.set("bairro", neighborhood);
+    if (minimum !== null) p.set("precoMin", String(minimum));
+    if (maximum !== null) p.set("precoMax", String(maximum));
     history.replaceState(null, "", `${location.pathname}${p.size ? `?${p}` : ""}`);
-  }, [operation, kind, bedrooms, parking, sort, reference]);
+  }, [operation, kind, bedrooms, parking, sort, reference, neighborhood, minimum, maximum]);
 
-  const types = useMemo(() => Array.from(new Set(properties.map(p => p.property_type).filter(Boolean) as string[])).sort(), [properties]);
+  const types = useMemo(() => Array.from(new Set(properties.map(p => propertyTypeLabel(p.property_type ?? "")).filter(Boolean))).sort(), [properties]);
+  const neighborhoods = useMemo(() => [...new Set(properties.map(p => propertyNeighborhood(p.location)).filter(Boolean))].sort((a, b) => a.localeCompare(b, "pt-BR")), [properties]);
   const hero = useMemo(() => { const eligible = properties.filter(p => p.cover_image && !heroExcludedPropertyCodes.has(p.property_code?.toUpperCase() ?? ""));
     const selected = eligible.filter(p => p.hero_enabled).sort((a,b) => (a.hero_order ?? 99) - (b.hero_order ?? 99)).slice(0,5);
     return selected.length ? selected : [...eligible].sort((a,b) => (b.price ?? 0) - (a.price ?? 0)).slice(0,5);
@@ -60,9 +71,12 @@ export default function Imoveis() {
   useEffect(() => { if (hero.length < 2) return; const id = setInterval(() => setHeroIndex(i => (i + 1) % hero.length), 10000); return () => clearInterval(id); }, [hero.length]);
 
   const visible = useMemo(() => properties.filter(p => operation === "todos" || p.operation === operation)
-    .filter(p => kind === "todos" || p.property_type === kind).filter(p => !bedrooms || (p.bedrooms ?? 0) >= bedrooms)
+    .filter(p => kind === "todos" || propertyTypeLabel(p.property_type ?? "") === kind).filter(p => !bedrooms || (p.bedrooms ?? 0) >= bedrooms)
     .filter(p => !parking || (p.parking_spots ?? 0) >= parking).filter(p => !reference.trim() || p.property_code?.toUpperCase().includes(reference.trim().toUpperCase()))
-    .sort((a,b) => sort === "price-asc" ? (a.price ?? 1e15) - (b.price ?? 1e15) : sort === "price-desc" ? (b.price ?? 0) - (a.price ?? 0) : sort === "area-asc" ? (a.area ?? 1e15) - (b.area ?? 1e15) : sort === "area-desc" ? (b.area ?? 0) - (a.area ?? 0) : +new Date(b.created_at) - +new Date(a.created_at)), [properties, operation, kind, bedrooms, parking, sort, reference]);
+    .filter(p => !neighborhood || propertyNeighborhood(p.location) === neighborhood)
+    .filter(p => !invalidRange && (minimum === null || (p.price !== null && p.price >= minimum))
+      && (maximum === null || (p.price !== null && p.price <= maximum)))
+    .sort((a,b) => sort === "price-asc" ? (a.price ?? 1e15) - (b.price ?? 1e15) : sort === "price-desc" ? (b.price ?? 0) - (a.price ?? 0) : sort === "area-asc" ? (a.area ?? 1e15) - (b.area ?? 1e15) : sort === "area-desc" ? (b.area ?? 0) - (a.area ?? 0) : +new Date(b.created_at) - +new Date(a.created_at)), [properties, operation, kind, bedrooms, parking, sort, reference, neighborhood, minimum, maximum, invalidRange]);
 
   useEffect(() => { if (loading) return; const y = sessionStorage.getItem(`exact-scroll:${location.pathname}${location.search}`); if (y) requestAnimationFrame(() => scrollTo({ top: Number(y) })); }, [loading]);
   const remember = () => {
@@ -70,8 +84,8 @@ export default function Imoveis() {
     sessionStorage.setItem("exact-properties-return", returnUrl);
     sessionStorage.setItem(`exact-scroll:${returnUrl}`, String(scrollY));
   };
-  const clear = () => { setOperation("todos"); setKind("todos"); setBedrooms(0); setParking(0); setSort("recent"); setReference(""); };
-  const filtered = operation !== "todos" || kind !== "todos" || bedrooms > 0 || parking > 0 || sort !== "recent" || !!reference.trim();
+  const clear = () => { setOperation("todos"); setKind("todos"); setBedrooms(0); setParking(0); setSort("recent"); setReference(""); setNeighborhood(""); setMinPrice(""); setMaxPrice(""); };
+  const filtered = operation !== "todos" || kind !== "todos" || bedrooms > 0 || parking > 0 || sort !== "recent" || !!reference.trim() || !!neighborhood || minimum !== null || maximum !== null;
   const activeHero = hero[heroIndex];
 
   return <div className="min-h-screen overflow-x-hidden bg-background text-foreground">
@@ -83,7 +97,7 @@ export default function Imoveis() {
         <p className="mb-5 text-[11px] uppercase tracking-[0.3em] text-white/80">Portfólio · Curitiba</p>
         <h1 className="mb-5 text-[44px] font-extralight leading-[.95] tracking-[-.035em] text-white md:text-[68px]">Nossos Imóveis</h1>
         <p className="max-w-xl text-base leading-7 text-white/85">Uma seleção rigorosa de imóveis, escolhidos por arquitetura e localização.</p>
-        {activeHero && <a href={propertyUrl(activeHero)} onClick={remember} className="group mt-9 inline-flex max-w-3xl flex-col items-start gap-3 text-white transition-opacity hover:opacity-80"><span className="flex items-center gap-4 text-[11px] uppercase tracking-[.2em] text-white/75"><span>{activeHero.property_code}</span><span className="h-px w-7 bg-white/60"/><span>{activeHero.operation === "locacao" ? "Locação" : "Aquisição"}</span></span><span className="text-lg font-light leading-snug md:text-xl">{displayTitle(activeHero.title)}</span><span className="text-sm text-white/85">{price(activeHero)}</span></a>}
+        {activeHero && <a href={propertyUrl(activeHero)} onClick={remember} className="group mt-9 inline-flex max-w-3xl flex-col items-start gap-3 text-white transition-opacity hover:opacity-80"><span className="flex items-center gap-4 text-[11px] uppercase tracking-[.2em] text-white/75"><span>{activeHero.property_code}</span><span className="h-px w-7 bg-white/60"/><span>{activeHero.operation === "locacao" ? "Locação" : "Aquisição"}</span></span><span className="text-lg font-light leading-snug md:text-xl">{propertyCardTitle(activeHero)}</span><span className="text-sm text-white/85">{price(activeHero)}</span></a>}
         {hero.length > 1 && <div className="absolute bottom-7 right-6 flex gap-3 md:bottom-10 md:right-10">{hero.map((p,i) => <button key={p.id} aria-label={`Exibir ${p.title}`} onClick={() => setHeroIndex(i)} className={`h-px transition-all ${i === heroIndex ? "w-10 bg-white" : "w-5 bg-white/45 hover:bg-white"}`} />)}</div>}
       </div>
     </section>
@@ -94,18 +108,28 @@ export default function Imoveis() {
           {[["todos","Todas as operações"],["locacao","Locação"],["aquisicao","Aquisição"]].map(([v,l]) => <button key={v} onClick={() => setOperation(v)} className={`shrink-0 border px-3 py-2.5 text-[11px] ${operation === v ? "border-white/45 text-white" : "border-transparent text-white/55 hover:text-white/85"}`}>{l}</button>)}
         </div>
         <div className="flex items-center gap-2 overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-        <select aria-label="Tipo do imóvel" value={kind} onChange={e => setKind(e.target.value)} className="shrink-0 bg-black px-3 py-2.5 text-[11px] text-white/70"><option value="todos">Todos os imóveis</option>{types.map(t => <option key={t} value={t}>{typeLabel(t)}</option>)}</select>
+        <select aria-label="Tipo do imóvel" value={kind} onChange={e => setKind(e.target.value)} className="shrink-0 bg-black px-3 py-2.5 text-[11px] text-white/70"><option value="todos">Todos os imóveis</option>{types.map(t => <option key={t} value={t}>{t}</option>)}</select>
         <select aria-label="Quartos" value={bedrooms} onChange={e => setBedrooms(+e.target.value)} className="shrink-0 bg-black px-3 py-2.5 text-[11px] text-white/70"><option value="0">Quartos</option>{[1,2,3,4].map(n => <option key={n} value={n}>{n}+ quartos</option>)}</select>
         <select aria-label="Vagas" value={parking} onChange={e => setParking(+e.target.value)} className="shrink-0 bg-black px-3 py-2.5 text-[11px] text-white/70"><option value="0">Vagas</option>{[1,2,3,4].map(n => <option key={n} value={n}>{n}+ vagas</option>)}</select>
         <div className="relative ml-auto shrink-0"><select aria-label="Ordenar" value={sort} onChange={e => setSort(e.target.value as SortOption)} className="appearance-none bg-black py-2.5 pl-3 pr-8 text-[11px] text-white/70">{sortOptions.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}</select><ChevronDown size={12} className="pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 text-white/50"/></div>
         </div>
       </div>
+      <div className="mt-2 grid grid-cols-3 gap-2 text-[11px] text-white/80 md:max-w-xl">
+        <select aria-label="Bairro" value={neighborhood} onChange={e => setNeighborhood(e.target.value)} className="min-w-0 rounded-sm border border-white/15 bg-black px-2 py-2">
+          <option value="">Todos os bairros</option>
+          {neighborhood && !neighborhoods.includes(neighborhood) && <option value={neighborhood}>{neighborhood}</option>}
+          {neighborhoods.map(name => <option key={name} value={name}>{name}</option>)}
+        </select>
+        <input type="number" inputMode="numeric" min="0" step="1" aria-label="Preço mínimo em reais" placeholder="Mín. R$" value={minPrice} onChange={e => setMinPrice(e.target.value)} className="min-w-0 rounded-sm border border-white/15 bg-black px-2 py-2" />
+        <input type="number" inputMode="numeric" min="0" step="1" aria-label="Preço máximo em reais" placeholder="Máx. R$" value={maxPrice} onChange={e => setMaxPrice(e.target.value)} className="min-w-0 rounded-sm border border-white/15 bg-black px-2 py-2" />
+      </div>
+      {invalidRange && <p role="status" className="mt-2 text-xs text-white/80">O preço máximo deve ser maior ou igual ao mínimo.</p>}
       <div className="mt-3 flex items-center gap-3 border-t border-white/10 pt-3"><div className="relative max-w-[260px] flex-1"><Search size={14} className="absolute left-1 top-1/2 -translate-y-1/2 text-white/45"/><input value={reference} onChange={e => setReference(e.target.value.toUpperCase())} placeholder="Buscar referência" className="w-full bg-transparent py-2 pl-7 text-[11px] uppercase tracking-[.12em] text-white outline-none placeholder:normal-case placeholder:tracking-normal placeholder:text-white/40"/></div><p className="ml-auto text-[10px] uppercase tracking-[.15em] text-white/45">{loading ? "Carregando" : `${visible.length} imóveis`}</p>{filtered && <button onClick={clear} className="flex items-center gap-1 text-[10px] uppercase tracking-[.14em] text-white/55 hover:text-white"><X size={12}/> Limpar</button>}</div>
     </div></section>
 
     <main className="container mx-auto px-6 py-16 md:py-24">{error ? <State text="Não foi possível carregar os imóveis agora." action="Tentar novamente" onClick={() => location.reload()}/> : loading ? <div className="grid gap-12 md:grid-cols-2">{Array.from({length:6}).map((_,i)=><div key={i} className="animate-pulse"><div className="aspect-[16/10] bg-white/[.06]"/><div className="mt-5 h-3 w-2/3 bg-white/[.06]"/></div>)}</div> : !visible.length ? <State text="Nenhum imóvel corresponde a esta busca." action="Limpar filtros" onClick={clear}/> : <motion.div layout className="grid gap-x-10 gap-y-20 md:grid-cols-2">{visible.map(p => <motion.a layout key={p.id} href={propertyUrl(p)} onClick={remember} className="group block" initial={{opacity:0,y:10}} animate={{opacity:1,y:0}}>
       <div className="relative aspect-[16/10] overflow-hidden rounded-sm bg-white/[.04]">{p.cover_image ? <img src={p.cover_image} alt={p.title ?? "Imóvel EXACT"} loading="lazy" decoding="async" className="h-full w-full object-cover transition-transform duration-[1100ms] ease-out group-hover:scale-[1.025]"/> : <div className="flex h-full items-center justify-center text-sm text-white/35">Imagem em atualização</div>}<div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent opacity-70 transition-opacity duration-500 group-hover:opacity-90"/><span className="absolute bottom-4 left-4 text-[11px] uppercase tracking-[.18em] text-white/85">{p.property_code}</span>{p.status && <span className="absolute right-4 top-4 rounded-full border border-white/15 bg-black/35 px-3 py-1.5 text-[10px] uppercase tracking-[.14em] text-white/85 backdrop-blur-md">{p.status}</span>}</div>
-      <div className="mt-6 flex items-start justify-between gap-6"><div><p className="mb-2 text-[11px] uppercase tracking-[.17em] text-white/48">{p.operation === "locacao" ? "Locação" : "Aquisição"}</p><h2 className="text-xl font-light leading-snug text-white md:text-[22px]">{displayTitle(p.title)}</h2></div><p className="shrink-0 pt-6 text-base font-light text-white">{price(p)}</p></div><p className="mt-3 text-sm leading-6 text-white/55">{p.location}</p>
+      <div className="mt-6 flex items-start justify-between gap-6"><div><p className="mb-2 text-[11px] uppercase tracking-[.17em] text-white/48">{p.operation === "locacao" ? "Locação" : "Aquisição"}</p><h2 className="text-xl font-light leading-snug text-white md:text-[22px]">{propertyCardTitle(p)}</h2></div><p className="shrink-0 pt-6 text-base font-light text-white">{price(p)}</p></div><p className="mt-3 text-sm leading-6 text-white/55">{propertyNeighborhood(p.location) || p.location}</p>
       <div className="mt-6 grid grid-cols-4 border-t border-white/12 pt-4 text-[10px] uppercase tracking-[.1em] text-white/45"><Fact label="Quartos" value={p.bedrooms}/><Fact label="Vagas" value={p.parking_spots} icon/><Fact label="Área" value={p.area ? `${p.area} m²` : null}/><Fact label="Referência" value={p.property_code} right/></div>
     </motion.a>)}</motion.div>}</main>
     <footer className="border-t border-white/10 px-6 py-16"><div className="container mx-auto flex flex-col justify-between gap-8 text-xs text-white/55 md:flex-row"><div><p className="mb-3 tracking-[.18em] text-white">EXACT</p><p>Imóveis selecionados com precisão.</p></div><div className="flex gap-8"><a href={whatsappLink} target="_blank" rel="noreferrer">(41) 99972-3780</a><a href="mailto:contato@exactbr.com">contato@exactbr.com</a></div></div></footer>
